@@ -1,0 +1,68 @@
+# Node modules (dependencies)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Logs
+logs/
+*.log
+logs/*.log
+logs/**/*.log
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files or caches
+*.cache
+.cache/
+*.bak
+*.swp
+*.tmp
+*.pid
+*.seed
+
+# Build files
+build/
+dist/
+
+# Coverage reports
+coverage/
+
+# IDE or editor files
+.idea/
+.vscode/
+*.code-workspace
+
+# SSL certificates
+*.pem
+*.cert
+*.key
+
+# Docker files
+docker-compose.override.yml
+.dockerignore
+
+# Optional: If you're using multer or other file uploads
+uploads/
+
+# Optional: Ignore test coverage reports
+coverage/
+
+# Optional: If you're using pm2 or any process manager
+pm2.log
+*.pid
