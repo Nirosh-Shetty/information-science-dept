@@ -123,7 +123,7 @@ function Placemnent() {
 
 export default function Dashboard(props) {
   const { window } = props;
-  const router = useDemoRouter("/dashboard");
+  const router = useDemoRouter("/admin/dashboard");
   const demoWindow = window ? window() : undefined;
 
   const renderPageContent = () => {
