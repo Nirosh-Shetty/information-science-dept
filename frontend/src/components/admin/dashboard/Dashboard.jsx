@@ -150,6 +150,7 @@ export default function Dashboard(props) {
       navigation={NAVIGATION}
       router={router}
       theme={demoTheme}
+      branding={{ title: "Atria IT ISE department" }}
       window={demoWindow}
     >
       <DashboardLayout>
