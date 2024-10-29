@@ -1,10 +1,14 @@
 import "./App.css";
-import {Button} from "./components/ui/button"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SignInSide from "./components/admin/SignIn/SignInSide";
+``
 function App() {
   return (
-    <div>
-      <Button>Hello from shadcn</Button>
-    </div>
+    <Router >
+      <Routes>
+        <Route path="/login" element={<SignInSide/>}/>
+      </Routes>
+    </Router>
   );
 }
 
