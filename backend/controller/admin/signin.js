@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const adminSignIn = async (req, res) => {
-  const { identifier, password } = req.body; // Corrected 'passowrd' to 'password'
+  const { identifier, password } = req.body; 
   try {
     const user = await adminModel.findOne({
       $or: [{ username: identifier }, { email: identifier }],
