@@ -1,5 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import SignInCard from './SignInCard';
 import Content from './Content';
 import AppTheme from '../../mui/shared-theme/AppTheme';
@@ -9,7 +10,12 @@ export default function SignInSide(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+
+      {/* Fixed color mode toggle positioned to the right */}
+      <Box sx={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1 }}>
+        <ColorModeSelect />
+      </Box>
+
       <Stack
         direction="column"
         component="main"
