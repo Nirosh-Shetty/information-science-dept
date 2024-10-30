@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 export const adminSigin = async (req, res) => {
   console.log("admin sigin hitted");
-  const { identifier, passowrd } = req.body();
+  const { identifier, passowrd } = req.body;
   try {
     const user = await adminModel.findOne({
       $or: [{ username: identifier }, { email: identifier }],
