@@ -10,14 +10,16 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
 import ForgotPassword from "./ForgotPassword";
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import { adminAtom } from "../../../../recoil/atoms/adminAtom";
 import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../../globals";
+import { useNavigate } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -44,8 +46,12 @@ export default function SignInCard() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
-
-  console.log(admin)
+  const [wrongPass, setWrongPass] = React.useState("");
+  const [wrongUsername, setWrongUsername] = React.useState("");
+  const [loading, setLoading] = React.useState(false); // Track loading state
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const color = theme.palette.mode === 'dark' ? '#a5d8ff' : '#1565c0';
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -56,16 +62,18 @@ export default function SignInCard() {
   };
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent page refresh
+    event.preventDefault();
 
     if (usernameError || passwordError) {
       return;
     }
 
+    setLoading(true); // Start loading
+
     const data = new FormData(event.currentTarget);
     const identifier = data.get("username");
     const password = data.get("password");
-    console.log(identifier, password);
+    
     fetch(`${BACKEND_URL}/admin/signin`, {
       method: "POST",
       headers: {
@@ -73,20 +81,40 @@ export default function SignInCard() {
       },
       body: JSON.stringify({ identifier, password }),
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        const response = await res.json();
+        if (response.message === "User not found") {
+          setWrongUsername("User doesn't exist");
+          setWrongPass("");
+          setLoading(false); // Stop loading if error
+          return;
+        } else if (response.message === "Incorrect Password") {
+          setWrongPass("Password is incorrect");
+          setWrongUsername("");
+          setLoading(false); // Stop loading if error
+          return;
+        }
+        return response;
+      })
       .then((data) => {
         if (data.error) {
           alert(data.error);
         } else {
           setAdmin(data);
+          setWrongUsername("");
+          setWrongPass("");
         }
+        setLoading(false); // Stop loading
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
+        setLoading(false); // Stop loading if error occurs
       });
   };
 
   const validateInputs = () => {
+    setWrongPass("");
+    setWrongUsername("");
     const username = document.getElementById("username");
     const password = document.getElementById("password");
 
@@ -113,17 +141,25 @@ export default function SignInCard() {
     return isValid;
   };
 
+  React.useEffect(() => {
+    if (admin?.success) {
+      navigate("/admin/dashboard");
+    }
+  }, [admin]);
+
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: "flex", md: "none" } }}>
-        <SitemarkIcon />
+      <Typography sx={{ color, fontSize: '1.25rem', fontWeight: 'bold' }}>
+          Atria IT ISE Department
+        </Typography>
       </Box>
       <Typography
         component="h1"
         variant="h4"
         sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
       >
-        Sign in
+        Admin Sign In
       </Typography>
       <Box
         component="form"
@@ -134,8 +170,8 @@ export default function SignInCard() {
         <FormControl>
           <FormLabel htmlFor="username">Username</FormLabel>
           <TextField
-            error={usernameError}
-            helperText={usernameErrorMessage}
+            error={usernameError || !!wrongUsername}
+            helperText={usernameErrorMessage || wrongUsername}
             id="username"
             type="text"
             name="username"
@@ -145,8 +181,7 @@ export default function SignInCard() {
             required
             fullWidth
             variant="outlined"
-            color={usernameError ? "error" : "primary"}
-            sx={{ ariaLabel: "username" }}
+            color={usernameError || wrongUsername ? "error" : "primary"}
           />
         </FormControl>
         <FormControl>
@@ -163,18 +198,17 @@ export default function SignInCard() {
             </Link>
           </Box>
           <TextField
-            error={passwordError}
-            helperText={passwordErrorMessage}
+            error={passwordError || !!wrongPass}
+            helperText={passwordErrorMessage || wrongPass}
             name="password"
             placeholder="••••••"
             type="password"
             id="password"
             autoComplete="current-password"
-            autoFocus
             required
             fullWidth
             variant="outlined"
-            color={passwordError ? "error" : "primary"}
+            color={passwordError || wrongPass ? "error" : "primary"}
           />
         </FormControl>
         <FormControlLabel
@@ -187,8 +221,10 @@ export default function SignInCard() {
           fullWidth
           variant="contained"
           onClick={validateInputs}
+          disabled={loading} // Disable button while loading
+          startIcon={loading && <CircularProgress size={20} />} // Show spinner
         >
-          Sign in
+          {loading ? "Signing in..." : "Sign in"} {/* Show text based on loading */}
         </Button>
       </Box>
     </Card>

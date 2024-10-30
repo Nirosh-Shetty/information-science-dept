@@ -153,7 +153,13 @@ export default function Dashboard(props) {
       branding={{ title: "Atria IT ISE department" }}
       window={demoWindow}
     >
-      <DashboardLayout>
+      <DashboardLayout
+        sx={{
+          overflow: "hidden", // Prevents overflow
+          maxWidth: "100%", // Keeps the header within the viewport
+          whiteSpace: "nowrap", // Ensures text does not wrap
+        }}
+      >
         <PageContainer>{renderPageContent()}</PageContainer>
       </DashboardLayout>
     </AppProvider>
