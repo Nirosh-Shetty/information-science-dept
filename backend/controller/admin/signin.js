@@ -1,5 +1,4 @@
 import express from "express";
-const app = express();
 import adminModel from "../../model/adminModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -11,18 +10,16 @@ export const adminSignIn = async (req, res) => {
       $or: [{ username: identifier }, { email: identifier }],
     });
 
+    // console.log(user);
     if (!user) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "User not found",
       });
     }
-
-    console.log(user); // Consider removing in production
-    const comPassword = await bcrypt.compare(password, user.password); // Corrected 'user.passowrd' to 'user.password'
-
+    const comPassword = await bcrypt.compare(password, user.password);
     if (!comPassword) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
         message: "Incorrect Password",
       });
@@ -37,16 +34,15 @@ export const adminSignIn = async (req, res) => {
     const token = jwt.sign(jwtPayload, process.env.JWT_TOKEN_SECRET, {
       expiresIn: "24h",
     });
-
+    // console.log(token);
     return res.status(201).json({
       success: true,
       message: "Admin Signed In Successfully",
       token,
     });
   } catch (error) {
-    console.error(error); // Log error for debugging
+    console.error(error);
     return res.status(500).json({
-      // Changed from 501 to 500
       success: false,
       message: "Failed to Sign In",
     });

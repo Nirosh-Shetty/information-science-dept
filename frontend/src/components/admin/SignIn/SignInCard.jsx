@@ -10,10 +10,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
-
+import CircularProgress from "@mui/material/CircularProgress";
 import { styled, useTheme } from "@mui/material/styles";
-
 import ForgotPassword from "./ForgotPassword";
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import { adminAtom } from "../../../../recoil/atoms/adminAtom";
@@ -28,19 +26,18 @@ const Card = styled(MuiCard)(({ theme }) => ({
   width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  boxShadow: "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
   [theme.breakpoints.up("sm")]: {
     width: "450px",
   },
   ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
+    boxShadow: "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
 export default function SignInCard() {
   const [admin, setAdmin] = useRecoilState(adminAtom);
+  const [loggedIn, setLoggedIn] = React.useState();
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
@@ -48,10 +45,10 @@ export default function SignInCard() {
   const [open, setOpen] = React.useState(false);
   const [wrongPass, setWrongPass] = React.useState("");
   const [wrongUsername, setWrongUsername] = React.useState("");
-  const [loading, setLoading] = React.useState(false); // Track loading state
+  const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
-  const color = theme.palette.mode === 'dark' ? '#a5d8ff' : '#1565c0';
+  const color = theme.palette.mode === "dark" ? "#a5d8ff" : "#1565c0";
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -68,12 +65,12 @@ export default function SignInCard() {
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
     const data = new FormData(event.currentTarget);
     const identifier = data.get("username");
     const password = data.get("password");
-    
+
     fetch(`${BACKEND_URL}/admin/signin`, {
       method: "POST",
       headers: {
@@ -86,12 +83,12 @@ export default function SignInCard() {
         if (response.message === "User not found") {
           setWrongUsername("User doesn't exist");
           setWrongPass("");
-          setLoading(false); // Stop loading if error
+          setLoading(false);
           return;
         } else if (response.message === "Incorrect Password") {
           setWrongPass("Password is incorrect");
           setWrongUsername("");
-          setLoading(false); // Stop loading if error
+          setLoading(false);
           return;
         }
         return response;
@@ -100,15 +97,16 @@ export default function SignInCard() {
         if (data.error) {
           alert(data.error);
         } else {
-          setAdmin(data);
+          localStorage.setItem("token", data.token);
+          setLoggedIn(data);
           setWrongUsername("");
           setWrongPass("");
         }
-        setLoading(false); // Stop loading
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false); // Stop loading if error occurs
+        setLoading(false);
       });
   };
 
@@ -142,23 +140,43 @@ export default function SignInCard() {
   };
 
   React.useEffect(() => {
-    if (admin?.success) {
-      navigate("/admin/dashboard");
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${BACKEND_URL}/admin/dashboard`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(data)
+        setAdmin(data.adminUser);
+      } catch (err) {
+        setAdmin(null)
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  React.useEffect(()=>{
+    if(admin){
+      console.log(admin)
+      navigate('/admin/dashboard')
     }
-  }, [admin]);
+  },[admin, navigate])
 
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: "flex", md: "none" } }}>
-      <Typography sx={{ color, fontSize: '1.25rem', fontWeight: 'bold' }}>
+        <Typography sx={{ color, fontSize: "1.25rem", fontWeight: "bold" }}>
           Atria IT ISE Department
         </Typography>
       </Box>
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-      >
+      <Typography component="h1" variant="h4" sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}>
         Admin Sign In
       </Typography>
       <Box
@@ -187,13 +205,7 @@ export default function SignInCard() {
         <FormControl>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <FormLabel htmlFor="password">Password</FormLabel>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: "baseline" }}
-            >
+            <Link component="button" type="button" onClick={handleClickOpen} variant="body2" sx={{ alignSelf: "baseline" }}>
               Forgot your password?
             </Link>
           </Box>
@@ -211,20 +223,17 @@ export default function SignInCard() {
             color={passwordError || wrongPass ? "error" : "primary"}
           />
         </FormControl>
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
+        <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           onClick={validateInputs}
-          disabled={loading} // Disable button while loading
-          startIcon={loading && <CircularProgress size={20} />} // Show spinner
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={20} />}
         >
-          {loading ? "Signing in..." : "Sign in"} {/* Show text based on loading */}
+          {loading ? "Signing in..." : "Sign in"}
         </Button>
       </Box>
     </Card>
