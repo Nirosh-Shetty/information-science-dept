@@ -9,6 +9,12 @@ import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Profile Icon
+import DashboardContent from "./features/DashboardContent";
+import { useRecoilState } from "recoil";
+import { adminAtom } from "../../../../recoil/atoms/adminAtom";
+import { BACKEND_URL } from "../../../../globals";
+import { useNavigate } from "react-router-dom";
 
 const NAVIGATION = [
   {
@@ -56,8 +62,25 @@ const NAVIGATION = [
   },
   {
     segment: "admin/placements",
-    title: "Placemnent",
+    title: "Placement",
     icon: <LayersIcon />,
+  },
+  {
+    kind: "divider",
+  },
+  {
+    kind: "header",
+    title: "Profile",
+  },
+  {
+    segment: "admin/profile",
+    title: "Profile",
+    icon: <AccountCircleIcon />,
+    sx: {
+      position: "absolute",
+      bottom: 0,
+      width: "100%", // Ensures it aligns with other nav items
+    },
   },
 ];
 
@@ -77,7 +100,6 @@ const demoTheme = extendTheme({
 
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(initialPath);
-
   const router = React.useMemo(
     () => ({
       pathname,
@@ -97,10 +119,6 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-function DashboardContent() {
-  return <div>dashboard page</div>;
-}
-
 function ManageStaffContent() {
   return <div>Manage Staff Page</div>;
 }
@@ -117,14 +135,70 @@ function Academic() {
   return <div>Academic Page</div>;
 }
 
-function Placemnent() {
+function Placement() {
   return <div>Placement Page</div>;
 }
 
+function ProfileContent() {
+  return <div>Profile Page</div>;
+}
+
 export default function Dashboard(props) {
+  const [admin, setAdmin] = useRecoilState(adminAtom)
+  const [loading, setLoading] = React.useState(true);
+  const navigate = useNavigate()
   const { window } = props;
   const router = useDemoRouter("/admin/dashboard");
   const demoWindow = window ? window() : undefined;
+
+  React.useEffect(() => {
+    // Navigate to default page if an invalid path is found
+    if (
+      ![
+        "/admin/dashboard",
+        "/admin/managestaff",
+        "/admin/managestudent",
+        "/admin/studentperformance/attendance",
+        "/admin/studentperformance/academic",
+        "/admin/placements",
+        "/admin/profile",
+      ].includes(router.pathname)
+    ) {
+      router.navigate("/admin/dashboard");
+    }
+  }, [router]);
+
+  React.useEffect(()=>{
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${BACKEND_URL}/admin/dashboard`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log("dashboard"+data)
+        setAdmin(data.adminUser);
+      } catch (err) {
+        setAdmin(null)
+        console.log(err);
+      }finally {
+        setLoading(false); // Set loading to false after fetch completes
+      }
+    };
+
+    fetchData();
+  },[])
+
+  React.useEffect(()=>{
+    console.log(loading +"I came here"+ admin)
+    if(!loading && (admin === undefined || !admin) ){
+      navigate('/login')
+    }
+  },[admin, navigate, loading])
 
   const renderPageContent = () => {
     switch (router.pathname) {
@@ -139,13 +213,16 @@ export default function Dashboard(props) {
       case "/admin/studentperformance/academic":
         return <Academic />;
       case "/admin/placements":
-        return <Placemnent />;
+        return <Placement />;
+      case "/admin/profile":
+        return <ProfileContent />;
       default:
-        return <div>Page Not Found</div>;
+        return <DashboardContent />;
     }
   };
 
   return (
+    !loading &&
     <AppProvider
       navigation={NAVIGATION}
       router={router}
@@ -153,7 +230,14 @@ export default function Dashboard(props) {
       branding={{ title: "Atria IT ISE department" }}
       window={demoWindow}
     >
-      <DashboardLayout>
+      <DashboardLayout
+        sx={{
+          overflow: "hidden",
+          maxWidth: "100%",
+          whiteSpace: "nowrap",
+          position: "relative", // Allows Profile to be positioned absolutely
+        }}
+      >
         <PageContainer>{renderPageContent()}</PageContainer>
       </DashboardLayout>
     </AppProvider>

@@ -2,13 +2,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useTheme } from '@mui/material/styles';
 
 import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
 import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
 import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
 import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
-
-import { SitemarkIcon } from './CustomIcons';
 
 const items = [
   {
@@ -38,12 +37,17 @@ const items = [
 ];
 
 export default function Content() {
+  const theme = useTheme();
+  const color = theme.palette.mode === 'dark' ? '#a5d8ff' : '#1565c0';
+
   return (
     <Stack
       sx={{ flexDirection: 'column', alignSelf: 'center', gap: 4, maxWidth: 450 }}
     >
       <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-        <SitemarkIcon />
+        <Typography sx={{ color, fontSize: '1.25rem', fontWeight: 'bold' }}>
+          Atria IT ISE Department
+        </Typography>
       </Box>
       {items.map((item, index) => (
         <Stack key={index} direction="row" sx={{ gap: 2 }}>

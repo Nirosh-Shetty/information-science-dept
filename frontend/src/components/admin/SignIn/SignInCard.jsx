@@ -10,14 +10,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-
-import { styled } from "@mui/material/styles";
-
+import CircularProgress from "@mui/material/CircularProgress";
+import { styled, useTheme } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import { adminAtom } from "../../../../recoil/atoms/adminAtom";
 import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../../globals";
+import { useNavigate } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -26,46 +25,40 @@ const Card = styled(MuiCard)(({ theme }) => ({
   width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  boxShadow:
-    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  boxShadow: "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
   [theme.breakpoints.up("sm")]: {
     width: "450px",
   },
   ...theme.applyStyles("dark", {
-    boxShadow:
-      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
+    boxShadow: "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
 export default function SignInCard() {
   const [admin, setAdmin] = useRecoilState(adminAtom);
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
+  const theme = useTheme();
+  const color = theme.palette.mode === "dark" ? "#a5d8ff" : "#1565c0";
 
-  console.log(admin)
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent page refresh
+    event.preventDefault();
+    if (!validateInputs()) return;
 
-    if (usernameError || passwordError) {
-      return;
-    }
-
+    setLoading(true);
     const data = new FormData(event.currentTarget);
     const identifier = data.get("username");
     const password = data.get("password");
-    console.log(identifier, password);
+
     fetch(`${BACKEND_URL}/admin/signin`, {
       method: "POST",
       headers: {
@@ -73,26 +66,34 @@ export default function SignInCard() {
       },
       body: JSON.stringify({ identifier, password }),
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          setAdmin(data);
+      .then(async (res) => {
+        const response = await res.json();
+        setLoading(false);
+
+        if (response.message === "User not found") {
+          setUsernameErrorMessage("User doesn't exist");
+          return;
+        } else if (response.message === "Incorrect Password") {
+          setPasswordErrorMessage("Password is incorrect");
+          return;
         }
+
+        localStorage.setItem("token", response.token);
+        setAdmin(response.adminUser);
+        setLoggedIn(true);
       })
       .catch((err) => {
         console.error(err);
+        setLoading(false);
       });
   };
 
   const validateInputs = () => {
-    const username = document.getElementById("username");
-    const password = document.getElementById("password");
-
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
     let isValid = true;
 
-    if (!username.value || username.value.length < 3) {
+    if (!username || username.length < 3) {
       setUsernameError(true);
       setUsernameErrorMessage("Please enter a valid username.");
       isValid = false;
@@ -101,7 +102,7 @@ export default function SignInCard() {
       setUsernameErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password || password.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
       isValid = false;
@@ -113,17 +114,21 @@ export default function SignInCard() {
     return isValid;
   };
 
+  React.useEffect(() => {
+    if (loggedIn) {
+      navigate("/admin/dashboard");
+    }
+  }, [loggedIn, navigate]);
+
   return (
     <Card variant="outlined">
       <Box sx={{ display: { xs: "flex", md: "none" } }}>
-        <SitemarkIcon />
+        <Typography sx={{ color, fontSize: "1.25rem", fontWeight: "bold" }}>
+          Atria IT ISE Department
+        </Typography>
       </Box>
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-      >
-        Sign in
+      <Typography component="h1" variant="h4" sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}>
+        Admin Sign In
       </Typography>
       <Box
         component="form"
@@ -137,7 +142,6 @@ export default function SignInCard() {
             error={usernameError}
             helperText={usernameErrorMessage}
             id="username"
-            type="text"
             name="username"
             placeholder="username"
             autoComplete="username"
@@ -145,50 +149,40 @@ export default function SignInCard() {
             required
             fullWidth
             variant="outlined"
-            color={usernameError ? "error" : "primary"}
-            sx={{ ariaLabel: "username" }}
+            color="primary"
           />
         </FormControl>
         <FormControl>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <FormLabel htmlFor="password">Password</FormLabel>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: "baseline" }}
-            >
+            <Link component="button" type="button" onClick={handleClickOpen} variant="body2">
               Forgot your password?
             </Link>
           </Box>
           <TextField
             error={passwordError}
             helperText={passwordErrorMessage}
-            name="password"
-            placeholder="••••••"
-            type="password"
             id="password"
+            name="password"
+            type="password"
+            placeholder="••••••"
             autoComplete="current-password"
-            autoFocus
             required
             fullWidth
             variant="outlined"
-            color={passwordError ? "error" : "primary"}
+            color="primary"
           />
         </FormControl>
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
-        />
+        <FormControlLabel control={<Checkbox color="primary" />} label="Remember me" />
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button
           type="submit"
           fullWidth
           variant="contained"
-          onClick={validateInputs}
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={20} />}
         >
-          Sign in
+          {loading ? "Signing in..." : "Sign in"}
         </Button>
       </Box>
     </Card>
