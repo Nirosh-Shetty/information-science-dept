@@ -11,6 +11,10 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // Profile Icon
 import DashboardContent from "./features/DashboardContent";
+import { useRecoilState } from "recoil";
+import { adminAtom } from "../../../../recoil/atoms/adminAtom";
+import { BACKEND_URL } from "../../../../globals";
+import { useNavigate } from "react-router-dom";
 
 const NAVIGATION = [
   {
@@ -140,6 +144,9 @@ function ProfileContent() {
 }
 
 export default function Dashboard(props) {
+  const [admin, setAdmin] = useRecoilState(adminAtom)
+  const [loading, setLoading] = React.useState(true);
+  const navigate = useNavigate()
   const { window } = props;
   const router = useDemoRouter("/admin/dashboard");
   const demoWindow = window ? window() : undefined;
@@ -160,6 +167,38 @@ export default function Dashboard(props) {
       router.navigate("/admin/dashboard");
     }
   }, [router]);
+
+  React.useEffect(()=>{
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${BACKEND_URL}/admin/dashboard`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log("dashboard"+data)
+        setAdmin(data.adminUser);
+      } catch (err) {
+        setAdmin(null)
+        console.log(err);
+      }finally {
+        setLoading(false); // Set loading to false after fetch completes
+      }
+    };
+
+    fetchData();
+  },[])
+
+  React.useEffect(()=>{
+    console.log(loading +"I came here"+ admin)
+    if(!loading && (admin === undefined || !admin) ){
+      navigate('/login')
+    }
+  },[admin, navigate, loading])
 
   const renderPageContent = () => {
     switch (router.pathname) {
@@ -183,6 +222,7 @@ export default function Dashboard(props) {
   };
 
   return (
+    !loading &&
     <AppProvider
       navigation={NAVIGATION}
       router={router}

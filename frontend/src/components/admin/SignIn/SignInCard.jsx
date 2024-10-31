@@ -13,7 +13,6 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import { styled, useTheme } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 import { adminAtom } from "../../../../recoil/atoms/adminAtom";
 import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../../globals";
@@ -37,36 +36,25 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 export default function SignInCard() {
   const [admin, setAdmin] = useRecoilState(adminAtom);
-  const [loggedIn, setLoggedIn] = React.useState();
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [usernameError, setUsernameError] = React.useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const [wrongPass, setWrongPass] = React.useState("");
-  const [wrongUsername, setWrongUsername] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
   const color = theme.palette.mode === "dark" ? "#a5d8ff" : "#1565c0";
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (usernameError || passwordError) {
-      return;
-    }
+    if (!validateInputs()) return;
 
     setLoading(true);
-
     const data = new FormData(event.currentTarget);
     const identifier = data.get("username");
     const password = data.get("password");
@@ -80,45 +68,32 @@ export default function SignInCard() {
     })
       .then(async (res) => {
         const response = await res.json();
+        setLoading(false);
+
         if (response.message === "User not found") {
-          setWrongUsername("User doesn't exist");
-          setWrongPass("");
-          setLoading(false);
+          setUsernameErrorMessage("User doesn't exist");
           return;
         } else if (response.message === "Incorrect Password") {
-          setWrongPass("Password is incorrect");
-          setWrongUsername("");
-          setLoading(false);
+          setPasswordErrorMessage("Password is incorrect");
           return;
         }
-        return response;
-      })
-      .then((data) => {
-        if (data.error) {
-          alert(data.error);
-        } else {
-          localStorage.setItem("token", data.token);
-          setLoggedIn(data);
-          setWrongUsername("");
-          setWrongPass("");
-        }
-        setLoading(false);
+
+        localStorage.setItem("token", response.token);
+        setAdmin(response.adminUser);
+        setLoggedIn(true);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setLoading(false);
       });
   };
 
   const validateInputs = () => {
-    setWrongPass("");
-    setWrongUsername("");
-    const username = document.getElementById("username");
-    const password = document.getElementById("password");
-
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
     let isValid = true;
 
-    if (!username.value || username.value.length < 3) {
+    if (!username || username.length < 3) {
       setUsernameError(true);
       setUsernameErrorMessage("Please enter a valid username.");
       isValid = false;
@@ -127,7 +102,7 @@ export default function SignInCard() {
       setUsernameErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password || password.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
       isValid = false;
@@ -140,34 +115,10 @@ export default function SignInCard() {
   };
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        const res = await fetch(`${BACKEND_URL}/admin/dashboard`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await res.json();
-        console.log(data)
-        setAdmin(data.adminUser);
-      } catch (err) {
-        setAdmin(null)
-        console.log(err);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  React.useEffect(()=>{
-    if(admin){
-      console.log(admin)
-      navigate('/admin/dashboard')
+    if (loggedIn) {
+      navigate("/admin/dashboard");
     }
-  },[admin, navigate])
+  }, [loggedIn, navigate]);
 
   return (
     <Card variant="outlined">
@@ -188,10 +139,9 @@ export default function SignInCard() {
         <FormControl>
           <FormLabel htmlFor="username">Username</FormLabel>
           <TextField
-            error={usernameError || !!wrongUsername}
-            helperText={usernameErrorMessage || wrongUsername}
+            error={usernameError}
+            helperText={usernameErrorMessage}
             id="username"
-            type="text"
             name="username"
             placeholder="username"
             autoComplete="username"
@@ -199,37 +149,36 @@ export default function SignInCard() {
             required
             fullWidth
             variant="outlined"
-            color={usernameError || wrongUsername ? "error" : "primary"}
+            color="primary"
           />
         </FormControl>
         <FormControl>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <FormLabel htmlFor="password">Password</FormLabel>
-            <Link component="button" type="button" onClick={handleClickOpen} variant="body2" sx={{ alignSelf: "baseline" }}>
+            <Link component="button" type="button" onClick={handleClickOpen} variant="body2">
               Forgot your password?
             </Link>
           </Box>
           <TextField
-            error={passwordError || !!wrongPass}
-            helperText={passwordErrorMessage || wrongPass}
-            name="password"
-            placeholder="••••••"
-            type="password"
+            error={passwordError}
+            helperText={passwordErrorMessage}
             id="password"
+            name="password"
+            type="password"
+            placeholder="••••••"
             autoComplete="current-password"
             required
             fullWidth
             variant="outlined"
-            color={passwordError || wrongPass ? "error" : "primary"}
+            color="primary"
           />
         </FormControl>
-        <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+        <FormControlLabel control={<Checkbox color="primary" />} label="Remember me" />
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button
           type="submit"
           fullWidth
           variant="contained"
-          onClick={validateInputs}
           disabled={loading}
           startIcon={loading && <CircularProgress size={20} />}
         >
