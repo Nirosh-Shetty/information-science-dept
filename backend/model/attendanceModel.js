@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const attendanceSchema = new mongoose.Schema({
   class: { type: mongoose.Schema.Types.ObjectId, ref: "Class", required: true },
-  subject: {
+  course: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Subject",
+    ref: "Course",
     required: true,
   },
   date: { type: Date, required: true },
@@ -20,4 +20,4 @@ const attendanceSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("Attendance", attendanceSchema);
+export default mongoose.model("Attendance", attendanceSchema);

@@ -1,23 +1,23 @@
-import adminModel from "../../model/adminModel.js";
+import express from "express";
+const app = express();
+import staffModel from "../../model/staffModel";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-// import insertData from "./insert.js";
 
-export const adminSignIn = async (req, res) => {
+export const staffSignIn = async (req, res) => {
   const { identifier, password } = req.body;
-  // insertData();
   try {
-    const user = await adminModel.findOne({
+    const user = await staffModel.findOne({
       $or: [{ username: identifier }, { email: identifier }],
     });
 
-    // console.log(user);
     if (!user) {
       return res.status(400).json({
         success: false,
         message: "User not found",
       });
     }
+
     const comPassword = await bcrypt.compare(password, user.password);
     if (!comPassword) {
       return res.status(400).json({
@@ -28,17 +28,17 @@ export const adminSignIn = async (req, res) => {
 
     const jwtPayload = {
       id: user._id,
-      role: "admin",
+      role: "staff",
       iat: Math.floor(Date.now() / 1000),
     };
 
     const token = jwt.sign(jwtPayload, process.env.JWT_TOKEN_SECRET, {
       expiresIn: "24h",
     });
-    // console.log(token);
+
     return res.status(201).json({
       success: true,
-      message: "Admin Signed In Successfully",
+      message: "staff Signed In Successfully",
       token,
     });
   } catch (error) {

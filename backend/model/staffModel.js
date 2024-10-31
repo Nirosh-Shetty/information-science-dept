@@ -1,15 +1,12 @@
 import mongoose from "mongoose";
+
 const staffSchema = new mongoose.Schema({
-  name: String,
-  dob: Date,
-  email: String,
-  phone: String,
-  department: String,
-  designation: String,
-  coursesTaught: [ObjectId],
-  createdAt: Date,
-  updatedAt: Date,
+  fullName: { type: String, required: true },
+  employeeId: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  phoneNumber: { type: String },
+  role: { type: String, default: "staff" },
+  courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }], // Courses assigned to this staff member
 });
 
-const staffModel = new mongoose.model("staffModel", staffSchema);
-export default staffModel;
+export default mongoose.model("Staff", staffSchema);
