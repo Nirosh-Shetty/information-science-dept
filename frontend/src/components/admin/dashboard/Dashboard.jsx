@@ -15,6 +15,8 @@ import { useRecoilState } from "recoil";
 import { adminAtom } from "../../../../recoil/atoms/adminAtom";
 import { BACKEND_URL } from "../../../../globals";
 import { useNavigate } from "react-router-dom";
+import ManageStaffContent from "./features/ManageStaffContent";
+import ManageStudentContent from "./features/ManageStudentContent";
 
 const NAVIGATION = [
   {
@@ -119,14 +121,6 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-function ManageStaffContent() {
-  return <div>Manage Staff Page</div>;
-}
-
-function ManageStudentContent() {
-  return <div>Manage Student Page</div>;
-}
-
 function AttendanceContent() {
   return <div>Attendance Page</div>;
 }
@@ -194,7 +188,6 @@ export default function Dashboard(props) {
   },[])
 
   React.useEffect(()=>{
-    console.log(loading +"I came here"+ admin)
     if(!loading && (admin === undefined || !admin) ){
       navigate('/login')
     }

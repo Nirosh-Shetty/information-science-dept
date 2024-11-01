@@ -9,7 +9,7 @@ import Attendance from "../../model/attendanceModel.js";
 async function insertData() {
   const admin = await Admin.create({
     username: "admin1",
-    password: "hashedPassword123",
+    password: "$2a$10$7eITKDf.0GFYE7azwEy4yOHESRZQLpON2YFbotbJb.yxF2Nv2ofbi",
     email: "alice.johnson@example.com",
     phoneNumber: "+1234567890",
     role: "admin",

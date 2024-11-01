@@ -1,7 +1,7 @@
 import adminModel from "../../model/adminModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-// import insertData from "./insert.js";
+import insertData from "./insertSampleData.js";
 
 export const adminSignIn = async (req, res) => {
   const { identifier, password } = req.body;
