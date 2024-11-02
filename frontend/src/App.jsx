@@ -5,11 +5,11 @@ import Dashboard from "./components/admin/dashboard/Dashboard";
 import { Home } from "./components/home/Home";
 function App() {
   return (
-    <Router >
+    <Router>
       <Routes>
-        <Route path="/" element={<Home></Home>}/>
-        <Route path="/login" element={<SignInSide/>}/>
-        <Route path="/admin/dashboard" element={<Dashboard/>}/>
+        <Route path="/" element={<Home></Home>} />
+        <Route path="/admin/signin" element={<SignInSide />} />
+        <Route path="/admin/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );

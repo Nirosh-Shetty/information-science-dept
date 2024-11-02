@@ -44,12 +44,24 @@ const ProfileImage = styled(Avatar)({
   cursor: "pointer", // Indicate that the avatar is clickable
 });
 
+// const ProfileField = styled(Box)(({ theme }) => ({
+//   padding: theme.spacing(2),
+//   borderRadius: "8px",
+//   backgroundColor: "#f7f7f7",
+//   marginBottom: theme.spacing(2),
+//   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+// }));
+
 const ProfileField = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   borderRadius: "8px",
-  backgroundColor: "#f7f7f7",
+  backgroundColor:
+    theme.palette.mode === "dark" ? theme.palette.grey[800] : "#f7f7f7",
   marginBottom: theme.spacing(2),
-  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+  boxShadow:
+    theme.palette.mode === "dark"
+      ? "0 1px 3px rgba(255, 255, 255, 0.1)"
+      : "0 1px 3px rgba(0, 0, 0, 0.1)",
 }));
 
 export default function ProfilePage() {
@@ -63,7 +75,10 @@ export default function ProfilePage() {
     setIsEditOpen(true);
   };
 
-  const handleEditClose = () => setIsEditOpen(false);
+  const handleEditClose = () => {
+    setEditData(admin);
+    setIsEditOpen(false);
+  };
 
   const handleSave = () => {
     setAdmin(editData);
@@ -81,13 +96,18 @@ export default function ProfilePage() {
   return (
     <ProfileContainer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box display="flex" flexDirection="column" alignItems="center">
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          sx={{ margin: "auto", marginBottom: 2 }}
+        >
           <ProfileImage
             src={editData.avatar || "https://via.placeholder.com/120"}
             alt="Profile Picture"
             onClick={handleAvatarOpen} // Open avatar selection on click
           />
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             {editData.fullName}
           </Typography>
         </Box>

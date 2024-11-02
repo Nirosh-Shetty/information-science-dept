@@ -19,6 +19,7 @@ import ManageStaffContent from "./features/ManageStaffContent";
 import ManageStudentContent from "./features/ManageStudentContent";
 import ProfileContent from "./features/ProfileContent";
 import Placement from "./placement/Placement";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const NAVIGATION = [
   {
@@ -85,6 +86,11 @@ const NAVIGATION = [
       bottom: 0,
       width: "100%", // Ensures it aligns with other nav items
     },
+  },
+  {
+    segment: "admin/logout",
+    title: "Log Out",
+    icon: <LogoutIcon />,
   },
 ];
 
@@ -187,7 +193,7 @@ export default function Dashboard(props) {
 
   React.useEffect(() => {
     if (!loading && (admin === undefined || !admin)) {
-      navigate("/login");
+      navigate("/admin/signin");
     }
   }, [admin, navigate, loading]);
 
@@ -207,30 +213,35 @@ export default function Dashboard(props) {
         return <Placement />;
       case "/admin/profile":
         return <ProfileContent />;
+      case "/admin/logout":
+        localStorage.setItem("token", "");
+        return navigate("/admin/signin");
       default:
         return <DashboardContent />;
     }
   }, [router.pathname]);
 
   return (
-    !loading && admin &&
-    <AppProvider
-      navigation={NAVIGATION}
-      router={router}
-      theme={demoTheme}
-      branding={{ title: "Atria IT ISE department" }}
-      window={demoWindow}
-    >
-      <DashboardLayout
-        sx={{
-          overflow: "hidden",
-          maxWidth: "100%",
-          whiteSpace: "nowrap",
-          position: "relative",
-        }}
+    !loading &&
+    admin && (
+      <AppProvider
+        navigation={NAVIGATION}
+        router={router}
+        theme={demoTheme}
+        branding={{ title: "Atria IT ISE department" }}
+        window={demoWindow}
       >
-        <PageContainer>{renderPageContent()}</PageContainer>
-      </DashboardLayout>
-    </AppProvider>
+        <DashboardLayout
+          sx={{
+            overflow: "hidden",
+            maxWidth: "100%",
+            whiteSpace: "nowrap",
+            position: "relative",
+          }}
+        >
+          <PageContainer>{renderPageContent()}</PageContainer>
+        </DashboardLayout>
+      </AppProvider>
+    )
   );
 }
