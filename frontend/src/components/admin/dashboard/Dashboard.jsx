@@ -17,6 +17,7 @@ import { BACKEND_URL } from "../../../../globals";
 import { useNavigate } from "react-router-dom";
 import ManageStaffContent from "./features/ManageStaffContent";
 import ManageStudentContent from "./features/ManageStudentContent";
+import Placement from "./placement/Placement";
 
 const NAVIGATION = [
   {
@@ -129,18 +130,18 @@ function Academic() {
   return <div>Academic Page</div>;
 }
 
-function Placement() {
-  return <div>Placement Page</div>;
-}
+// function Placement() {
+//   return <div>Placement Page</div>;
+// }
 
 function ProfileContent() {
   return <div>Profile Page</div>;
 }
 
 export default function Dashboard(props) {
-  const [admin, setAdmin] = useRecoilState(adminAtom)
+  const [admin, setAdmin] = useRecoilState(adminAtom);
   const [loading, setLoading] = React.useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { window } = props;
   const router = useDemoRouter("/admin/dashboard");
   const demoWindow = window ? window() : undefined;
@@ -162,7 +163,7 @@ export default function Dashboard(props) {
     }
   }, [router]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
@@ -174,24 +175,24 @@ export default function Dashboard(props) {
           },
         });
         const data = await res.json();
-        console.log("dashboard"+data)
+        console.log("dashboard" + data);
         setAdmin(data.adminUser);
       } catch (err) {
-        setAdmin(null)
+        setAdmin(null);
         console.log(err);
-      }finally {
+      } finally {
         setLoading(false); // Set loading to false after fetch completes
       }
     };
 
     fetchData();
-  },[])
+  }, []);
 
-  React.useEffect(()=>{
-    if(!loading && (admin === undefined || !admin) ){
-      navigate('/login')
+  React.useEffect(() => {
+    if (!loading && (admin === undefined || !admin)) {
+      navigate("/login");
     }
-  },[admin, navigate, loading])
+  }, [admin, navigate, loading]);
 
   const renderPageContent = () => {
     switch (router.pathname) {
@@ -215,24 +216,25 @@ export default function Dashboard(props) {
   };
 
   return (
-    !loading &&
-    <AppProvider
-      navigation={NAVIGATION}
-      router={router}
-      theme={demoTheme}
-      branding={{ title: "Atria IT ISE department" }}
-      window={demoWindow}
-    >
-      <DashboardLayout
-        sx={{
-          overflow: "hidden",
-          maxWidth: "100%",
-          whiteSpace: "nowrap",
-          position: "relative", // Allows Profile to be positioned absolutely
-        }}
+    !loading && (
+      <AppProvider
+        navigation={NAVIGATION}
+        router={router}
+        theme={demoTheme}
+        branding={{ title: "Atria IT ISE department" }}
+        window={demoWindow}
       >
-        <PageContainer>{renderPageContent()}</PageContainer>
-      </DashboardLayout>
-    </AppProvider>
+        <DashboardLayout
+          sx={{
+            overflow: "hidden",
+            maxWidth: "100%",
+            whiteSpace: "nowrap",
+            position: "relative", // Allows Profile to be positioned absolutely
+          }}
+        >
+          <PageContainer>{renderPageContent()}</PageContainer>
+        </DashboardLayout>
+      </AppProvider>
+    )
   );
 }
