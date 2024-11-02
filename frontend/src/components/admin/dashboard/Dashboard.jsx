@@ -17,6 +17,7 @@ import { BACKEND_URL } from "../../../../globals";
 import { useNavigate } from "react-router-dom";
 import ManageStaffContent from "./features/ManageStaffContent";
 import ManageStudentContent from "./features/ManageStudentContent";
+import ProfileContent from "./features/ProfileContent";
 
 const NAVIGATION = [
   {
@@ -133,10 +134,6 @@ function Placement() {
   return <div>Placement Page</div>;
 }
 
-function ProfileContent() {
-  return <div>Profile Page</div>;
-}
-
 export default function Dashboard(props) {
   const [admin, setAdmin] = useRecoilState(adminAtom)
   const [loading, setLoading] = React.useState(true);
@@ -215,7 +212,7 @@ export default function Dashboard(props) {
   };
 
   return (
-    !loading &&
+    !loading && admin &&
     <AppProvider
       navigation={NAVIGATION}
       router={router}
