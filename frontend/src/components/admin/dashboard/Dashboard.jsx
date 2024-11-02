@@ -130,14 +130,14 @@ function Academic() {
   return <div>Academic Page</div>;
 }
 
-function Placement() {
-  return <div>Placement Page</div>;
-}
+// function Placement() {
+//   return <div>Placement Page</div>;
+// }
 
 export default function Dashboard(props) {
-  const [admin, setAdmin] = useRecoilState(adminAtom)
+  const [admin, setAdmin] = useRecoilState(adminAtom);
   const [loading, setLoading] = React.useState(true);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { window } = props;
   const router = useDemoRouter("/admin/dashboard");
   const demoWindow = window ? window() : undefined;
@@ -159,7 +159,7 @@ export default function Dashboard(props) {
     }
   }, [router]);
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
@@ -171,26 +171,26 @@ export default function Dashboard(props) {
           },
         });
         const data = await res.json();
-        console.log("dashboard"+data)
+        console.log("dashboard" + data);
         setAdmin(data.adminUser);
       } catch (err) {
-        setAdmin(null)
+        setAdmin(null);
         console.log(err);
-      }finally {
+      } finally {
         setLoading(false); // Set loading to false after fetch completes
       }
     };
 
     fetchData();
-  },[])
+  }, []);
 
-  React.useEffect(()=>{
-    if(!loading && (admin === undefined || !admin) ){
-      navigate('/login')
+  React.useEffect(() => {
+    if (!loading && (admin === undefined || !admin)) {
+      navigate("/login");
     }
-  },[admin, navigate, loading])
+  }, [admin, navigate, loading]);
 
-  const renderPageContent = () => {
+  const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
       case "/admin/dashboard":
         return <DashboardContent />;
@@ -203,13 +203,13 @@ export default function Dashboard(props) {
       case "/admin/studentperformance/academic":
         return <Academic />;
       case "/admin/placements":
-        return <Placement />;
+        return <div>Placement Page</div>; // Placeholder for Placement component
       case "/admin/profile":
         return <ProfileContent />;
       default:
         return <DashboardContent />;
     }
-  };
+  }, [router.pathname]);
 
   return (
     !loading && admin &&
@@ -225,7 +225,7 @@ export default function Dashboard(props) {
           overflow: "hidden",
           maxWidth: "100%",
           whiteSpace: "nowrap",
-          position: "relative", // Allows Profile to be positioned absolutely
+          position: "relative",
         }}
       >
         <PageContainer>{renderPageContent()}</PageContainer>
