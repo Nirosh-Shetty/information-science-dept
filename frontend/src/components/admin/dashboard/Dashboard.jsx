@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import ManageStaffContent from "./features/ManageStaffContent";
 import ManageStudentContent from "./features/ManageStudentContent";
 import ProfileContent from "./features/ProfileContent";
+import Placement from "./placement/Placement";
 
 const NAVIGATION = [
   {
@@ -203,7 +204,7 @@ export default function Dashboard(props) {
       case "/admin/studentperformance/academic":
         return <Academic />;
       case "/admin/placements":
-        return <div>Placement Page</div>; // Placeholder for Placement component
+        return <Placement />;
       case "/admin/profile":
         return <ProfileContent />;
       default:

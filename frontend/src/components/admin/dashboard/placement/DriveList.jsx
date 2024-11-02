@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTheme } from "@mui/material/styles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
@@ -6,173 +7,149 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
+import { IconButton } from "@mui/material";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'; // Import any icon you like
 
-export default function DriveList() {
+const upcomingDrives = [
+  {
+    id: 1,
+    title: "Accenture - Associate Software Developer",
+    ctc: "Expected CTC: 4.5LPA",
+    date: "Drive Date: 5th Nov 24",
+    avatar: "/companies/companies.png",
+  },
+  {
+    id: 2,
+    title: "Summer BBQ",
+    ctc: "Join us for a fun summer BBQ!",
+    date: "Drive Date: 10th Nov 24",
+    avatar: "/static/images/avatar/2.jpg",
+  },
+  {
+    id: 3,
+    title: "Oui Oui",
+    ctc: "Sandra Adams",
+    date: "Drive Date: 15th Nov 24",
+    avatar: "/static/images/avatar/3.jpg",
+  },
+];
+
+const completedDrives = [
+  {
+    id: 1,
+    title: "Accenture - Associate Software Developer",
+    ctc: "Expected CTC: 4.5LPA",
+    date: "Drive Date: 5th Oct 24",
+    avatar: "/companies/companies.png",
+  },
+  {
+    id: 2,
+    title: "Summer BBQ",
+    ctc: "Join us for a fun summer BBQ!",
+    date: "Drive Date: 20th Oct 24",
+    avatar: "/static/images/avatar/2.jpg",
+  },
+  {
+    id: 3,
+    title: "Oui Oui",
+    ctc: "Sandra Adams",
+    date: "Drive Date: 25th Oct 24",
+    avatar: "/static/images/avatar/3.jpg",
+  },
+];
+
+const DriveList = () => {
+  const theme = useTheme();
+
   return (
-    <>
-      <h1 style={{ fontSize: 30, color: "#84CEE4", fontWeight: "bold" }}>
-        Upcomming
-      </h1>
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 360,
-          // height: 200,
-          // minHeight: 200,
-          bgcolor: "background.paper",
-        }}
-      >
-        <ListItem
-          alignItems="flex-start"
-          // sx={{ scale: 1.1 }}
-        >
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/companies/companies.png" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Accenture - Assosiate Software Developer"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "text.primary", display: "inline" }}
-                ></Typography>
-                <div>
-                  <ul>
-                    <li>Expected CTC : 4.5LPA</li>
-                    <li>Drive Date : 5th Nov 24</li>
-                    <li>2025 Batch</li>
-                  </ul>
-                </div>
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Summer BBQ"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "text.primary", display: "inline" }}
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                <div>hhhh</div>
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "text.primary", display: "inline" }}
-                >
-                  Sandra Adams
-                </Typography>
-                {" — Do you have Paris recommendations? Have you ever…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      </List>
-      <h1 style={{ fontSize: 30, color: "#E6B08E", fontWeight: "bold" }}>
-        Completed
-      </h1>
-      <List
-        sx={{
-          width: "100%",
-          maxWidth: 360,
-          // height: 200,
-          // minHeight: 200,
-          bgcolor: "background.paper",
-        }}
-      >
-        <ListItem
-          alignItems="flex-start"
-          // sx={{ scale: 1.1 }}
-        >
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/companies/companies.png" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Accenture - Assosiate Software Developer"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "text.primary", display: "inline" }}
-                ></Typography>
-                <div>
-                  <ul>
-                    <li>Expected CTC : 4.5LPA</li>
-                    <li>Drive Date : 5th Nov 24</li>
-                  </ul>
-                </div>
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Summer BBQ"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "text.primary", display: "inline" }}
-                >
-                  to Scott, Alex, Jennifer
-                </Typography>
-                <div>hhhh</div>
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-        <Divider variant="inset" component="li" />
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Oui Oui"
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "text.primary", display: "inline" }}
-                >
-                  Sandra Adams
-                </Typography>
-                {" — Do you have Paris recommendations? Have you ever…"}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      </List>
-    </>
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem", padding: "20px" }}>
+      {/* Upcoming Drives */}
+      <section>
+        <Typography variant="h5" style={{ color: theme.palette.primary.main, fontWeight: 600, marginBottom: "1rem" }}>
+          Upcoming Drives
+        </Typography>
+        <List sx={{ 
+          bgcolor: "background.paper", 
+          borderRadius: "8px", 
+          boxShadow: theme.palette.mode === 'dark' ? "0 4px 8px rgba(255, 255, 255, 0.3)" : theme.shadows[3], 
+          padding: "10px" 
+        }}>
+          {upcomingDrives.map((drive) => (
+            <React.Fragment key={drive.id}>
+              <ListItem
+                alignItems="flex-start"
+                sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
+              >
+                <ListItemAvatar>
+                  <Avatar alt={drive.title} src={drive.avatar} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={<Typography variant="h6" style={{ fontWeight: 600 }}>{drive.title}</Typography>}
+                  secondary={
+                    <>
+                      <Typography component="span" variant="body2" color="text.primary">
+                        {drive.ctc}
+                      </Typography>
+                      <Typography variant="caption" display="block" style={{ marginTop: "0.5rem" }}>
+                        {drive.date}
+                      </Typography>
+                    </>
+                  }
+                />
+                <IconButton edge="end" aria-label="details">
+                  <ArrowForwardIcon />
+                </IconButton>
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      </section>
+
+      {/* Completed Drives */}
+      <section>
+        <Typography variant="h5" style={{ color: theme.palette.warning.main, fontWeight: 600, marginBottom: "1rem" }}>
+          Completed Drives
+        </Typography>
+        <List sx={{ 
+          bgcolor: "background.paper", 
+          borderRadius: "8px", 
+          boxShadow: theme.palette.mode === 'dark' ? "0 4px 8px rgba(255, 255, 255, 0.3)" : theme.shadows[3], 
+          padding: "10px" 
+        }}>
+          {completedDrives.map((drive) => (
+            <React.Fragment key={drive.id}>
+              <ListItem
+                alignItems="flex-start"
+                sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
+              >
+                <ListItemAvatar>
+                  <Avatar alt={drive.title} src={drive.avatar} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={<Typography variant="h6" style={{ fontWeight: 600 }}>{drive.title}</Typography>}
+                  secondary={
+                    <>
+                      <Typography component="span" variant="body2" color="text.primary">
+                        {drive.ctc}
+                      </Typography>
+                      <Typography variant="caption" display="block" style={{ marginTop: "0.5rem" }}>
+                        {drive.date}
+                      </Typography>
+                    </>
+                  }
+                />
+                <IconButton edge="end" aria-label="details">
+                  <ArrowForwardIcon />
+                </IconButton>
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      </section>
+    </div>
   );
-}
+};
+
+export default DriveList;
