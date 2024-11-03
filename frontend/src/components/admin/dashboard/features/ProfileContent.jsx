@@ -41,7 +41,6 @@ const ProfileImage = styled(Avatar)({
   width: 120,
   height: 120,
   marginBottom: 20,
-  cursor: "pointer", // Indicate that the avatar is clickable
 });
 
 // const ProfileField = styled(Box)(({ theme }) => ({
@@ -105,7 +104,6 @@ export default function ProfilePage() {
           <ProfileImage
             src={editData.avatar || "https://via.placeholder.com/120"}
             alt="Profile Picture"
-            onClick={handleAvatarOpen} // Open avatar selection on click
           />
           <Typography variant="h4" gutterBottom>
             {editData.fullName}
