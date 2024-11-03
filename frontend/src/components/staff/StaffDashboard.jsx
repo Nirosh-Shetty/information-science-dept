@@ -14,6 +14,7 @@ import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../globals";
 import { useNavigate } from "react-router-dom";
 import { staffAtom } from "../../../recoil/atoms/staffAtom";
+import DashboardContent from "./features/DashboardContent";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -57,13 +58,9 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-// Inline components for each staff page
-function DashboardContent() {
-  return <div>Dashboard Page</div>;
-}
 
 function MyClassesContent() {
-  return <div>My Classes Page - Display staff's teaching schedule here</div>;
+  return <div>My Classes Page - Display staff &apos;s teaching schedule here</div>;
 }
 
 function AssignmentsContent() {
@@ -140,7 +137,7 @@ export default function StaffDashboard(props) {
         navigation={STAFF_NAVIGATION}
         router={router}
         theme={demoTheme}
-        branding={{ title: "Atria IT ISE Department - Staff Dashboard" }}
+        branding={{ title: "Atria IT ISE Department - Staff" }}
         window={demoWindow}
       >
         <DashboardLayout
