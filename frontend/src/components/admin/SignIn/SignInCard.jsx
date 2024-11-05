@@ -17,6 +17,7 @@ import { adminAtom } from "../../../../recoil/atoms/adminAtom";
 import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../../globals";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -25,16 +26,20 @@ const Card = styled(MuiCard)(({ theme }) => ({
   width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  boxShadow: "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  boxShadow:
+    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
   [theme.breakpoints.up("sm")]: {
     width: "450px",
   },
   ...theme.applyStyles("dark", {
-    boxShadow: "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
+    boxShadow:
+      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
 export default function SignInCard() {
+  const { role } = useParams();
+
   const [admin, setAdmin] = useRecoilState(adminAtom);
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [usernameError, setUsernameError] = React.useState(false);
@@ -70,13 +75,7 @@ export default function SignInCard() {
         const response = await res.json();
         setLoading(false);
 
-        if (response.message === "User not found") {
-          setUsernameErrorMessage("User doesn't exist");
-          return;
-        } else if (response.message === "Incorrect Password") {
-          setPasswordErrorMessage("Password is incorrect");
-          return;
-        }
+        setUsernameError(response.message);
 
         localStorage.setItem("token", response.token);
         setAdmin(response.adminUser);
@@ -127,7 +126,11 @@ export default function SignInCard() {
           Atria IT ISE Department
         </Typography>
       </Box>
-      <Typography component="h1" variant="h4" sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}>
+      <Typography
+        component="h1"
+        variant="h4"
+        sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
+      >
         Admin Sign In
       </Typography>
       <Box
@@ -155,7 +158,12 @@ export default function SignInCard() {
         <FormControl>
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <FormLabel htmlFor="password">Password</FormLabel>
-            <Link component="button" type="button" onClick={handleClickOpen} variant="body2">
+            <Link
+              component="button"
+              type="button"
+              onClick={handleClickOpen}
+              variant="body2"
+            >
               Forgot your password?
             </Link>
           </Box>
@@ -173,7 +181,10 @@ export default function SignInCard() {
             color="primary"
           />
         </FormControl>
-        <FormControlLabel control={<Checkbox color="primary" />} label="Remember me" />
+        <FormControlLabel
+          control={<Checkbox color="primary" />}
+          label="Remember me"
+        />
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button
           type="submit"

@@ -215,7 +215,7 @@ export default function Dashboard(props) {
         return <ProfileContent />;
       case "/admin/logout":
         localStorage.setItem("token", "");
-        return navigate("/admin/signin");
+        return navigate("/signinoptions");
       default:
         return <DashboardContent />;
     }

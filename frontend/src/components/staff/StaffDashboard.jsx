@@ -15,12 +15,17 @@ import { BACKEND_URL } from "../../../globals";
 import { useNavigate } from "react-router-dom";
 import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
+import Attendence from "./attendance/Attendance";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
   { segment: "staff/dashboard", title: "Dashboard", icon: <DashboardIcon /> },
   { segment: "staff/classes", title: "My Classes", icon: <PeopleAltIcon /> },
-  { segment: "staff/assignments", title: "Assignments", icon: <DescriptionIcon /> },
+  {
+    segment: "staff/assignments",
+    title: "Assignments",
+    icon: <DescriptionIcon />,
+  },
   { kind: "divider" },
   { kind: "header", title: "Resources & Analytics" },
   { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
@@ -42,11 +47,14 @@ const demoTheme = extendTheme({
 
 function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(initialPath);
-  const router = React.useMemo(() => ({
-    pathname,
-    searchParams: new URLSearchParams(),
-    navigate: (path) => setPathname(String(path)),
-  }), [pathname]);
+  const router = React.useMemo(
+    () => ({
+      pathname,
+      searchParams: new URLSearchParams(),
+      navigate: (path) => setPathname(String(path)),
+    }),
+    [pathname]
+  );
 
   return router;
 }
@@ -58,9 +66,10 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-
 function MyClassesContent() {
-  return <div>My Classes Page - Display staff &apos;s teaching schedule here</div>;
+  return (
+    <div>My Classes Page - Display staff &apos;s teaching schedule here</div>
+  );
 }
 
 function AssignmentsContent() {
@@ -71,9 +80,9 @@ function ResourcesContent() {
   return <div>Resources Page - Department resources and materials</div>;
 }
 
-function AttendanceContent() {
-  return <div>Attendance Page - View attendance records and statistics</div>;
-}
+// function AttendanceContent() {
+//   return <div>Attendance Page - View attendance records and statistics</div>;
+// }
 
 function StaffProfileContent() {
   return <div>Profile Page - Manage profile details</div>;
@@ -107,7 +116,6 @@ export default function StaffDashboard(props) {
     }
   }, [router]);
 
-
   const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
       case "/staff/dashboard":
@@ -119,7 +127,7 @@ export default function StaffDashboard(props) {
       case "/staff/resources":
         return <ResourcesContent />;
       case "/staff/attendance":
-        return <AttendanceContent />; // Updated to render AttendanceContent
+        return <Attendence />;
       case "/staff/profile":
         return <StaffProfileContent />;
       case "/staff/leaves":
@@ -133,23 +141,23 @@ export default function StaffDashboard(props) {
   }, [router.pathname]);
 
   return (
-      <AppProvider
-        navigation={STAFF_NAVIGATION}
-        router={router}
-        theme={demoTheme}
-        branding={{ title: "Atria IT ISE Department - Staff" }}
-        window={demoWindow}
+    <AppProvider
+      navigation={STAFF_NAVIGATION}
+      router={router}
+      theme={demoTheme}
+      branding={{ title: "Atria IT ISE Department - Staff" }}
+      window={demoWindow}
+    >
+      <DashboardLayout
+        sx={{
+          overflow: "hidden",
+          maxWidth: "100%",
+          whiteSpace: "nowrap",
+          position: "relative",
+        }}
       >
-        <DashboardLayout
-          sx={{
-            overflow: "hidden",
-            maxWidth: "100%",
-            whiteSpace: "nowrap",
-            position: "relative",
-          }}
-        >
-          <PageContainer>{renderPageContent()}</PageContainer>
-        </DashboardLayout>
-      </AppProvider>
-    );
+        <PageContainer>{renderPageContent()}</PageContainer>
+      </DashboardLayout>
+    </AppProvider>
+  );
 }
