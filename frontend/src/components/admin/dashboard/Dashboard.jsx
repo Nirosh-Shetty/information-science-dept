@@ -20,6 +20,7 @@ import ManageStudentContent from "./features/ManageStudentContent";
 import ProfileContent from "./features/ProfileContent";
 import Placement from "./placement/Placement";
 import LogoutIcon from "@mui/icons-material/Logout";
+import Academic from "./features/Academic";
 
 const NAVIGATION = [
   {
@@ -53,11 +54,6 @@ const NAVIGATION = [
     title: "Student Performance",
     icon: <BarChartIcon />,
     children: [
-      {
-        segment: "attendance",
-        title: "Attendance",
-        icon: <DescriptionIcon />,
-      },
       {
         segment: "academic",
         title: "Academic",
@@ -129,18 +125,6 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-function AttendanceContent() {
-  return <div>Attendance Page</div>;
-}
-
-function Academic() {
-  return <div>Academic Page</div>;
-}
-
-// function Placement() {
-//   return <div>Placement Page</div>;
-// }
-
 export default function Dashboard(props) {
   const [admin, setAdmin] = useRecoilState(adminAtom);
   const [loading, setLoading] = React.useState(true);
@@ -205,8 +189,6 @@ export default function Dashboard(props) {
         return <ManageStaffContent />;
       case "/admin/managestudent":
         return <ManageStudentContent />;
-      case "/admin/studentperformance/attendance":
-        return <AttendanceContent />;
       case "/admin/studentperformance/academic":
         return <Academic />;
       case "/admin/placements":

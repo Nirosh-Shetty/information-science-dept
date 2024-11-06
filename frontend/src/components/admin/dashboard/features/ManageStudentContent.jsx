@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   MenuItem,
   Select,
@@ -25,6 +26,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/system";
+import { BACKEND_URL } from "../../../../../globals";
 
 const StyledTableContainer = styled(TableContainer)({
   boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
@@ -41,45 +43,23 @@ const StyledSelect = styled(Select)({
 });
 
 export default function StudentSection() {
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(""); // Changed to store just section like "2 ISE1"
   const [data, setData] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [editDetails, setEditDetails] = useState({
-    USN: "",
-    name: "",
+    usn: "",
+    fullName: "",
     email: "",
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [newStudent, setNewStudent] = useState({
-    USN: "",
-    name: "",
+    usn: "",
+    fullName: "",
     email: "",
   });
   const [deleteUSN, setDeleteUSN] = useState("");
-
-  const dummyData = {
-    "2nd Year-2 ISE1": [
-      { USN: "1AT21IS001", name: "John Doe", email: "john@gmail.com" },
-      { USN: "1AT21IS002", name: "Jane Smith", email: "jane@gmail.com" },
-    ],
-    "2nd Year-2 ISE2": [
-      { USN: "1AT21IS003", name: "Sam Wilson", email: "sam@gmail.com" },
-    ],
-    "3rd Year-3 ISE1": [
-      { USN: "1AT21IS004", name: "Lisa Ray", email: "lisa@gmail.com" },
-    ],
-    "3rd Year-3 ISE2": [
-      { USN: "1AT21IS005", name: "Michael Brown", email: "michael@gmail.com" },
-    ],
-    "4th Year-4 ISE1": [
-      { USN: "1AT21IS006", name: "Sarah Connor", email: "sarah@gmail.com" },
-    ],
-    "4th Year-4 ISE2": [
-      { USN: "1AT21IS007", name: "Tom Cruise", email: "tom@gmail.com" },
-    ],
-  };
 
   const yearGroups = {
     "2nd Year": ["2 ISE1", "2 ISE2"],
@@ -92,14 +72,36 @@ export default function StudentSection() {
     "4th Year": { backgroundColor: "#D2E0FB", color: "#333" },
   };
 
+  // Fetch students based on selected class
+  useEffect(() => {
+    if (!selected) return;
+
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/student/get`, {
+          params: { className: selected }, // Use 'params' to pass query parameters in GET request
+        });
+        if (response.data.message === "No students found for this class.") {
+          setData([]);
+        } else {
+          setData(response.data);
+        }
+      } catch (error) {
+        setData([]);
+        console.error("Error fetching students :", error);
+      }
+    };
+
+    fetchStudents();
+  }, [selected]);
+
   const handleChange = (event) => {
     const value = event.target.value;
-    setSelected(value);
-    setData(dummyData[value] || []);
+    setSelected(value); // Store only the section value like "2 ISE1"
   };
 
   const handleDialogOpen = () => {
-    setNewStudent({ USN: "", name: "", email: "" });
+    setNewStudent({ usn: "", fullName: "", email: "" });
     setDialogOpen(true);
   };
 
@@ -107,9 +109,19 @@ export default function StudentSection() {
     setDialogOpen(false);
   };
 
-  const handleDialogSave = () => {
-    setData([...data, newStudent]);
-    setDialogOpen(false);
+  const handleDialogSave = async () => {
+    try {
+      const response = await axios.post(`${BACKEND_URL}/student/add`, {
+        fullName: newStudent.fullName,
+        className: selected,
+        usn: newStudent.usn,
+        email: newStudent.email,
+      });
+      setData([...data, response.data.student]);
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Error adding student:", error);
+    }
   };
 
   const handleEditOpen = (index) => {
@@ -122,12 +134,20 @@ export default function StudentSection() {
     setEditDialogOpen(false);
   };
 
-  const handleEditSave = () => {
-    const updatedData = [...data];
-    updatedData[editIndex] = editDetails;
-    setData(updatedData);
-    setEditDialogOpen(false);
-    setEditIndex(null);
+  const handleEditSave = async () => {
+    try {
+      const response = await axios.put(
+        `${BACKEND_URL}/student/update`,
+        editDetails
+      );
+      const updatedData = [...data];
+      updatedData[editIndex] = response.data.student;
+      setData(updatedData);
+      setEditDialogOpen(false);
+      setEditIndex(null);
+    } catch (error) {
+      console.error("Error updating student:", error);
+    }
   };
 
   const handleDeleteOpen = (USN) => {
@@ -139,28 +159,58 @@ export default function StudentSection() {
     setDeleteDialogOpen(false);
   };
 
-  const handleDeleteConfirm = () => {
-    setData(data.filter((item) => item.USN !== deleteUSN));
-    setDeleteDialogOpen(false);
+  const handleDeleteConfirm = async () => {
+    try {
+      await axios.delete(`${BACKEND_URL}/student/delete`, {
+        data: { usn: deleteUSN },
+      });
+      setData(data.filter((item) => item.usn !== deleteUSN));
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      console.error("Error deleting student:", error);
+    }
   };
 
+  const renderValue = (selected) => {
+    if (!selected) return "Select Year and Section"; // Placeholder when nothing is selected
+  
+    const [year, section] = selected.split(" - ");
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {/* Chip for Year */}
+        <Chip
+          size="small"
+          label={year}
+          sx={{
+            backgroundColor: customColors[year]?.backgroundColor,
+            color: customColors[year]?.color,
+            marginRight: 1,
+          }}
+        />
+        {/* Chip for Section */}
+        <Typography variant="body1">{section}</Typography>
+      </div>
+    );
+  };
+  
   const renderOptions = () => {
     const options = [];
     Object.entries(yearGroups).forEach(([year, sections], index) => {
       if (index !== 0) options.push(<Divider key={`divider-${index}`} />);
       options.push(
-        <ListSubheader
-          key={`header-${year}`}
-          disableSticky
-        >{`${year} (${sections.length})`}</ListSubheader>
+        <ListSubheader key={`header-${year}`} disableSticky>
+          {`${year} (${sections.length})`}
+        </ListSubheader>
       );
       sections.forEach((section) => {
-        const value = `${year}-${section}`;
+        // Create a new format like "2nd Year - 2 ISE2"
+        const value = `${year} - ${section}`;
         options.push(
           <MenuItem key={value} value={value}>
             {selected === value && (
               <CheckIcon fontSize="small" style={{ marginRight: 8 }} />
             )}
+            {/* Chip for Year */}
             <Chip
               size="small"
               label={year}
@@ -177,6 +227,7 @@ export default function StudentSection() {
     });
     return options;
   };
+  
 
   return (
     <div>
@@ -185,28 +236,11 @@ export default function StudentSection() {
           displayEmpty
           value={selected}
           onChange={handleChange}
-          renderValue={(selected) => {
-            if (!selected) return "Select Year and Section";
-            const [year, section] = selected.split("-");
-            return (
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Chip
-                  size="small"
-                  label={year}
-                  sx={{
-                    backgroundColor: customColors[year]?.backgroundColor,
-                    color: customColors[year]?.color,
-                    marginRight: 1,
-                  }}
-                />
-                <Typography variant="body1">{section}</Typography>
-              </div>
-            );
-          }}
+          renderValue={renderValue}
         >
           {renderOptions()}
         </StyledSelect>
-        {}
+
         {selected ? (
           <div>
             <Button
@@ -228,9 +262,9 @@ export default function StudentSection() {
                 </TableHead>
                 <TableBody>
                   {data.map((row, index) => (
-                    <TableRow key={row.USN}>
-                      <TableCell>{row.USN}</TableCell>
-                      <TableCell>{row.name}</TableCell>
+                    <TableRow key={row.usn}>
+                      <TableCell>{row.usn}</TableCell>
+                      <TableCell>{row.fullName}</TableCell>
                       <TableCell>{row.email}</TableCell>
                       <TableCell>
                         <IconButton
@@ -241,7 +275,7 @@ export default function StudentSection() {
                         </IconButton>
                         <IconButton
                           color="error"
-                          onClick={() => handleDeleteOpen(row.USN)}
+                          onClick={() => handleDeleteOpen(row.usn)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -275,18 +309,18 @@ export default function StudentSection() {
               label="USN"
               fullWidth
               margin="normal"
-              value={newStudent.USN}
+              value={newStudent.usn}
               onChange={(e) =>
-                setNewStudent({ ...newStudent, USN: e.target.value })
+                setNewStudent({ ...newStudent, usn: e.target.value })
               }
             />
             <TextField
               label="Name"
               fullWidth
               margin="normal"
-              value={newStudent.name}
+              value={newStudent.fullName}
               onChange={(e) =>
-                setNewStudent({ ...newStudent, name: e.target.value })
+                setNewStudent({ ...newStudent, fullName: e.target.value })
               }
             />
             <TextField
@@ -300,16 +334,8 @@ export default function StudentSection() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClose} color="primary">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDialogSave}
-              variant="contained"
-              color="primary"
-            >
-              Add
-            </Button>
+            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button onClick={handleDialogSave}>Save</Button>
           </DialogActions>
         </Dialog>
 
@@ -321,18 +347,18 @@ export default function StudentSection() {
               label="USN"
               fullWidth
               margin="normal"
-              value={editDetails.USN}
+              value={editDetails.usn}
               onChange={(e) =>
-                setEditDetails({ ...editDetails, USN: e.target.value })
+                setEditDetails({ ...editDetails, usn: e.target.value })
               }
             />
             <TextField
               label="Name"
               fullWidth
               margin="normal"
-              value={editDetails.name}
+              value={editDetails.fullName}
               onChange={(e) =>
-                setEditDetails({ ...editDetails, name: e.target.value })
+                setEditDetails({ ...editDetails, fullName: e.target.value })
               }
             />
             <TextField
@@ -346,31 +372,21 @@ export default function StudentSection() {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleEditClose} color="primary">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleEditSave}
-              variant="contained"
-              color="primary"
-            >
-              Save
-            </Button>
+            <Button onClick={handleEditClose}>Cancel</Button>
+            <Button onClick={handleEditSave}>Save</Button>
           </DialogActions>
         </Dialog>
 
-        {/* Delete Confirmation Dialog */}
+        {/* Delete Student Dialog */}
         <Dialog open={deleteDialogOpen} onClose={handleDeleteClose}>
-          <DialogTitle>Confirm Deletion</DialogTitle>
+          <DialogTitle>Confirm Delete</DialogTitle>
           <DialogContent>
             <Typography>
               Are you sure you want to delete this student?
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDeleteClose} color="primary">
-              Cancel
-            </Button>
+            <Button onClick={handleDeleteClose}>Cancel</Button>
             <Button onClick={handleDeleteConfirm} color="error">
               Delete
             </Button>

@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 const studentSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   usn: { type: String, required: true, unique: true },
-  dob: { type: Date, required: true },
-  gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
+  dob: { type: Date },
   phoneNumber: { type: String },
-  class: { type: mongoose.Schema.Types.ObjectId, ref: "Class", required: true },
+  email: { type: String },
+  className: { type: String },
   role: { type: String, default: "student" },
   courses: [
     {
