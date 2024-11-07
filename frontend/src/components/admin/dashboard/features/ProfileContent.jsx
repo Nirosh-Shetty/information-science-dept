@@ -20,6 +20,8 @@ import { styled } from "@mui/system";
 import { useRecoilState } from "recoil";
 import { adminAtom } from "../../../../../recoil/atoms/adminAtom";
 import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
+import { BACKEND_URL } from "../../../../../globals";
 
 // Sample animated avatars (Use your own avatar image URLs)
 const avatarOptions = [
@@ -43,13 +45,6 @@ const ProfileImage = styled(Avatar)({
   marginBottom: 20,
 });
 
-// const ProfileField = styled(Box)(({ theme }) => ({
-//   padding: theme.spacing(2),
-//   borderRadius: "8px",
-//   backgroundColor: "#f7f7f7",
-//   marginBottom: theme.spacing(2),
-//   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-// }));
 
 const ProfileField = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -79,8 +74,15 @@ export default function ProfilePage() {
     setIsEditOpen(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setAdmin(editData);
+    const token = localStorage.getItem("token");
+    await axios.put(`${BACKEND_URL}/admin/profile`, editData,{
+      headers : {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     setIsEditOpen(false);
   };
 
@@ -88,8 +90,8 @@ export default function ProfilePage() {
   const handleAvatarClose = () => setIsAvatarOpen(false);
 
   const handleAvatarSelect = (src) => {
-    setEditData({ ...editData, avatar: src }); // Update avatar in editData
-    handleAvatarClose(); // Close the avatar selection dialog
+    setEditData({ ...editData, avatar: src });
+    handleAvatarClose();
   };
 
   return (

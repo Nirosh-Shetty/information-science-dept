@@ -1,7 +1,6 @@
 import adminModel from "../../model/adminModel.js";
 
 export const adminDashboard = async (req, res) => {
-  //   console.log(req.user);
   const { id, role } = req.user;
   if (!(role == "admin")) {
     return res.status(401).json({

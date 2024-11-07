@@ -7,13 +7,25 @@ import Attendance from "../../model/attendanceModel.js";
 
 // Insert Data
 async function insertData() {
-  const admin = await Admin.create({
-    username: "admin1",
-    password: "$2a$10$7eITKDf.0GFYE7azwEy4yOHESRZQLpON2YFbotbJb.yxF2Nv2ofbi",
-    email: "alice.johnson@example.com",
-    phoneNumber: "+1234567890",
-    role: "admin",
-  });
+  const admin = await Admin.create(
+    {
+      username: "admin1",
+      password: "$2a$10$7eITKDf.0GFYE7azwEy4yOHESRZQLpON2YFbotbJb.yxF2Nv2ofbi",
+      email: "sanju@example.com",
+      phoneNumber: "+1234567890",
+      role: "admin",
+      createdAt: {
+        "$date": "2024-11-01T09:11:53.644Z"
+      },
+      updatedAt: {
+        "$date": "2024-11-01T09:11:53.646Z"
+      },
+      fullName: "Sanju M",
+      department: "ISE",
+      bio: "",
+      avatar: ""
+    }
+  );
 
   const classData = await Class.create({
     name: "3rd Year ISE",
