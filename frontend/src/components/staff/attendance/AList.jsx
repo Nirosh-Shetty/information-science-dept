@@ -17,7 +17,7 @@ const AList = () => {
           .fill(0)
           .map((a, b) => {
             return (
-              <div className=" flex items-center justify-center w-8/9 h-16 dark:bg-gray-800 bg-gray-200 rounded-lg hover:shadow-md border-2 border-opacity-5 dark:hover:border-gray-50 hover:border-gray-500">
+              <div key={a} className=" flex items-center justify-center w-8/9 h-16 dark:bg-gray-800 bg-gray-200 rounded-lg hover:shadow-md border-2 border-opacity-5 dark:hover:border-gray-50 hover:border-gray-500">
                 <ul className="flex list-none items-center justify-around w-full">
                   <li>7 ISE B</li>
                   <li>10:50 AM Jan 31 '24</li>
