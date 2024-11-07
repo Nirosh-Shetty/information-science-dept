@@ -62,7 +62,7 @@ export const updateStaffById = async (req, res) => {
         const updates = req.body;
 
         if (!employeeId) {
-            return res.status(400).json({ message: "id is required to update student details." });
+            return res.status(400).json({ message: "id is required to update staff details." });
         }
 
 
@@ -70,7 +70,7 @@ export const updateStaffById = async (req, res) => {
 
 
         if (!updatedStaff) {
-            return res.status(404).json({ message: "Student not found with the provided USN." });
+            return res.status(404).json({ message: "staff not found with the provided employeeId." });
         }
 
         return res.status(200).json({ message: "Staff updated successfully", staff: updatedStaff });
