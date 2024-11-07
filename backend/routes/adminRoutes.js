@@ -1,5 +1,5 @@
 import express from "express";
-import { adminSignIn } from "../controller/admin/signin.js";
+import { adminSignIn } from "../controller/admin/adminSignIn.js";
 import { adminDashboard } from "../controller/admin/dashboard.js";
 import jwtMiddleware from "../middleware/jwtMiddleware.js";
 const router = express.Router();

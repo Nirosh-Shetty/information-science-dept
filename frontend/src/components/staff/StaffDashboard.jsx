@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
 import Attendence from "./attendance/Attendance";
+import Temp from "./temp/temp";
+import CssBaseline from "@mui/joy/CssBaseline";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -77,7 +79,7 @@ function AssignmentsContent() {
 }
 
 function ResourcesContent() {
-  return <div>Resources Page - Department resources and materials</div>;
+  return <Temp />;
 }
 
 // function AttendanceContent() {
@@ -148,6 +150,8 @@ export default function StaffDashboard(props) {
       branding={{ title: "Atria IT ISE Department - Staff" }}
       window={demoWindow}
     >
+      {/* <CssBaseline /> */}
+
       <DashboardLayout
         sx={{
           overflow: "hidden",
