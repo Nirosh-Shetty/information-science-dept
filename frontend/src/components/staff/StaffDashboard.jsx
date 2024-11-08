@@ -17,7 +17,6 @@ import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
 import Attendence from "./attendance/Attendance";
 import Temp from "./temp/temp";
-import CssBaseline from "@mui/joy/CssBaseline";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },

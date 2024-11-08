@@ -21,6 +21,9 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Input from "@mui/joy/Input";
 import SearchIcon from "@mui/icons-material/Search";
+import PersonIcon from "@mui/icons-material/Person";
+import RuleIcon from "@mui/icons-material/Rule";
+import PersonPinIcon from "@mui/icons-material/PersonPin";
 
 const listItem = [
   {
@@ -103,7 +106,7 @@ const listItem = [
   },
 ];
 
-export default function AttendanceTable() {
+export default function OrderTable() {
   const [rowsData, setRowsData] = useState(listItem);
 
   const toggleAttendance = (index) => {
@@ -159,9 +162,36 @@ export default function AttendanceTable() {
               <th
                 style={{ width: 48, textAlign: "center", padding: "12px 6px" }}
               ></th>
-              <th style={{ width: 180, padding: "15px 6px" }}>Name</th>
-              <th style={{ width: 200, padding: "15px 6px" }}>USN</th>
-              <th style={{ width: 160, padding: "15px 6px" }}>Attendance</th>
+              <th style={{ width: 180, padding: "15px 6px" }}>
+                <PersonIcon
+                  sx={{
+                    fontSize: "1.4rem",
+                    paddingBottom: "1.5px",
+                    paddingRight: "5px",
+                  }}
+                />
+                Name
+              </th>
+              <th style={{ width: 200, padding: "15px 6px" }}>
+                <PersonPinIcon
+                  sx={{
+                    fontSize: "1.4rem",
+                    paddingBottom: "1.5px",
+                    paddingRight: "5px",
+                  }}
+                />
+                USN
+              </th>
+              <th style={{ width: 170, padding: "15px 6px" }}>
+                <RuleIcon
+                  sx={{
+                    fontSize: "1.4rem",
+                    paddingBottom: "1.5px",
+                    paddingRight: "5px",
+                  }}
+                />
+                Attendance
+              </th>
               {/* <th style={{ width: 140, padding: "15px 6px" }}>Actions</th> */}
             </tr>
           </thead>

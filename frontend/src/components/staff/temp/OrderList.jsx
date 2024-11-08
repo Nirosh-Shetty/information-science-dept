@@ -67,6 +67,69 @@ const initialListItems = [
     name: "Jay Hooper",
     usn: "1at21is073",
   },
+  {
+    id: "INV-1230",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Charles Fulton",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1229",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Jay Hooper",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1230",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Charles Fulton",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1229",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Jay Hooper",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1229",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Jay Hooper",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1230",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Charles Fulton",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1229",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Jay Hooper",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1230",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Charles Fulton",
+    usn: "1at21is073",
+  },
+  {
+    id: "INV-1229",
+    // date: "Feb 3, 2023",
+    attendance: "Absent",
+    name: "Jay Hooper",
+    usn: "1at21is073",
+  },
 ];
 
 export default function OrderList() {
@@ -86,7 +149,7 @@ export default function OrderList() {
     <Box>
       {listItems.map((listItem, index) => (
         <List
-          key={listItem.id}
+          key={index}
           size="sm"
           sx={{ "--ListItem-paddingX": 0, cursor: "pointer" }}
         >
@@ -137,7 +200,7 @@ export default function OrderList() {
           <ListDivider />
         </List>
       ))}
-      <Box
+      {/* <Box
         className="Pagination-mobile"
         sx={{
           display: { xs: "flex", md: "none" },
@@ -164,7 +227,7 @@ export default function OrderList() {
         >
           <KeyboardArrowRightIcon />
         </IconButton>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

@@ -52,6 +52,12 @@ export default function Temp() {
             gap: 1,
           }}
         >
+          <Box className="flex items-center justify-start mb-2">
+            <h1 className="text-4xl font-extrabold pr-5">7 ISE B </h1>
+            <h3 className="text-gray-600">
+              16<sup>th</sup> January '24
+            </h3>
+          </Box>
           {/* <Box sx={{ display: "flex", alignItems: "center" }}>
             <Breadcrumbs
               size="sm"
@@ -137,7 +143,7 @@ export default function Temp() {
               Cancel
             </Button>
             <Button
-              color="primary"
+              color="success"
               startDecorator={<SaveIcon />}
               sx={{ paddingX: "25px" }}
             >
