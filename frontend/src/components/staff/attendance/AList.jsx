@@ -207,7 +207,7 @@ export default function Alist() {
                         paddingLeft: 0,
                       }}
                     >
-                      <Avatar size="md" sx={{ fontSize: "0.8rem" }}>
+                      <Avatar size="sm" sx={{ fontSize: "0.7rem" }}>
                         {classYear}
                         <sup>
                           {classYear == 1
@@ -219,7 +219,12 @@ export default function Alist() {
                                 : "th"}
                         </sup>
                       </Avatar>
-                      <Typography level="body-xs">{row.className}</Typography>
+                      <Typography
+                        level="body-xs"
+                        // sx={{ fontWeight: 600, fontSize: "0.9rem" }}
+                      >
+                        {row.className}
+                      </Typography>
                     </Box>
                   </td>
                   <td>
@@ -242,9 +247,10 @@ export default function Alist() {
                     >
                       <Chip
                         variant="soft"
-                        size="sm"
+                        // size="sm"
                         sx={{
                           padding: "5px 8px",
+                          fontSize: "0.8rem",
                         }}
                         startDecorator={
                           {

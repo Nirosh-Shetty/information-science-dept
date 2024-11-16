@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { CssVarsProvider } from "@mui/joy/styles";
 import CssBaseline from "@mui/joy/CssBaseline";
 import Box from "@mui/joy/Box";
@@ -20,9 +20,159 @@ import Input from "@mui/joy/Input";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { useMediaQuery } from "@mui/material";
+import { useParams, useSearchParams } from "react-router-dom";
+import TimePicker from "./TimePicker";
+
+import { useTheme } from "@mui/joy/styles";
+import { useRecoilState } from "recoil";
+import {
+  studentSearchQueryState,
+  studentListState,
+} from "../../../../recoil/atoms/attendanceAtom";
+
+const sampleData = [
+  {
+    id: "S-101",
+    usn: "1IS20IS001",
+    name: "Arjun Reddy",
+    attendance: "Present",
+  },
+  {
+    id: "S-102",
+    usn: "1IS20IS002",
+    name: "Riya Sharma",
+    attendance: "Absent",
+  },
+  {
+    id: "S-103",
+    usn: "1IS20IS003",
+    name: "Kiran Patil",
+    attendance: "Excused",
+  },
+  {
+    id: "S-104",
+    usn: "1IS20IS004",
+    name: "Priya Nair",
+    attendance: "Present",
+  },
+  {
+    id: "S-105",
+    usn: "1IS20IS005",
+    name: "Vikram Rao",
+    attendance: "Absent",
+  },
+  {
+    id: "S-106",
+    usn: "1IS20IS006",
+    name: "Sneha Iyer",
+    attendance: "Present",
+  },
+  {
+    id: "S-107",
+    usn: "1IS20IS007",
+    name: "Aditya Menon",
+    attendance: "Absent",
+  },
+  {
+    id: "S-108",
+    usn: "1IS20IS008",
+    name: "Meera Kapoor",
+    attendance: "Present",
+  },
+  {
+    id: "S-109",
+    usn: "1IS20IS009",
+    name: "Rohan Desai",
+    attendance: "Excused",
+  },
+  {
+    id: "S-110",
+    usn: "1IS20IS010",
+    name: "Pooja Joshi",
+    attendance: "Absent",
+  },
+  {
+    id: "S-111",
+    usn: "1IS20IS011",
+    name: "Ankit Verma",
+    attendance: "Present",
+  },
+  {
+    id: "S-112",
+    usn: "1IS20IS012",
+    name: "Neha Gupta",
+    attendance: "Present",
+  },
+  {
+    id: "S-113",
+    usn: "1IS20IS013",
+    name: "Siddharth Rao",
+    attendance: "Absent",
+  },
+  {
+    id: "S-114",
+    usn: "1IS20IS014",
+    name: "Ishita Jain",
+    attendance: "Excused",
+  },
+  {
+    id: "S-115",
+    usn: "1IS20IS015",
+    name: "Rajiv Sharma",
+    attendance: "Present",
+  },
+  {
+    id: "S-116",
+    usn: "1IS20IS016",
+    name: "Tanvi Aggarwal",
+    attendance: "Present",
+  },
+  {
+    id: "S-117",
+    usn: "1IS20IS017",
+    name: "Aman Khan",
+    attendance: "Absent",
+  },
+  {
+    id: "S-118",
+    usn: "1IS20IS018",
+    name: "Deepa Pillai",
+    attendance: "Excused",
+  },
+  {
+    id: "S-119",
+    usn: "1IS20IS019",
+    name: "Mohit Gupta",
+    attendance: "Present",
+  },
+  {
+    id: "S-120",
+    usn: "1IS20IS020",
+    name: "Sanya Singh",
+    attendance: "Absent",
+  },
+];
 
 export default function Temp() {
+  const theme = useTheme();
+  // console.log("hhhht", theme.palette.mode);
+
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const { type } = useParams();
+  const [searchParams] = useSearchParams();
+  const attendanceId = type === "update" ? searchParams.get("id") : null;
+
+  const [studentList, setStudentList] = useRecoilState(studentListState);
+  const [searchQuery, setSearchQuery] = useRecoilState(studentSearchQueryState);
+
+  setStudentList(sampleData);
+
+  useEffect(() => {
+    if (type == "update") {
+    } else {
+    }
+  }, []);
+
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -33,6 +183,7 @@ export default function Temp() {
           height: "auto",
         }}
       >
+        {/* <TimePicker /> */}
         <Box
           component="main"
           className="MainContent"
@@ -58,37 +209,6 @@ export default function Temp() {
               16<sup>th</sup> January '24
             </h3>
           </Box>
-          {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Breadcrumbs
-              size="sm"
-              aria-label="breadcrumbs"
-              separator={<ChevronRightRoundedIcon fontSize="sm" />}
-              sx={{ pl: 0 }}
-            >
-              <Link
-                underline="none"
-                color="neutral"
-                href="#some-link"
-                aria-label="Home"
-              >
-                <HomeRoundedIcon />
-              </Link>
-              <Link
-                underline="hover"
-                color="neutral"
-                href="#some-link"
-                sx={{ fontSize: 12, fontWeight: 500 }}
-              >
-                Dashboard
-              </Link>
-              <Typography
-                color="primary"
-                sx={{ fontWeight: 500, fontSize: 12 }}
-              >
-                Orders
-              </Typography>
-            </Breadcrumbs>
-          </Box> */}
           <Box
             sx={{
               display: "flex",
@@ -98,23 +218,17 @@ export default function Temp() {
               alignItems: { xs: "start", sm: "center" },
               flexWrap: "wrap",
               justifyContent: "space-between",
-              // height: "50px",
-              // marginLeft: "20px",
-              // position: "sticky",
-              // top: 10,
-              // zIndex: 10,
-              // backgroundColor: "background.paper",
-              // marginBottom: 10,
             }}
           >
-            {/* <Typography level="h2" component="h1">
-              Orders
-            </Typography> */}
             <Input
               size="sm"
               placeholder="Search"
               startDecorator={<SearchIcon />}
               sx={{ flexGrow: 1, padding: "10px" }}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
             />
             <Button
               color="primary"
@@ -129,7 +243,14 @@ export default function Temp() {
               Download Sheet
             </Button>
           </Box>
-          <div> {isXs ? <OrderList /> : <OrderTable />}</div>
+          <div>
+            {" "}
+            {isXs ? (
+              <OrderList studentData={studentList} />
+            ) : (
+              <OrderTable theme={theme} studentData={studentList} />
+            )}
+          </div>
           <Box
             sx={{
               display: "flex",
@@ -147,7 +268,7 @@ export default function Temp() {
               startDecorator={<SaveIcon />}
               sx={{ paddingX: "25px" }}
             >
-              Save
+              {type == "new" ? "Save" : "Update"}
             </Button>
           </Box>
           <br />
@@ -156,3 +277,8 @@ export default function Temp() {
     </CssVarsProvider>
   );
 }
+
+//TODO:while updating the attendance , send a pop up with details of what have been updated(students with new update or time update)
+// loading spinner while fetching the data and during the saving
+
+//auto save option if needed

@@ -14,7 +14,7 @@ export default function SelectClass() {
   return (
     <div className="w-8/9 my-5">
       <Select className="w-full">
-        <SelectTrigger className="text-xl p-5 text-gray-600 font-semibold dark:text-gray-100 dark:border-2">
+        <SelectTrigger className="text-xl p-5 text-gray-600 font-semibold dark:text-gray-100 dark:border-2 ">
           <SelectValue placeholder="Select a Class" />
         </SelectTrigger>
         <SelectContent>
