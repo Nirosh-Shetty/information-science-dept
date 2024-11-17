@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -21,10 +21,27 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { BACKEND_URL } from "../../../../../globals";
 
 const DashboardContent = () => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";
+  const [studentCount, setStudentCount] = useState();
+  const [staffCount, setStaffCount] = useState();
+
+  useEffect(() => {
+    fetch(`${BACKEND_URL}/student/allstudents`).then(async (res) => {
+      const data = await res.json();
+      setStudentCount(data.length);
+    });
+  },[]);
+
+  useEffect(() => {
+    fetch(`${BACKEND_URL}/staff/allstaff`).then(async (res) => {
+      const data = await res.json();
+      setStaffCount(data.length);
+    });
+  },[]);
 
   const attendanceData = [
     { name: "Week 1", attendance: 85 },
@@ -70,12 +87,12 @@ const DashboardContent = () => {
         {[
           {
             title: "Total Students",
-            count: 500,
+            count: studentCount ||  "loading...",
             color: theme.palette.primary.main,
           },
           {
             title: "Total Staff",
-            count: 30,
+            count: staffCount || "loading...",
             color: isDarkMode ? "#F2AAAA" : "#E36387", // Conditional color for dark and light mode
           },
           {

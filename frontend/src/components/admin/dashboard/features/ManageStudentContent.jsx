@@ -25,6 +25,7 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
 import { BACKEND_URL } from "../../../../../globals";
 
@@ -46,6 +47,14 @@ export default function StudentSection() {
   const [selected, setSelected] = useState(""); // Changed to store just section like "2 ISE1"
   const [data, setData] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
+  const [coursesDialogOpen, setCoursesDialogOpen] = useState(false);
+  const [courses, setCourses] = useState([]); // List of courses
+  const [editCourseIndex, setEditCourseIndex] = useState(null); // Index of course being edited
+  const [newCourse, setNewCourse] = useState(""); // New course name
+  const [editCourse, setEditCourse] = useState(""); // Edited course name
+  const [newCourseCode, setNewCourseCode] = useState(""); // New course code
+  const [editCourseCode, setEditCourseCode] = useState(""); // Edited course code
+
   const [editDetails, setEditDetails] = useState({
     usn: "",
     fullName: "",
@@ -71,11 +80,91 @@ export default function StudentSection() {
     "3rd Year": { backgroundColor: "#E5D9F2", color: "#333" },
     "4th Year": { backgroundColor: "#D2E0FB", color: "#333" },
   };
+  const handleCoursesDialogOpen = async () => {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/courses/get?className=${selected}`
+      );
+      setCourses(response.data || []);
+      setCoursesDialogOpen(true);
+    } catch (error) {
+      setCoursesDialogOpen(true);
+      console.error("Error fetching courses:", error);
+    }
+  };
 
-  // Fetch students based on selected class
+  // Close Courses Dialog
+  const handleCoursesDialogClose = () => {
+    setCoursesDialogOpen(false);
+    setEditCourseIndex(null);
+    setNewCourse("");
+  };
+
+  // Add New Course
+  const handleAddCourse = async () => {
+    if (!newCourse.trim() || !newCourseCode.trim()) return;
+    try {
+      const response = await axios.post(`${BACKEND_URL}/courses/add`, {
+        className: selected,
+        subCode: newCourseCode.trim(),
+        name: newCourse.trim(),
+      });
+      console.log(response)
+      if(response.data.message === "Class name already exists in the course.") {
+        return 
+      }
+      setCourses([...courses, response.data.course]);
+      setNewCourse("");
+      setNewCourseCode("");
+    } catch (error) {
+      console.error("Error adding course:", error);
+    }
+  };
+
+  // Edit Existing Course
+  const handleEditCourseSave = async () => {
+    try {
+      const response = await axios.put(`${BACKEND_URL}/courses/update`, {
+        className: selected,
+        subCode: editCourseCode.trim(),
+        name: editCourse.trim(),
+        id: courses[editCourseIndex]._id,
+      });
+      const updatedCourses = [...courses];
+      updatedCourses[editCourseIndex] = response.data.newCourse || response.data.course;
+      setCourses(updatedCourses);
+      setEditCourseIndex(null);
+      setEditCourse("");
+      setEditCourseCode("");
+    } catch (error) {
+      console.error("Error editing course:", error);
+    }
+  };
+
+  // Delete Course
+  // Delete Course
+const handleDeleteCourse = async (course) => {
+  try {
+    // Send DELETE request
+    console.log(course + "2check");
+    await axios.delete(`${BACKEND_URL}/courses/delete`, {
+      data: {
+        name: course.name,
+        subCode: course.subCode,
+        className: selected,
+      },
+    });
+
+    setCourses(courses.filter((item) => item._id !== course._id));
+  } catch (error) {
+    console.error("Error deleting course:", error);
+  }
+};
+
+
   useEffect(() => {
     if (!selected) return;
-
+    setCourses([]);
     const fetchStudents = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/student/get`, {
@@ -173,7 +262,7 @@ export default function StudentSection() {
 
   const renderValue = (selected) => {
     if (!selected) return "Select Year and Section"; // Placeholder when nothing is selected
-  
+
     const [year, section] = selected.split(" - ");
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -192,7 +281,7 @@ export default function StudentSection() {
       </div>
     );
   };
-  
+
   const renderOptions = () => {
     const options = [];
     Object.entries(yearGroups).forEach(([year, sections], index) => {
@@ -227,7 +316,6 @@ export default function StudentSection() {
     });
     return options;
   };
-  
 
   return (
     <div>
@@ -243,13 +331,23 @@ export default function StudentSection() {
 
         {selected ? (
           <div>
-            <Button
-              variant="contained"
-              onClick={handleDialogOpen}
-              style={{ marginTop: 16 }}
-            >
-              Add Student
-            </Button>
+            <div className="flex gap-5">
+              <Button
+                variant="contained"
+                onClick={handleDialogOpen}
+                style={{ marginTop: 16 }}
+              >
+                Add Student
+              </Button>
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={handleCoursesDialogOpen}
+                style={{ marginTop: 16 }}
+              >
+                Courses
+              </Button>
+            </div>
             <StyledTableContainer>
               <Table>
                 <TableHead>
@@ -390,6 +488,126 @@ export default function StudentSection() {
             <Button onClick={handleDeleteConfirm} color="error">
               Delete
             </Button>
+          </DialogActions>
+        </Dialog>
+        {/* Courses Dialog */}
+        <Dialog open={coursesDialogOpen} onClose={handleCoursesDialogClose}>
+          <DialogTitle>Manage Courses</DialogTitle>
+          <DialogContent>
+            {/* Add New Course */}
+            <TextField
+              label="Course Code"
+              fullWidth
+              margin="normal"
+              value={newCourseCode}
+              onChange={(e) => setNewCourseCode(e.target.value)}
+            />
+            <TextField
+              label="Course Name"
+              fullWidth
+              margin="normal"
+              value={newCourse}
+              onChange={(e) => setNewCourse(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleAddCourse}
+              disabled={!newCourse.trim() || !newCourseCode.trim()}
+              style={{ marginBottom: "16px" }}
+            >
+              Add Course
+            </Button>
+            <Divider />
+            {/* Courses List */}
+            <Box mt={2}>
+              <Typography variant="h6">Courses for {selected}:</Typography>
+              <div>
+                {courses.length === 0 && (
+                  <Typography>No courses found for this class.</Typography>
+                )}
+              </div>
+              {courses.map((course, index) => (
+                <Box
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  mb={1}
+                >
+                  {editCourseIndex === index ? (
+                    <>
+                      <TextField
+                        label="Course Code"
+                        fullWidth
+                        margin="normal"
+                        value={editCourseCode}
+                        onChange={(e) => setEditCourseCode(e.target.value)}
+                      />
+                      <TextField
+                        label="Course Name"
+                        fullWidth
+                        margin="normal"
+                        value={editCourse}
+                        onChange={(e) => setEditCourse(e.target.value)}
+                      />
+                    </>
+                  ) : (
+                    <Typography>
+                      {course?.subCode} - {course?.name}
+                    </Typography>
+                  )}
+                  <Box>
+                    {editCourseIndex === index ? (
+                      <>
+                        <IconButton
+                          color="primary"
+                          onClick={handleEditCourseSave}
+                          disabled={!editCourse.trim()}
+                        >
+                          <CheckIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setEditCourseIndex(null);
+                            setEditCourse("");
+                          }}
+                        >
+                          <CloseIcon></CloseIcon>
+                        </IconButton>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <IconButton
+                            color="primary"
+                            onClick={() => {
+                              setEditCourseIndex(index);
+                              setEditCourse(course.name); // Set the course name for editing
+                              setEditCourseCode(course.subCode); // Set the course code for editing
+                            }}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            color="error"
+                            onClick={() => {
+                              console.log("TOCHECK" + course);
+                              handleDeleteCourse(course);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      </>
+                    )}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCoursesDialogClose}>Close</Button>
           </DialogActions>
         </Dialog>
       </Box>

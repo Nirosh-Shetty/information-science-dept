@@ -101,3 +101,11 @@ export const deleteStaffById = async (req, res) => {
     }
 }
 
+export const getAllStaff = async(req, res) =>{
+    try {
+        const staff = await Staff.find();
+        return res.status(200).json(staff);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}

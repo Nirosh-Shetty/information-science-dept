@@ -31,16 +31,19 @@ const NAVIGATION = [
     segment: "admin/dashboard",
     title: "Dashboard",
     icon: <DashboardIcon />,
+    onclick: () => console.log("I am clicked - Dashboard"),
   },
   {
     segment: "admin/managestaff",
     title: "Manage Staff",
     icon: <ManageAccountsIcon />,
+    onclick: () => console.log("I am clicked - Manage Staff"),
   },
   {
     segment: "admin/managestudent",
     title: "Manage Students",
     icon: <PeopleAltIcon />,
+    onclick: () => console.log("I am clicked - Manage Students"),
   },
   {
     kind: "divider",
@@ -53,11 +56,13 @@ const NAVIGATION = [
     segment: "admin/studentperformance",
     title: "Student Performance",
     icon: <BarChartIcon />,
+    onclick: () => console.log("I am clicked - Student Performance"),
     children: [
       {
         segment: "academic",
         title: "Academic",
         icon: <DescriptionIcon />,
+        onclick: () => console.log("I am clicked - Academic"),
       },
     ],
   },
@@ -65,6 +70,7 @@ const NAVIGATION = [
     segment: "admin/placements",
     title: "Placement",
     icon: <LayersIcon />,
+    onclick: () => console.log("I am clicked - Placement"),
   },
   {
     kind: "divider",
@@ -80,13 +86,18 @@ const NAVIGATION = [
     sx: {
       position: "absolute",
       bottom: 0,
-      width: "100%", // Ensures it aligns with other nav items
+      width: "100%",
     },
+    onclick: () => console.log("I am clicked - Profile"),
   },
   {
     segment: "admin/logout",
     title: "Log Out",
     icon: <LogoutIcon />,
+    onclick: () => {
+      console.log("I am clicked - Log Out");
+      localStorage.setItem("token", "");
+    },
   },
 ];
 
