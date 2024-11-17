@@ -3,12 +3,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { extendTheme } from "@mui/material/styles";
 import { AppProvider } from "@toolpad/core/AppProvider";
 
-import SignIn from "./components/admin/SignIn/SignIn";
-import Dashboard from "./components/admin/dashboard/Dashboard";
 import { Home } from "./components/home/Home";
 import SignInOptions from "./components/siginOptions/SignInOptions";
 import StaffDashboard from "./components/staff/StaffDashboard";
+
+import SignIn from "./components/SignIn/SignIn";
+import AdminSignIn from "./components/admin/SignIn/AdminSignIn";
+import AdminDashboard from "./components/admin/dashboard/AdminDashboard";
 import Temp from "./components/staff/temp/temp";
+
 function App() {
   const demoTheme = extendTheme({
     colorSchemes: { light: true, dark: true },
@@ -23,8 +26,9 @@ function App() {
         <Routes>
           <Route path="/signinoptions" element={<SignInOptions />} />
           <Route path="/" element={<Home></Home>} />
-          <Route path="/admin/signin" element={<SignIn />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
+          {/* <Route path="/admin/signin" element={<SignIn />} /> */}
+          <Route path="/signin/:role" element={<SignIn />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/staff/dashboard" element={<StaffDashboard />} />
           <Route path="/temp/:type" element={<Temp />} />
         </Routes>

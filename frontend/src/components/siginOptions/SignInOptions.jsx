@@ -14,7 +14,7 @@ const SignInOptions = () => {
       description:
         "Login as an administrator to access the dashboard to manage app data.",
       icon: <AdminPanelSettingsIcon sx={{ fontSize: "3em" }} />,
-      path: "/admin/signin",
+      path: "/signin/admin",
       boxbg: "bg-gray-400 dark:bg-gray-500",
     },
     {
@@ -22,7 +22,7 @@ const SignInOptions = () => {
       description:
         "Login as a teacher to create courses, assignments, and track student progress.",
       icon: <GroupIcon sx={{ fontSize: "3em" }} />,
-      path: "/staff/signin",
+      path: "/signin/staff",
       boxbg: "bg-red-400 dark:bg-red-500",
     },
     {
@@ -30,7 +30,7 @@ const SignInOptions = () => {
       description:
         "Login as a student to explore course materials and assignments.",
       icon: <SchoolIcon sx={{ fontSize: "3em" }} />,
-      path: "/student/signin",
+      path: "/signin/student",
       boxbg: "bg-blue-400 dark:bg-blue-500",
     },
   ];

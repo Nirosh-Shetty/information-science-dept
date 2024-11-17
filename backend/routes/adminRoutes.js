@@ -5,8 +5,8 @@ import jwtMiddleware from "../middleware/jwtMiddleware.js";
 import { updateProfile } from "../controller/admin/updateProfile.js";
 const router = express.Router();
 
-router.post("/signin", adminSignIn);
+// router.post("/signin", adminSignIn);
 router.post("/dashboard", jwtMiddleware, adminDashboard);
-router.put("/profile",jwtMiddleware, updateProfile)
+router.put("/profile", jwtMiddleware, updateProfile);
 
 export default router;

@@ -125,7 +125,7 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-export default function Dashboard(props) {
+export default function AdminDashboard(props) {
   const [admin, setAdmin] = useRecoilState(adminAtom);
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
@@ -154,21 +154,22 @@ export default function Dashboard(props) {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch(`${BACKEND_URL}/admin/dashboard`, {
+        const res = await fetch(`${BACKEND_URL}/authoriseuser`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            role: "admin",
           },
         });
         const data = await res.json();
-        console.log("dashboard" + data);
-        setAdmin(data.adminUser);
+        // console.log("dashboard" + data);
+        setAdmin(data.User);
       } catch (err) {
         setAdmin(null);
         console.log(err);
       } finally {
-        setLoading(false); // Set loading to false after fetch completes
+        setLoading(false);
       }
     };
 
@@ -177,7 +178,7 @@ export default function Dashboard(props) {
 
   React.useEffect(() => {
     if (!loading && (admin === undefined || !admin)) {
-      navigate("/admin/signin");
+      navigate("/signin/admin");
     }
   }, [admin, navigate, loading]);
 

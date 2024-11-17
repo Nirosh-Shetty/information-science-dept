@@ -5,7 +5,7 @@ import SignInCard from "./SignInCard";
 import Content from "./Content";
 import AppTheme from "../../mui/shared-theme/AppTheme";
 import ColorModeSelect from "../../mui/shared-theme/ColorModeSelect";
-export default function SignIn(props) {
+export default function AdminSignIn(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
