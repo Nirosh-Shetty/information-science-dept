@@ -1,15 +1,22 @@
-import adminModel from "../../model/adminModel.js";
+import adminModel from "../model/adminModel.js";
+import staffModel from "../model/staffModel.js";
+import studentModel from "../model/studentModel.js";
+
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import insertData from "./insertSampleData.js";
 
-export const adminSignIn = async (req, res) => {
-  const { identifier, password } = req.body;
+export const signIn = async (req, res) => {
+  const { identifier, password, role } = req.body;
+  // insertData();
+  const userModel =
+    role == "admin" ? adminModel : role == "staff" ? staffModel : studentModel;
   try {
-    const user = await adminModel.findOne({
+    const user = await userModel.findOne({
       $or: [{ username: identifier }, { email: identifier }],
     });
 
-    // console.log(user);
+    console.log(user);
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -26,7 +33,7 @@ export const adminSignIn = async (req, res) => {
 
     const jwtPayload = {
       id: user._id,
-      role: "admin",
+      role: role,
       iat: Math.floor(Date.now() / 1000),
     };
 
@@ -34,9 +41,10 @@ export const adminSignIn = async (req, res) => {
       expiresIn: "24h",
     });
     // console.log(token);
+
     return res.status(201).json({
       success: true,
-      message: "Admin Signed In Successfully",
+      message: "Signed In Successfully",
       token,
     });
   } catch (error) {

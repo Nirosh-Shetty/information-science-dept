@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
@@ -21,121 +21,82 @@ import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import Input from "@mui/joy/Input";
 import SearchIcon from "@mui/icons-material/Search";
+import PersonIcon from "@mui/icons-material/Person";
+import RuleIcon from "@mui/icons-material/Rule";
+import PersonPinIcon from "@mui/icons-material/PersonPin";
+import { useTheme } from "@mui/joy/styles";
+import { useRecoilState } from "recoil";
+import {
+  studentSearchQueryState,
+  studentListState,
+} from "../../../../recoil/atoms/attendanceAtom";
 
-const listItem = [
-  {
-    id: "S-101",
-    usn: "1IS20IS001",
-    name: "Olivia Ryhe",
-    attendance: "Present",
-  },
-  {
-    id: "S-102",
-    usn: "1IS20IS002",
-    name: "Steve Hampton",
-    attendance: "Absent",
-  },
-  {
-    id: "S-103",
-    usn: "1IS20IS003",
-    name: "Ciaran Murray",
-    attendance: "Excused",
-  },
-  {
-    id: "S-104",
-    usn: "1IS20IS004",
-    name: "Maria Macdonald",
-    attendance: "Present",
-  },
-  {
-    id: "S-105",
-    usn: "1IS20IS005",
-    name: "Charles Fulton",
-    attendance: "Absent",
-  },
-  {
-    id: "S-102",
-    usn: "1IS20IS002",
-    name: "Steve Hampton",
-    attendance: "Absent",
-  },
-  {
-    id: "S-103",
-    usn: "1IS20IS003",
-    name: "Ciaran Murray",
-    attendance: "Excused",
-  },
-  {
-    id: "S-104",
-    usn: "1IS20IS004",
-    name: "Maria Macdonald",
-    attendance: "Present",
-  },
-  {
-    id: "S-105",
-    usn: "1IS20IS005",
-    name: "Charles Fulton",
-    attendance: "Absent",
-  },
-  {
-    id: "S-102",
-    usn: "1IS20IS002",
-    name: "Steve Hampton",
-    attendance: "Absent",
-  },
-  {
-    id: "S-103",
-    usn: "1IS20IS003",
-    name: "Ciaran Murray",
-    attendance: "Excused",
-  },
-  {
-    id: "S-104",
-    usn: "1IS20IS004",
-    name: "Maria Macdonald",
-    attendance: "Present",
-  },
-  {
-    id: "S-105",
-    usn: "1IS20IS005",
-    name: "Charles Fulton",
-    attendance: "Absent",
-  },
-];
+export default function OrderTable({ theme, studentData }) {
+  const [rowsData, setRowsData] = useState([]);
 
-export default function AttendanceTable() {
-  const [rowsData, setRowsData] = useState(listItem);
+  const [studentList, setStudentList] = useRecoilState(studentListState);
+  const [searchQuery, setSearchQuery] = useRecoilState(studentSearchQueryState);
+  const [updatedlist, setUpdatedlist] = useState(studentList);
+  const [filteredList, setFilteredList] = useState(updatedlist);
+  // console.log(studentList);
+  useEffect(() => {
+    if (!searchQuery) {
+      setFilteredList(updatedlist);
+      return;
+    }
+    const filteredItems = updatedlist.filter((item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredList(filteredItems);
+  }, [searchQuery, updatedlist]);
 
+  // useEffect(() => {
+  //   setFilteredList(updatedlist);
+  // }, [updatedlist]);
   const toggleAttendance = (index) => {
-    const updatedRows = [...rowsData];
-    const statuses = ["Present", "Absent", "Excused"];
-    const currentIndex = statuses.indexOf(updatedRows[index].attendance);
-    updatedRows[index].attendance =
-      statuses[(currentIndex + 1) % statuses.length];
-    setRowsData(updatedRows);
+    // Find the index of the toggled item in the original list
+    const originalIndex = updatedlist.findIndex(
+      (item) => item.usn === filteredList[index].usn
+    );
+
+    if (originalIndex !== -1) {
+      const updatedRows = updatedlist.map((row, idx) =>
+        idx === originalIndex
+          ? {
+              ...row,
+              attendance: ["Present", "Absent", "Excused"][
+                (["Present", "Absent", "Excused"].indexOf(row.attendance) + 1) %
+                  3
+              ],
+            }
+          : row
+      );
+
+      setUpdatedlist(updatedRows); // Update the original list
+
+      // Re-apply the filter to reflect changes in the filtered list
+      const newFilteredItems = updatedRows.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredList(newFilteredItems);
+    }
   };
 
+  //try use callback above
   return (
     <>
       <Sheet
         variant="outlined"
-        sx={{
+        sx={(theme) => ({
+          bgcolor:
+            theme.palette.mode === "dark"
+              ? "var(--joy-palette-neutral-900)"
+              : "var(--joy-palette-background-surface)",
           width: "100%",
           borderRadius: "sm",
           flexShrink: 1,
-          // overflow: "auto",
-          // height: "100%",
           minHeight: 0,
-          // paddingBottom: "10px",
-          // display: {
-          //   xs: "none",
-          //   s: "block",
-          //   md: "block",
-          //   lg: "block",
-          //   xl: "block",
-          // },
-          // margin: " 5 auto",
-        }}
+        })}
       >
         <Table
           aria-labelledby="Attedance"
@@ -150,6 +111,7 @@ export default function AttendanceTable() {
             "--TableCell-paddingY": "4px",
             "--TableCell-paddingX": "8px",
             cursor: "pointer",
+            // borderCollapse: "collapse",
           }}
         >
           <thead
@@ -159,112 +121,105 @@ export default function AttendanceTable() {
               <th
                 style={{ width: 48, textAlign: "center", padding: "12px 6px" }}
               ></th>
-              <th style={{ width: 180, padding: "15px 6px" }}>Name</th>
-              <th style={{ width: 200, padding: "15px 6px" }}>USN</th>
-              <th style={{ width: 160, padding: "15px 6px" }}>Attendance</th>
+              <th style={{ width: 180, padding: "15px 6px" }}>
+                <PersonIcon
+                  sx={{
+                    fontSize: "1.4rem",
+                    paddingBottom: "1.5px",
+                    paddingRight: "5px",
+                  }}
+                />
+                Name
+              </th>
+              <th style={{ width: 200, padding: "15px 6px" }}>
+                <PersonPinIcon
+                  sx={{
+                    fontSize: "1.4rem",
+                    paddingBottom: "1.5px",
+                    paddingRight: "5px",
+                  }}
+                />
+                USN
+              </th>
+              <th style={{ width: 170, padding: "15px 6px" }}>
+                <RuleIcon
+                  sx={{
+                    fontSize: "1.4rem",
+                    paddingBottom: "1.5px",
+                    paddingRight: "5px",
+                  }}
+                />
+                Attendance
+              </th>
               {/* <th style={{ width: 140, padding: "15px 6px" }}>Actions</th> */}
             </tr>
           </thead>
           <tbody>
-            {rowsData.map((row, index) => (
-              <tr
-                key={row.id}
-                onClick={() => toggleAttendance(index)}
-                // style={{ padding: "40" }}
-              >
-                <td style={{ textAlign: "center", width: 100 }}></td>
-                <td>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 2,
-                      alignItems: "center",
-                      padding: 2,
-                      paddingLeft: 0,
-                    }}
-                  >
-                    <Avatar size="sm">{row.name[0]}</Avatar>
-                    <Typography level="body-xs">{row.name}</Typography>
-                  </Box>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.usn}</Typography>
-                </td>
+            {filteredList.length > 0 ? (
+              filteredList.map((row, index) => (
+                <tr
+                  key={index}
+                  onClick={() => toggleAttendance(index)}
+                  // style={{ padding: "40" }}
+                >
+                  <td style={{ textAlign: "center", width: 100 }}></td>
+                  <td>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 2,
+                        alignItems: "center",
+                        padding: 2,
+                        paddingLeft: 0,
+                      }}
+                    >
+                      <Avatar size="sm">{row.name[0]}</Avatar>
+                      <Typography level="body-xs">{row.name}</Typography>
+                    </Box>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{row.usn}</Typography>
+                  </td>
 
-                <td>
-                  <Chip
-                    variant="soft"
-                    size="sm"
-                    startDecorator={
-                      {
-                        Present: <CheckRoundedIcon />,
-                        Absent: <BlockIcon />,
-                        Excused: <AutorenewRoundedIcon />,
-                      }[row.attendance]
-                    }
-                    color={
-                      {
-                        Present: "success",
-                        Absent: "danger",
-                        Excused: "neutral",
-                      }[row.attendance]
-                    }
-                  >
-                    {row.attendance}
-                  </Chip>
-                </td>
-                {/* <td>
+                  <td>
+                    <Chip
+                      variant="soft"
+                      size="sm"
+                      startDecorator={
+                        {
+                          Present: <CheckRoundedIcon />,
+                          Absent: <BlockIcon />,
+                          Excused: <AutorenewRoundedIcon />,
+                        }[row.attendance]
+                      }
+                      color={
+                        {
+                          Present: "success",
+                          Absent: "danger",
+                          Excused: "neutral",
+                        }[row.attendance]
+                      }
+                    >
+                      {row.attendance}
+                    </Chip>
+                  </td>
+                  {/* <td>
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                   <RowMenu />
                 </Box>
               </td> */}
+                </tr>
+              ))
+            ) : (
+              <tr className="flex items-center justify-center">
+                <td>{/* <Box>NO student Found</Box> */}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </Table>
       </Sheet>
-      {/* <Box
-        className="Pagination-laptopUp"
-        sx={{
-          pt: 2,
-          gap: 1,
-          borderRadius: "50%",
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
-          >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box> */}
     </>
   );
 }
+
+//TODO: use recoil buddy

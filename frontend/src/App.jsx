@@ -1,34 +1,39 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import SignIn from "./components/admin/SignIn/SignIn";
-import Dashboard from "./components/admin/dashboard/Dashboard";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { extendTheme } from "@mui/material/styles";
+import { AppProvider } from "@toolpad/core/AppProvider";
+
 import { Home } from "./components/home/Home";
 import SignInOptions from "./components/siginOptions/SignInOptions";
 import StaffDashboard from "./components/staff/StaffDashboard";
-import DashboardContent from "./components/staff/features/DashboardContent";
-import ManageStaffContent from "./components/admin/dashboard/features/ManageStaffContent";
-import ManageStudentContent from "./components/admin/dashboard/features/ManageStudentContent"
-import ProfileContent from "./components/admin/dashboard/features/ProfileContent";
-import Academic from "./components/admin/dashboard/features/Academic";
-import Placement from "./components/admin/dashboard/placement/Placement";
+
+import SignIn from "./components/SignIn/SignIn";
+import AdminSignIn from "./components/admin/SignIn/AdminSignIn";
+import AdminDashboard from "./components/admin/dashboard/AdminDashboard";
+import Temp from "./components/staff/temp/temp";
+
 function App() {
+  const demoTheme = extendTheme({
+    colorSchemes: { light: true, dark: true },
+    colorSchemeSelector: "class",
+    breakpoints: {
+      values: { xs: 0, sm: 600, md: 600, lg: 1200, xl: 1536 },
+    },
+  });
   return (
-    <Router>
-      <Routes>
-        <Route path="/signinoptions" element={<SignInOptions />} />
-        <Route path="/" element={<Home></Home>} />
-        <Route path="/admin/signin" element={<SignIn />} />
-        <Route path="/admin" element={<Dashboard />}>
-          <Route path="dashboard" element={<DashboardContent />} />
-          <Route path="managestaff" element={<ManageStaffContent />} />
-          <Route path="managestudent" element={<ManageStudentContent />} />
-          <Route path="studentperformance/academic" element={<Academic />} />
-          <Route path="placements" element={<Placement />} />
-          <Route path="profile" element={<ProfileContent />} />
-        </Route>
-        <Route path="/staff/dashboard" element={<StaffDashboard />} />
-      </Routes>
-    </Router>
+    <AppProvider theme={demoTheme}>
+      <Router>
+        <Routes>
+          <Route path="/signinoptions" element={<SignInOptions />} />
+          <Route path="/" element={<Home></Home>} />
+          {/* <Route path="/admin/signin" element={<SignIn />} /> */}
+          <Route path="/signin/:role" element={<SignIn />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/staff/dashboard" element={<StaffDashboard />} />
+          <Route path="/temp/:type" element={<Temp />} />
+        </Routes>
+      </Router>
+    </AppProvider>
   );
 }
 

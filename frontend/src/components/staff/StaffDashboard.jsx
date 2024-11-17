@@ -17,7 +17,6 @@ import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
 import Attendence from "./attendance/Attendance";
 import Temp from "./temp/temp";
-import CssBaseline from "@mui/joy/CssBaseline";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -103,6 +102,38 @@ export default function StaffDashboard(props) {
   const demoWindow = window ? window() : undefined;
 
   React.useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${BACKEND_URL}/authoriseuser`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            role: "staff",
+          },
+        });
+        const data = await res.json();
+        // console.log("dashboard" + data);
+        setStaff(data.User);
+      } catch (err) {
+        setStaff(null);
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  React.useEffect(() => {
+    if (!loading && (staff === undefined || !staff)) {
+      navigate("/signin/staff");
+    }
+  }, [staff, navigate, loading]);
+
+  React.useEffect(() => {
     if (
       ![
         "/staff/dashboard",
@@ -165,3 +196,5 @@ export default function StaffDashboard(props) {
     </AppProvider>
   );
 }
+
+//TODO: redirect back to admin/student dashboard when tried to open this url with admin/student login

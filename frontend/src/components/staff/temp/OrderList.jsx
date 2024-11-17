@@ -24,54 +24,11 @@ import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
-const initialListItems = [
-  {
-    id: "INV-1234",
-    // date: "Feb 3, 2023",
-    attendance: "Excused",
-    name: "Olivia Ryhe",
-    usn: "1at21is073",
-  },
-  {
-    id: "INV-1233",
-    // date: "Feb 3, 2023",
-    attendance: "Present",
-    name: "Steve Hampton",
-    usn: "1at21is073",
-  },
-  {
-    id: "INV-1232",
-    // date: "Feb 3, 2023",
-    attendance: "Excused",
-    name: "Ciaran Murray",
-    usn: "1at21is073",
-  },
-  {
-    id: "INV-1231",
-    // date: "Feb 3, 2023",
-    attendance: "Excused",
-    name: "Maria Macdonald",
-    usn: "1at21is073",
-  },
-  {
-    id: "INV-1230",
-    // date: "Feb 3, 2023",
-    attendance: "Absent",
-    name: "Charles Fulton",
-    usn: "1at21is073",
-  },
-  {
-    id: "INV-1229",
-    // date: "Feb 3, 2023",
-    attendance: "Absent",
-    name: "Jay Hooper",
-    usn: "1at21is073",
-  },
-];
-
-export default function OrderList() {
-  const [listItems, setListItems] = React.useState(initialListItems);
-
+export default function OrderList({ studentData }) {
+  const [listItems, setListItems] = React.useState([]);
+  useEffect(() => {
+    setRowsData(studentData);
+  }, [studentData]);
   const toggleAttendance = (index) => {
     // console.log("hi");
     const statuses = ["Present", "Absent", "Excused"];
@@ -86,7 +43,7 @@ export default function OrderList() {
     <Box>
       {listItems.map((listItem, index) => (
         <List
-          key={listItem.id}
+          key={index}
           size="sm"
           sx={{ "--ListItem-paddingX": 0, cursor: "pointer" }}
         >
@@ -137,7 +94,7 @@ export default function OrderList() {
           <ListDivider />
         </List>
       ))}
-      <Box
+      {/* <Box
         className="Pagination-mobile"
         sx={{
           display: { xs: "flex", md: "none" },
@@ -164,7 +121,7 @@ export default function OrderList() {
         >
           <KeyboardArrowRightIcon />
         </IconButton>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

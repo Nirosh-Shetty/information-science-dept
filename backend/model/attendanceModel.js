@@ -8,6 +8,10 @@ const attendanceSchema = new mongoose.Schema({
     required: true,
   },
   date: { type: Date, required: true },
+  session: {
+    type: String,
+    required: true,
+  },
   attendance: [
     {
       student: {

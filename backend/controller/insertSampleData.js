@@ -1,31 +1,31 @@
-import Class from "../../model/classModel.js";
-import Admin from "../../model/adminModel.js";
-import Staff from "../../model/staffModel.js";
-import Student from "../../model/studentModel.js";
-import Course from "../../model/courseModel.js";
-import Attendance from "../../model/attendanceModel.js";
+import Class from "../model/classModel.js";
+import Admin from "../model/adminModel.js";
+import Staff from "../model/staffModel.js";
+import Student from "../model/studentModel.js";
+import Course from "../model/courseModel.js";
+import Attendance from "../model/attendanceModel.js";
+import bcrypt from "bcrypt";
 
 // Insert Data
 async function insertData() {
-  const admin = await Admin.create(
-    {
-      username: "admin1",
-      password: "$2a$10$7eITKDf.0GFYE7azwEy4yOHESRZQLpON2YFbotbJb.yxF2Nv2ofbi",
-      email: "sanju@example.com",
-      phoneNumber: "+1234567890",
-      role: "admin",
-      createdAt: {
-        "$date": "2024-11-01T09:11:53.644Z"
-      },
-      updatedAt: {
-        "$date": "2024-11-01T09:11:53.646Z"
-      },
-      fullName: "Sanju M",
-      department: "ISE",
-      bio: "",
-      avatar: ""
-    }
-  );
+  console.log(bcrypt.hash("staff1", 10));
+  const admin = await Admin.create({
+    username: "admin1",
+    password: "$2a$10$7eITKDf.0GFYE7azwEy4yOHESRZQLpON2YFbotbJb.yxF2Nv2ofbi",
+    email: "sanju@example.com",
+    phoneNumber: "+1234567890",
+    role: "admin",
+    createdAt: {
+      $date: "2024-11-01T09:11:53.644Z",
+    },
+    updatedAt: {
+      $date: "2024-11-01T09:11:53.646Z",
+    },
+    fullName: "Sanju M",
+    department: "ISE",
+    bio: "",
+    avatar: "",
+  });
 
   const classData = await Class.create({
     name: "3rd Year ISE",
@@ -36,12 +36,14 @@ async function insertData() {
   });
 
   const staff1 = await Staff.create({
-    fullName: "Dr. Ramesh Kumar",
+    name: "Dr. Ramesh Kumar",
+    username: "staff1",
     employeeId: "EMP1234",
     email: "ramesh.kumar@college.edu",
     phoneNumber: "9876543210",
     role: "staff",
     courses: [],
+    password: "",
   });
 
   const student1 = await Student.create({
