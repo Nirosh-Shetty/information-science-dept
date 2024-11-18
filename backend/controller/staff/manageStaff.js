@@ -2,19 +2,20 @@ import Staff from "../../model/staffModel.js";
 
 export const addStaff = async (req, res) => {
     try {
-        const { fullName, employeeId, email, phoneNumber, courses, designation } = req.body;
-
-        if (!fullName || !employeeId || !email) {
+        const { name, employeeId, email, phoneNumber, courses, designation, password } = req.body;
+        console.log(req.body);
+        if (!name || !employeeId || !email) {
             return res.status(400).json({ message: "fullName, employeeId, and email are required." });
         }
 
         const newStaff = new Staff({
-            fullName,
+            name,
             employeeId,
             phoneNumber,
             courses,
             email,
-            designation
+            designation,
+            password,
         });
 
         await newStaff.save();

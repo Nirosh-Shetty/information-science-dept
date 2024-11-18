@@ -16,6 +16,13 @@ import {
   TableRow,
   Paper,
   Tooltip,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  FormControl,
+  InputLabel,
+  Select,
+  Menu,
 } from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import { styled } from "@mui/system";
@@ -35,36 +42,29 @@ const ManageStaffContent = () => {
   const [staffList, setStaffList] = useState([]);
   const [openForm, setOpenForm] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     employeeId: "",
     designation: "",
     email: "",
+    password: "",
+    courses: [],
   });
   const [editMode, setEditMode] = useState(false);
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [error, setError] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedStaff, setSelectedStaff] = useState(null);
 
-  useEffect(() => {
-    const fetchStaffData = async () => {
-      try {
-        const response = await axios.get(`${BACKEND_URL}/staff/get`);
-
-        setStaffList(response.data);
-      } catch (error) {
-        console.error("Error fetching staff:", error);
-      }
-    };
-    fetchStaffData();
-  }, []);
-
-  const handleOpenForm = () => {
-    setOpenForm(true);
+  const handleClick = (event, staffId) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedStaff(staffId);
   };
 
-  const handleCloseForm = () => {
-    setOpenForm(false);
-    setFormData({ fullName: "", employeeId: "", designation: "", email: "" });
-    setEditMode(false);
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedStaff(null);
   };
 
   const handleAddStaff = async () => {
@@ -88,7 +88,52 @@ const ManageStaffContent = () => {
       handleCloseForm();
     } catch (error) {
       console.error("Error adding/updating staff:", error);
+      setError("Error adding or updating staff. Please try again.");
     }
+  };
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/courses/getall`);
+        console.log(response.data + "courses");
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  useEffect(() => {
+    const fetchStaffData = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_URL}/staff/get`);
+
+        setStaffList(response.data);
+      } catch (error) {
+        console.error("Error fetching staff:", error);
+      }
+    };
+    fetchStaffData();
+  }, []);
+
+  const handleOpenForm = () => {
+    setOpenForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setOpenForm(false);
+    setFormData({
+      name: "",
+      employeeId: "",
+      designation: "",
+      email: "",
+      password: "",
+      courses: [],
+    });
+    setEditMode(false);
+    setError("");
   };
 
   const handleEditStaff = (staff) => {
@@ -131,16 +176,41 @@ const ManageStaffContent = () => {
               <TableCell>Emp Id</TableCell>
               <TableCell>Designation</TableCell>
               <TableCell>Email</TableCell>
+              <TableCell>Courses</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {staffList.map((staff) => (
               <TableRow key={staff.id}>
-                <TableCell>{staff.fullName}</TableCell>
+                <TableCell>{staff.name}</TableCell>
                 <TableCell>{staff.employeeId}</TableCell>
                 <TableCell>{staff.designation}</TableCell>
                 <TableCell>{staff.email}</TableCell>
+                <TableCell>
+                  <Button
+                    aria-controls="course-menu"
+                    aria-haspopup="true"
+                    onClick={(event) => handleClick(event, staff.id)}
+                  >
+                    View Courses
+                  </Button>
+                  <Menu
+                    id="course-menu"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl) && selectedStaff === staff.id}
+                    onClose={handleClose}
+                  >
+                    {staff.courses.map((courseId) => {
+                      const course = courses.find((c) => c._id === courseId);
+                      return (
+                        <MenuItem key={courseId}>
+                          {course ? course.name : "Unknown Course"}
+                        </MenuItem>
+                      );
+                    })}
+                  </Menu>
+                </TableCell>
                 <TableCell align="right">
                   <Tooltip title="Edit">
                     <IconButton
@@ -177,9 +247,9 @@ const ManageStaffContent = () => {
             label="Name"
             fullWidth
             variant="outlined"
-            value={formData.fullName}
+            value={formData.name}
             onChange={(e) =>
-              setFormData({ ...formData, fullName: e.target.value })
+              setFormData({ ...formData, name: e.target.value })
             }
           />
           <TextField
@@ -213,6 +283,41 @@ const ManageStaffContent = () => {
               setFormData({ ...formData, email: e.target.value })
             }
           />
+          <TextField
+            margin="dense"
+            label="Password"
+            fullWidth
+            variant="outlined"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+          />
+          <FormControl fullWidth style={{ marginTop: "10px" }}>
+            <InputLabel>Courses</InputLabel>
+            <Select
+              multiple
+              value={formData.courses}
+              onChange={(e) =>
+                setFormData({ ...formData, courses: e.target.value })
+              }
+              renderValue={(selected) =>
+                selected
+                  .map((id) => {
+                    const course = courses.find((course) => course._id === id);
+                    return course ? course.name : id;
+                  })
+                  .join(", ")
+              }
+            >
+              {courses.map((course) => (
+                <MenuItem key={course._id} value={course._id}>
+                  <Checkbox checked={formData.courses.includes(course._id)} />
+                  <ListItemText primary={course.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseForm} color="primary">
