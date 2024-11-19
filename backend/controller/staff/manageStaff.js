@@ -1,13 +1,13 @@
 import Staff from "../../model/staffModel.js";
+import bcrypt from "bcrypt";
 
 export const addStaff = async (req, res) => {
     try {
         const { name, employeeId, email, phoneNumber, courses, designation, password } = req.body;
-        console.log(req.body);
         if (!name || !employeeId || !email) {
             return res.status(400).json({ message: "fullName, employeeId, and email are required." });
         }
-
+        password = bcrypt.hashSync(password, 10);
         const newStaff = new Staff({
             name,
             employeeId,
@@ -66,6 +66,9 @@ export const updateStaffById = async (req, res) => {
             return res.status(400).json({ message: "id is required to update staff details." });
         }
 
+        if(updates.password){
+            updates.password = bcrypt.hashSync(updates.password, 10);
+        }
 
         const updatedStaff = await Staff.findOneAndUpdate({ employeeId }, updates, { new: true });
 

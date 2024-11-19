@@ -496,14 +496,14 @@ const handleDeleteCourse = async (course) => {
           <DialogContent>
             {/* Add New Course */}
             <TextField
-              label="Course Code"
+              label="Subject Code"
               fullWidth
               margin="normal"
               value={newCourseCode}
               onChange={(e) => setNewCourseCode(e.target.value)}
             />
             <TextField
-              label="Course Name"
+              label="Subject Name"
               fullWidth
               margin="normal"
               value={newCourse}

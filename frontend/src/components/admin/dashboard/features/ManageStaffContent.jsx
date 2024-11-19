@@ -96,7 +96,6 @@ const ManageStaffContent = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/courses/getall`);
-        console.log(response.data + "courses");
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -205,7 +204,7 @@ const ManageStaffContent = () => {
                       const course = courses.find((c) => c._id === courseId);
                       return (
                         <MenuItem key={courseId}>
-                          {course ? course.name : "Unknown Course"}
+                          {course ? course.subCode + " " + course.name + " " + course.className : "Unknown Course"}
                         </MenuItem>
                       );
                     })}
@@ -294,7 +293,7 @@ const ManageStaffContent = () => {
             }
           />
           <FormControl fullWidth style={{ marginTop: "10px" }}>
-            <InputLabel>Courses</InputLabel>
+            <InputLabel>Subjects</InputLabel>
             <Select
               multiple
               value={formData.courses}
@@ -305,7 +304,7 @@ const ManageStaffContent = () => {
                 selected
                   .map((id) => {
                     const course = courses.find((course) => course._id === id);
-                    return course ? course.name : id;
+                    return course ? course.subCode + " " + course.name + " " + course.className : id;
                   })
                   .join(", ")
               }
@@ -313,7 +312,11 @@ const ManageStaffContent = () => {
               {courses.map((course) => (
                 <MenuItem key={course._id} value={course._id}>
                   <Checkbox checked={formData.courses.includes(course._id)} />
-                  <ListItemText primary={course.name} />
+                  {course.className.map((className)=>{
+                    return (
+                      <ListItemText key={course._id} primary={course.subCode + "  " + course.name + " " + className} />
+                    )
+                  })}
                 </MenuItem>
               ))}
             </Select>

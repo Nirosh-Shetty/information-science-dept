@@ -17,6 +17,7 @@ import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
 import Attendence from "./attendance/Attendance";
 import Temp from "./temp/temp";
+import MyClassesContent from "./features/MyClassesContent";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -67,11 +68,6 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-function MyClassesContent() {
-  return (
-    <div>My Classes Page - Display staff &apos;s teaching schedule here</div>
-  );
-}
 
 function AssignmentsContent() {
   return <div>Assignments Page - Manage and grade assignments</div>;

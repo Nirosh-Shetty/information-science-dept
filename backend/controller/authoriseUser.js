@@ -5,7 +5,7 @@ import studentModel from "../model/studentModel.js";
 export const authorizeUser = async (req, res) => {
   const { id, role } = req.user;
   const reqRole = req.get("role");
-  console.log(reqRole);
+  // console.log(reqRole);
   if (!(role == reqRole)) {
     return res.status(401).json({
       success: false,
