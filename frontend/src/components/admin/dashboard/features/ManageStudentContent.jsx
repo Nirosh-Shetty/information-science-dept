@@ -109,7 +109,7 @@ export default function StudentSection() {
         subCode: newCourseCode.trim(),
         name: newCourse.trim(),
       });
-      console.log(response)
+      
       if(response.data.message === "Class name already exists in the course.") {
         return 
       }

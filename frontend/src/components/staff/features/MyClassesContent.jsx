@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { staffAtom } from '../../../../recoil/atoms/staffAtom';
 import { BACKEND_URL } from '../../../../globals';
 import {
@@ -11,38 +11,17 @@ import {
     TableRow,
     Paper,
 } from '@mui/material';
+import { useTheme } from '@emotion/react';
+import { classAtom } from '../../../../recoil/atoms/classAtom';
 
 const MyClassesContent = () => {
-    const [classes, setClasses] = useState([]);
-    const [courses, setCourses] = useState([]);
-    const [staff] = useRecoilState(staffAtom);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${BACKEND_URL}/courses/getall`);
-                const data = await response.json();
-                setCourses(data);
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-            }
-        };
-        fetchData();
-    }, []); // Fetch only once on component mount
-
-    useEffect(() => {
-        if (courses.length > 0 && staff?.courses) {
-            const filteredClasses = courses.filter((course) =>
-                staff.courses.includes(course._id)
-            );
-            setClasses(filteredClasses);
-        }
-    }, [courses, staff]); // Re-run whenever `courses` or `staff` changes
+    const theme = useTheme(); 
+    const [classes, setClasses] = useRecoilState(classAtom);
 
     return (
         <TableContainer component={Paper}>
             <Table>
-                <TableHead>
+                <TableHead sx={{ backgroundColor: theme.palette.action.hover }}>
                     <TableRow>
                         <TableCell><strong>Name</strong></TableCell>
                         <TableCell><strong>SubCode</strong></TableCell>
@@ -50,7 +29,7 @@ const MyClassesContent = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {classes.map((cls) => (
+                    {classes?.map((cls) => (
                         <TableRow key={cls._id}>
                             <TableCell>{cls.name}</TableCell>
                             <TableCell>{cls.subCode}</TableCell>

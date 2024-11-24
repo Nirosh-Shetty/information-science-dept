@@ -3,13 +3,14 @@ import bcrypt from "bcrypt";
 
 export const addStaff = async (req, res) => {
     try {
-        const { name, employeeId, email, phoneNumber, courses, designation, password } = req.body;
+        let { name, employeeId, email, phoneNumber, courses, designation, password, username } = req.body;
         if (!name || !employeeId || !email) {
             return res.status(400).json({ message: "fullName, employeeId, and email are required." });
         }
         password = bcrypt.hashSync(password, 10);
         const newStaff = new Staff({
             name,
+            username,
             employeeId,
             phoneNumber,
             courses,
@@ -66,10 +67,6 @@ export const updateStaffById = async (req, res) => {
             return res.status(400).json({ message: "id is required to update staff details." });
         }
 
-        if(updates.password){
-            updates.password = bcrypt.hashSync(updates.password, 10);
-        }
-
         const updatedStaff = await Staff.findOneAndUpdate({ employeeId }, updates, { new: true });
 
 
@@ -88,7 +85,7 @@ export const deleteStaffById = async (req, res) => {
     try {
         const { id } = req.query;
         if (!id) {
-            return res.status(400).json({ message: "id is required to delete a student." });
+            return res.status(400).json({ message: "id is required to delete a staff." });
         }
 
         const deleteStaff = await Staff.findOneAndDelete({ employeeId : id });

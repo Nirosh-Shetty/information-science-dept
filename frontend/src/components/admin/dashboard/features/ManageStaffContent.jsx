@@ -43,6 +43,7 @@ const ManageStaffContent = () => {
   const [openForm, setOpenForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    username: "",
     employeeId: "",
     designation: "",
     email: "",
@@ -70,8 +71,9 @@ const ManageStaffContent = () => {
   const handleAddStaff = async () => {
     try {
       if (editMode) {
+        const { password, ...formDataWithoutPassword } = formData;
         await axios.put(`${BACKEND_URL}/staff/update`, {
-          ...formData,
+          ...formDataWithoutPassword,
           id: selectedStaffId,
         });
         setStaffList(
@@ -108,13 +110,13 @@ const ManageStaffContent = () => {
     const fetchStaffData = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/staff/get`);
-
         setStaffList(response.data);
+        console.log(staffList +"Staffdatafetched");
       } catch (error) {
         console.error("Error fetching staff:", error);
       }
     };
-    fetchStaffData();
+    fetchStaffData()
   }, []);
 
   const handleOpenForm = () => {
@@ -125,6 +127,7 @@ const ManageStaffContent = () => {
     setOpenForm(false);
     setFormData({
       name: "",
+      username: "",
       employeeId: "",
       designation: "",
       email: "",
@@ -176,41 +179,55 @@ const ManageStaffContent = () => {
               <TableCell>Designation</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Courses</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {staffList.map((staff) => (
-              <TableRow key={staff.id}>
+              <TableRow key={staff.employeeId}>
                 <TableCell>{staff.name}</TableCell>
                 <TableCell>{staff.employeeId}</TableCell>
                 <TableCell>{staff.designation}</TableCell>
                 <TableCell>{staff.email}</TableCell>
                 <TableCell>
                   <Button
-                    aria-controls="course-menu"
+                    aria-controls={`course-menu-${staff.employeeId}`}
                     aria-haspopup="true"
-                    onClick={(event) => handleClick(event, staff.id)}
+                    onClick={(event) => handleClick(event, staff.employeeId)}
                   >
                     View Courses
                   </Button>
                   <Menu
-                    id="course-menu"
+                    id={`course-menu-${staff.id}`}
                     anchorEl={anchorEl}
-                    open={Boolean(anchorEl) && selectedStaff === staff.id}
+                    open={Boolean(anchorEl) && selectedStaff === staff.employeeId}
                     onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
                   >
                     {staff.courses.map((courseId) => {
                       const course = courses.find((c) => c._id === courseId);
                       return (
-                        <MenuItem key={courseId}>
-                          {course ? course.subCode + " " + course.name + " " + course.className : "Unknown Course"}
+                        <MenuItem
+                          key={courseId}
+                          style={{ padding: "8px 16px" }}
+                        >
+                          {course
+                            ? `${course.subCode} ${course.name} ${course.className}`
+                            : "Unknown Course"}
                         </MenuItem>
                       );
                     })}
                   </Menu>
                 </TableCell>
-                <TableCell align="right">
+
+                <TableCell align="">
                   <Tooltip title="Edit">
                     <IconButton
                       color="primary"
@@ -247,8 +264,16 @@ const ManageStaffContent = () => {
             fullWidth
             variant="outlined"
             value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          <TextField
+            margin="dense"
+            label="Username"
+            fullWidth
+            variant="outlined"
+            value={formData.username}
             onChange={(e) =>
-              setFormData({ ...formData, name: e.target.value })
+              setFormData({ ...formData, username: e.target.value })
             }
           />
           <TextField
@@ -264,7 +289,7 @@ const ManageStaffContent = () => {
           />
           <TextField
             margin="dense"
-            label="designation"
+            label="Designation"
             fullWidth
             variant="outlined"
             value={formData.designation}
@@ -282,18 +307,20 @@ const ManageStaffContent = () => {
               setFormData({ ...formData, email: e.target.value })
             }
           />
-          <TextField
-            margin="dense"
-            label="Password"
-            fullWidth
-            variant="outlined"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-          />
-          <FormControl fullWidth style={{ marginTop: "10px" }}>
-            <InputLabel>Subjects</InputLabel>
+          {!editMode && (
+            <TextField
+              margin="dense"
+              label="Password"
+              fullWidth
+              variant="outlined"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+            />
+          )}
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>Select Courses</InputLabel>
             <Select
               multiple
               value={formData.courses}
@@ -302,32 +329,33 @@ const ManageStaffContent = () => {
               }
               renderValue={(selected) =>
                 selected
-                  .map((id) => {
-                    const course = courses.find((course) => course._id === id);
-                    return course ? course.subCode + " " + course.name + " " + course.className : id;
+                  .map((courseId) => {
+                    const course = courses.find((c) => c._id === courseId);
+                    return course ? `${course.subCode} ${course.name} ${course.className}` : "Unknown Course";
                   })
                   .join(", ")
               }
             >
               {courses.map((course) => (
                 <MenuItem key={course._id} value={course._id}>
-                  <Checkbox checked={formData.courses.includes(course._id)} />
-                  {course.className.map((className)=>{
-                    return (
-                      <ListItemText key={course._id} primary={course.subCode + "  " + course.name + " " + className} />
-                    )
-                  })}
+                  <Checkbox
+                    checked={formData.courses.includes(course._id)}
+                  />
+                  <ListItemText primary={`${course.subCode} ${course.name} ${course.className}`} />
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseForm} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAddStaff} variant="contained" color="primary">
-            {editMode ? "Update" : "Add"}
+          <Button onClick={handleCloseForm}>Cancel</Button>
+          <Button onClick={handleAddStaff} color="primary">
+            {editMode ? "Save Changes" : "Add Staff"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -337,14 +365,12 @@ const ManageStaffContent = () => {
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
       >
-        <DialogTitle>Delete Staff</DialogTitle>
+        <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete this staff member?
+          <Typography>Are you sure you want to delete this staff member?</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
           <Button onClick={handleDeleteStaff} color="error">
             Delete
           </Button>

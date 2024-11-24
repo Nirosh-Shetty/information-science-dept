@@ -10,6 +10,7 @@ const staffSchema = new mongoose.Schema({
   role: { type: String, default: "staff" },
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
   password: { type: String, required: true },
+  assignment: [{ type: mongoose.Schema.Types.ObjectId, ref: "Assignment" }],
 });
 
 export default mongoose.model("Staff", staffSchema);
