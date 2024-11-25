@@ -7,7 +7,6 @@ import SchoolIcon from "@mui/icons-material/School";
 const SignInOptions = () => {
   const navigate = useNavigate();
 
-  // Array to map the sign-in options
   const signInOptions = [
     {
       title: "Admin",
@@ -36,7 +35,7 @@ const SignInOptions = () => {
   ];
 
   return (
-    <div className="flex flex-col w-full h-screen items-center justify-evenly bg-gray-100 dark:bg-gray-900 pb-16 ">
+    <div className="flex flex-col w-full h-screen items-center justify-evenly bg-gray-100 dark:bg-gray-900 pb-16">
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-5xl font-bold pb-4 text-gray-800 dark:text-gray-200">
           Welcome to ISE Department
@@ -49,7 +48,7 @@ const SignInOptions = () => {
         {signInOptions.map((option, index) => (
           <div
             key={index}
-            className={`w-64 h-72 rounded-lg flex items-center flex-col justify-center p-5 cursor-pointer ${option.boxbg} shadow-lg `}
+            className={`w-64 h-72 rounded-lg flex items-center flex-col justify-center p-5 cursor-pointer ${option.boxbg} shadow-md hover:shadow-2xl hover:scale-105 hover:-translate-y-2 transition-all duration-300 ease-in-out`}
             onClick={() => navigate(option.path)}
           >
             {option.icon}

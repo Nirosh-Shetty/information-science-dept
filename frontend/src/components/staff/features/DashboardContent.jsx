@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Grid,
   Card,
@@ -17,13 +17,15 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTheme } from "@emotion/react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { staffAtom } from "../../../../recoil/atoms/staffAtom";
+import { BACKEND_URL } from "../../../../globals";
 
-const initialEvents = [
+const updatedEvents = [
   {
     id: 1,
     title: "Team Meeting",
-    date: new Date("2024-11-05"),
-    completed: false,
+    date: new Date("2025-11-05"),
     imgSrc: null,
     description: "Monthly team meeting to discuss progress and goals.",
     maxStudents: 10,
@@ -31,8 +33,7 @@ const initialEvents = [
   {
     id: 2,
     title: "Team Meeting",
-    date: new Date("2024-11-05"),
-    completed: false,
+    date: new Date("2025-11-05"),
     imgSrc: null,
     description: "Monthly team meeting to discuss progress and goals.",
     maxStudents: 10,
@@ -40,8 +41,7 @@ const initialEvents = [
   {
     id: 3,
     title: "Team Meeting",
-    date: new Date("2024-11-05"),
-    completed: false,
+    date: new Date("2025-11-05"),
     imgSrc: null,
     description: "Monthly team meeting to discuss progress and goals.",
     maxStudents: 10,
@@ -50,7 +50,6 @@ const initialEvents = [
     id: 4,
     title: "Project Deadline",
     date: new Date("2024-10-30"),
-    completed: true,
     imgSrc: null,
     description: "Final deadline for project submission.",
     maxStudents: 5,
@@ -59,7 +58,6 @@ const initialEvents = [
     id: 5,
     title: "Project Deadline",
     date: new Date("2024-10-30"),
-    completed: true,
     imgSrc: null,
     description: "Final deadline for project submission.",
     maxStudents: 5,
@@ -68,12 +66,18 @@ const initialEvents = [
     id: 6,
     title: "Project Deadline",
     date: new Date("2024-10-30"),
-    completed: true,
     imgSrc: null,
     description: "Final deadline for project submission.",
     maxStudents: 5,
   },
 ];
+
+const currentDate = new Date();
+
+const initialEvents = updatedEvents.map(event => ({
+  ...event,
+  completed: event.date < currentDate,
+}));
 
 function DashboardContent() {
   const [events, setEvents] = useState(initialEvents);
@@ -85,7 +89,7 @@ function DashboardContent() {
   const [eventImage, setEventImage] = useState(null);
   const [eventDescription, setEventDescription] = useState("");
   const [eventMaxStudents, setEventMaxStudents] = useState("");
-
+  const [staff, setStaff] = useRecoilState(staffAtom);
   const handleOpen = (event = null) => {
     if (event) {
       setIsEditing(true);
@@ -181,7 +185,7 @@ function DashboardContent() {
                 </Typography>
               </Box>
               <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                5
+                {staff?.courses?.length ? staff.courses.length : "loading..."}
               </Typography>
               <Typography color="text.secondary">
                 Current classes assigned

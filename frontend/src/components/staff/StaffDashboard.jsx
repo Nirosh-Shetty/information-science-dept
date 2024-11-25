@@ -17,6 +17,11 @@ import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
 import Attendence from "./attendance/Attendance";
 import Temp from "./temp/temp";
+import MyClassesContent from "./features/MyClassesContent";
+import AssignmentsContent from "./features/AssignmentContent";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { classAtom } from "../../../recoil/atoms/classAtom";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -67,16 +72,6 @@ const Skeleton = styled("div")(({ theme, height }) => ({
   content: '" "',
 }));
 
-function MyClassesContent() {
-  return (
-    <div>My Classes Page - Display staff &apos;s teaching schedule here</div>
-  );
-}
-
-function AssignmentsContent() {
-  return <div>Assignments Page - Manage and grade assignments</div>;
-}
-
 function ResourcesContent() {
   return <Temp />;
 }
@@ -96,6 +91,8 @@ function LeaveRequestsContent() {
 export default function StaffDashboard(props) {
   const [staff, setStaff] = useRecoilState(staffAtom);
   const [loading, setLoading] = React.useState(true);
+  const [courses, setCourses] = React.useState([]);
+  const [classes, setClasses] = useRecoilState(classAtom);
   const navigate = useNavigate();
   const { window } = props;
   const router = useDemoRouter("/staff/dashboard");
@@ -114,13 +111,12 @@ export default function StaffDashboard(props) {
           },
         });
         const data = await res.json();
-        // console.log("dashboard" + data);
         setStaff(data.User);
       } catch (err) {
         setStaff(null);
         console.log(err);
       } finally {
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false after the fetch
       }
     };
 
@@ -134,7 +130,30 @@ export default function StaffDashboard(props) {
   }, [staff, navigate, loading]);
 
   React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/courses/getall`);
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchData();
+  }, []); // Only fetch data once when the component mounts
+
+  React.useEffect(() => {
+    if (courses.length > 0 && staff?.courses) {
+      const filteredClasses = courses.filter((course) =>
+        staff.courses.includes(course._id)
+      );
+      setClasses(filteredClasses);
+    }
+  }, [courses, staff]); // Run this logic whenever `courses` or `staff` changes
+
+  React.useEffect(() => {
     if (
+      !loading &&
       ![
         "/staff/dashboard",
         "/staff/classes",
@@ -147,7 +166,7 @@ export default function StaffDashboard(props) {
     ) {
       router.navigate("/staff/dashboard");
     }
-  }, [router]);
+  }, [router, loading]);
 
   const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
@@ -167,12 +186,29 @@ export default function StaffDashboard(props) {
         return <LeaveRequestsContent />;
       case "/staff/logout":
         localStorage.setItem("token", "");
-        return navigate("/signin/staff");
+        return navigate("/signinoptions");
       default:
         return <DashboardContent />;
     }
   }, [router.pathname]);
 
+  // Do not render anything if loading
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh", // Full viewport height for centering
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Render only when not loading and user is authenticated
   return (
     <AppProvider
       navigation={STAFF_NAVIGATION}
@@ -181,8 +217,6 @@ export default function StaffDashboard(props) {
       branding={{ title: "Atria IT ISE Department - Staff" }}
       window={demoWindow}
     >
-      {/* <CssBaseline /> */}
-
       <DashboardLayout
         sx={{
           overflow: "hidden",
