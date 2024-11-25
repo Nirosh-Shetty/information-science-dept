@@ -167,7 +167,7 @@ export default function StaffDashboard(props) {
         return <LeaveRequestsContent />;
       case "/staff/logout":
         localStorage.setItem("token", "");
-        return navigate("/staff/signin");
+        return navigate("/signin/staff");
       default:
         return <DashboardContent />;
     }

@@ -18,9 +18,7 @@ const jwtMiddleware = (req, res, next) => {
       });
     }
     const user = jwt.verify(token, process.env.JWT_TOKEN_SECRET);
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     // console.log("Decoded User:", user);
-
     req.user = user;
     next();
   } catch (err) {

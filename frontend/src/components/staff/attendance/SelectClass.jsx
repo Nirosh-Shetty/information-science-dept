@@ -9,8 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { staffAtom } from "../../../../recoil/atoms/staffAtom";
+import { useRecoilState } from "recoil";
 
 export default function SelectClass() {
+  const [staff, setStaff] = useRecoilState(staffAtom);
+  console.log("shjhhhhhh", staff);
   return (
     <div className="w-8/9 my-5">
       <Select className="w-full">

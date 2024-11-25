@@ -15,11 +15,10 @@ export const authorizeUser = async (req, res) => {
   const userModel =
     role == "admin" ? adminModel : role == "staff" ? staffModel : studentModel;
   try {
-    const User = await userModel
-      .findOne({
-        _id: id,
-      })
-      .select("-password");
+    const User = await userModel.findOne({
+      _id: id,
+    });
+    // .exclude("password");
     // console.log(User);
     if (!User) {
       return res.status(401).json({
