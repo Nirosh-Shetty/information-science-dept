@@ -143,13 +143,17 @@ export default function StaffDashboard(props) {
   }, []); // Only fetch data once when the component mounts
 
   React.useEffect(() => {
-    if (courses.length > 0 && staff?.courses) {
+    if (courses.length > 0 && Array.isArray(staff?.courses)) {
+      // Extract IDs from staff.courses
+      const staffCourseIds = staff.courses.map((course) => course._id);
+  
       const filteredClasses = courses.filter((course) =>
-        staff.courses.includes(course._id)
+        staffCourseIds.includes(course._id)
       );
       setClasses(filteredClasses);
     }
-  }, [courses, staff]); // Run this logic whenever `courses` or `staff` changes
+  }, [courses, staff]);
+   // Run this logic whenever `courses` or `staff` changes
 
   React.useEffect(() => {
     if (
