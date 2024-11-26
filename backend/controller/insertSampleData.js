@@ -8,8 +8,9 @@ import bcrypt from "bcrypt";
 
 // Insert Data
 async function insertData() {
-  console.log(bcrypt.hash("staff1", 10));
+  console.log(bcrypt.hash("admin1", 10));
 
+  // Create Admin
   const admin = await Admin.create({
     username: "admin1",
     password: "$2a$10$7eITKDf.0GFYE7azwEy4yOHESRZQLpON2YFbotbJb.yxF2Nv2ofbi",
@@ -22,22 +23,24 @@ async function insertData() {
     avatar: "",
   });
 
+  // Create Classes
   const classData1 = await Class.create({
     name: "3rd Year ISE",
     department: "Information Science and Engineering",
     semester: 5,
-    students: [],
-    courses: [],
+    students: [], // Will be populated later
+    courses: [], // Will be populated later
   });
 
   const classData2 = await Class.create({
     name: "2nd Year ISE",
     department: "Information Science and Engineering",
     semester: 3,
-    students: [],
-    courses: [],
+    students: [], // Will be populated later
+    courses: [], // Will be populated later
   });
 
+  // Create Staff
   const staff1 = await Staff.create({
     name: "Dr. Ramesh Kumar",
     username: "staff1",
@@ -45,10 +48,11 @@ async function insertData() {
     email: "ramesh.kumar@college.edu",
     phoneNumber: "9876543210",
     role: "staff",
-    courses: [],
-    password: "$2b$10$WgC5cLSbmB4nJ1IjPIvJP.0htRU4uO6VQ8ULXxLy0dHPmmPD/7Qj.",
+    courses: [], // Will be populated later
+    password: "$2b$10$fBkXcO0LgllYFVZxtZBYGO2qA/GQkCSCsvYTefVsmn908CBMxX.gy",
   });
 
+  // Create Students
   const students = await Student.insertMany([
     {
       fullName: "Sita Sharma",
@@ -105,6 +109,7 @@ async function insertData() {
   const course1 = await Course.create({
     name: "Data Structures",
     code: "CS101",
+    subCode: "DS101", // Provide the subCode here
     class: classData1._id,
     staff: staff1._id,
   });
@@ -112,6 +117,7 @@ async function insertData() {
   const course2 = await Course.create({
     name: "Operating Systems",
     code: "CS102",
+    subCode: "OS102", // Provide the subCode here
     class: classData1._id,
     staff: staff1._id,
   });
@@ -119,6 +125,7 @@ async function insertData() {
   const course3 = await Course.create({
     name: "Computer Networks",
     code: "CS201",
+    subCode: "CN201", // Provide the subCode here
     class: classData2._id,
     staff: staff1._id,
   });
@@ -126,14 +133,16 @@ async function insertData() {
   const course4 = await Course.create({
     name: "Database Management Systems",
     code: "CS202",
+    subCode: "DBMS202", // Provide the subCode here
     class: classData2._id,
     staff: staff1._id,
   });
 
+  // Assign courses to staff
   staff1.courses.push(course1._id, course2._id, course3._id, course4._id);
   await staff1.save();
 
-  // Updating classes with students and courses
+  // Update Classes with students and courses
   classData1.students.push(students[0]._id, students[1]._id, students[3]._id);
   classData1.courses.push(course1._id, course2._id);
   await classData1.save();
@@ -142,12 +151,20 @@ async function insertData() {
   classData2.courses.push(course3._id, course4._id);
   await classData2.save();
 
-  // Assign courses to students and update attendance
+  // Assign courses to students
+  students[0].courses.push(course1._id, course2._id);
+  students[1].courses.push(course1._id, course2._id);
+  students[2].courses.push(course3._id, course4._id);
+  students[3].courses.push(course1._id, course2._id);
+  students[4].courses.push(course3._id, course4._id);
+  await Student.bulkSave(students);
+
+  // Insert Attendance Records
   const attendanceRecords = [
     {
       class: classData1._id,
       course: course1._id,
-      session: "did somthing",
+      session: "did something",
       date: new Date("2024-10-28"),
       attendance: [
         { student: students[0]._id, present: true },
@@ -157,7 +174,7 @@ async function insertData() {
     },
     {
       class: classData1._id,
-      session: "did somthing",
+      session: "did something",
       course: course2._id,
       date: new Date("2024-11-01"),
       attendance: [
@@ -169,7 +186,7 @@ async function insertData() {
     {
       class: classData2._id,
       course: course3._id,
-      session: "did somthing",
+      session: "did something",
       date: new Date("2024-10-30"),
       attendance: [
         { student: students[2]._id, present: true },
@@ -179,7 +196,7 @@ async function insertData() {
     {
       class: classData2._id,
       course: course4._id,
-      session: "did somthing",
+      session: "did something",
       date: new Date("2024-11-02"),
       attendance: [
         { student: students[2]._id, present: true },
