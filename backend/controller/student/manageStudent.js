@@ -1,13 +1,14 @@
 import Student from "../../model/studentModel.js"; // Adjust the path accordingly
+import bcrypt from "bcrypt";
 
 export const addStudent = async (req, res) => {
     try {
-        const { fullName, usn, dob, phoneNumber, className, courses, email } = req.body;
+        let { fullName, usn, dob, phoneNumber, className, courses, email, password } = req.body;
 
-        if (!fullName || !usn || !className) {
+        if (!fullName || !usn || !className || !password) {
             return res.status(400).json({ message: "fullName, usn, and className are required." });
         }
-
+        password = bcrypt.hashSync(password, 10);
         const newStudent = new Student({
             fullName,
             usn,
@@ -15,7 +16,8 @@ export const addStudent = async (req, res) => {
             phoneNumber,
             className,
             courses,
-            email
+            email,
+            password,
         });
 
         await newStudent.save();

@@ -20,72 +20,19 @@ import { useTheme } from "@emotion/react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { staffAtom } from "../../../../recoil/atoms/staffAtom";
 import { BACKEND_URL } from "../../../../globals";
-
-const updatedEvents = [
-  {
-    id: 1,
-    title: "Team Meeting",
-    date: new Date("2025-11-05"),
-    imgSrc: null,
-    description: "Monthly team meeting to discuss progress and goals.",
-    maxStudents: 10,
-  },
-  {
-    id: 2,
-    title: "Team Meeting",
-    date: new Date("2025-11-05"),
-    imgSrc: null,
-    description: "Monthly team meeting to discuss progress and goals.",
-    maxStudents: 10,
-  },
-  {
-    id: 3,
-    title: "Team Meeting",
-    date: new Date("2025-11-05"),
-    imgSrc: null,
-    description: "Monthly team meeting to discuss progress and goals.",
-    maxStudents: 10,
-  },
-  {
-    id: 4,
-    title: "Project Deadline",
-    date: new Date("2024-10-30"),
-    imgSrc: null,
-    description: "Final deadline for project submission.",
-    maxStudents: 5,
-  },
-  {
-    id: 5,
-    title: "Project Deadline",
-    date: new Date("2024-10-30"),
-    imgSrc: null,
-    description: "Final deadline for project submission.",
-    maxStudents: 5,
-  },
-  {
-    id: 6,
-    title: "Project Deadline",
-    date: new Date("2024-10-30"),
-    imgSrc: null,
-    description: "Final deadline for project submission.",
-    maxStudents: 5,
-  },
-];
+import axios from "axios";
+import { format } from "date-fns";
 
 const currentDate = new Date();
 
-const initialEvents = updatedEvents.map(event => ({
-  ...event,
-  completed: event.date < currentDate,
-}));
-
 function DashboardContent() {
-  const [events, setEvents] = useState(initialEvents);
+  const [events, setEvents] = useState([]);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentEventId, setCurrentEventId] = useState(null);
   const [eventTitle, setEventTitle] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [oldImage, setOldImage] = useState("");
   const [eventImage, setEventImage] = useState(null);
   const [eventDescription, setEventDescription] = useState("");
   const [eventMaxStudents, setEventMaxStudents] = useState("");
@@ -93,12 +40,17 @@ function DashboardContent() {
   const handleOpen = (event = null) => {
     if (event) {
       setIsEditing(true);
-      setCurrentEventId(event.id);
+      setCurrentEventId(event._id); // Ensure correct event id is set
       setEventTitle(event.title);
-      setEventDate(event.date.toISOString().split("T")[0]);
-      setEventImage(null);
+      setEventDate(
+        event.date ? format(new Date(event.date), "yyyy-MM-dd") : ""
+      );
+      if (event.imageUrl) {
+        setEventImage(null); // Only set the new image when it's changed
+        setOldImage(event.imageUrl); // Keep the old image URL for update
+      }
       setEventDescription(event.description);
-      setEventMaxStudents(event.maxStudents);
+      setEventMaxStudents(event.teamSize);
     } else {
       resetForm();
       setIsEditing(false);
@@ -120,49 +72,88 @@ function DashboardContent() {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.currentTarget.files[0];
     setEventImage(file);
   };
 
   const handleAddEvent = () => {
-    const newEvent = {
-      id: events.length + 1,
-      title: eventTitle,
-      date: new Date(eventDate),
-      completed: new Date(eventDate) < Date.now(),
-      imgSrc: eventImage ? URL.createObjectURL(eventImage) : "",
-      description: eventDescription,
-      maxStudents: parseInt(eventMaxStudents, 10),
-    };
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
+    const formData = new FormData();
+    formData.append("title", eventTitle || "Untitled Event");
+    formData.append("date", eventDate ? new Date(eventDate) : new Date());
+    formData.append(
+      "description",
+      eventDescription || "No description available."
+    );
+    formData.append("teamSize", eventMaxStudents || 5);
+    if (eventImage) formData.append("image", eventImage);
+
+    axios.post(`${BACKEND_URL}/event/add`, formData).then((res) => {
+      setEvents((prevEvents) => [...prevEvents, res.data.newEvent]);
+    });
     handleClose();
   };
 
   const handleEditEvent = () => {
     const updatedEvent = {
-      id: currentEventId,
       title: eventTitle,
       date: new Date(eventDate),
       completed: new Date(eventDate) < Date.now(),
-      imgSrc: eventImage ? URL.createObjectURL(eventImage) : "",
+      imageUrl: eventImage ? eventImage : oldImage,
       description: eventDescription,
       maxStudents: parseInt(eventMaxStudents, 10),
     };
-    setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === currentEventId ? updatedEvent : event
-      )
-    );
-    handleClose();
+  
+    const formData = new FormData();
+    formData.append("title", updatedEvent.title || "Untitled Event");
+    formData.append("date", updatedEvent.date ? updatedEvent.date : new Date());
+    formData.append("description", updatedEvent.description || "No description available.");
+    formData.append("teamSize", updatedEvent.maxStudents || 5);
+  
+    if (eventImage) {
+      formData.append("image", eventImage);
+    } else if (oldImage) {
+      formData.append("oldImage", oldImage);
+    }
+  
+    axios.put(`${BACKEND_URL}/event/update/${currentEventId}`, formData)
+      .then((data) => {
+        setEvents((prevEvents) => prevEvents.map((event) => 
+          event._id === currentEventId ? data?.data?.updatedEvent : event
+        ));
+        handleClose(); // Close the modal after editing
+      })
+      .catch(error => console.error("Error updating event:", error));
   };
+  
 
   const handleDeleteEvent = (id) => {
-    setEvents(events.filter((event) => event.id !== id));
+    axios.delete(`${BACKEND_URL}/event/delete/${id}`).then(() => {
+      setEvents((prevEvents) => prevEvents.filter((event) => event._id !== id));
+    });
   };
 
   const upcomingEvents = events.filter((event) => !event.completed);
   const completedEvents = events.filter((event) => event.completed);
   const theme = useTheme();
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/event/get`);
+        const data = await response.json();
+        setEvents(
+          data.map((event) => ({
+            ...event,
+            completed: new Date(event.date) < currentDate,
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <Box className="p-4" sx={{ bgcolor: "" }}>
       {/* Overview Statistics */}
@@ -267,7 +258,9 @@ function DashboardContent() {
           <Divider sx={{ mb: 2 }} />
           <Button
             variant="contained"
-            onClick={() => handleOpen(null)}
+            onClick={() => {
+              handleOpen(null);
+            }}
             sx={{
               mb: 3,
               bgcolor: "#1a73e8",
@@ -300,7 +293,7 @@ function DashboardContent() {
                     component="img"
                     style={{ height: "270px", objectFit: "fill" }}
                     image={
-                      event.imgSrc ||
+                      `${BACKEND_URL}${event.imageUrl}` ||
                       "https://nationaleventpros.com/wp-content/uploads/2017/12/GK2A3686-1600x1067.jpg"
                     }
                     alt={event.title}
@@ -323,21 +316,28 @@ function DashboardContent() {
                       {event.description}
                     </Typography>
                     <Typography color="text.secondary" sx={{ mt: 1 }}>
-                      Max Team Size: {event.maxStudents}
+                      Max Team Size: {event.teamSize}
+                    </Typography>
+                    <Typography color="text.secondary" sx={{ mt: 1 }}>
+                      Date: {format(new Date(event.date), "dd MMM yyyy")}
                     </Typography>
                   </CardContent>
                   <Box sx={{ p: 1, textAlign: "center" }}>
                     <Button
                       variant="text"
-                      onClick={() => handleOpen(event)}
+                      onClick={() => {
+                        setCurrentEventId(event._id); // Correctly set the event ID
+                        handleOpen(event);
+                      }}
                       sx={{ color: "#1a73e8" }}
                     >
                       Edit
                     </Button>
+
                     <Button
                       variant="text"
                       color="error"
-                      onClick={() => handleDeleteEvent(event.id)}
+                      onClick={() => handleDeleteEvent(event._id)}
                     >
                       Delete
                     </Button>
@@ -346,7 +346,7 @@ function DashboardContent() {
               </Grid>
             ))}
           </Grid>
-          <Divider sx={{ mt: 4, mb:2}} />
+          <Divider sx={{ mt: 4, mb: 2 }} />
           <Typography
             variant="h5"
             style={{
@@ -373,7 +373,7 @@ function DashboardContent() {
                     component="img"
                     style={{ height: "270px", objectFit: "fill" }}
                     image={
-                      event.imgSrc ||
+                      `${BACKEND_URL}${event.imageUrl}` ||
                       "https://nationaleventpros.com/wp-content/uploads/2017/12/GK2A3686-1600x1067.jpg"
                     }
                     alt={event.title}
@@ -386,7 +386,7 @@ function DashboardContent() {
                       {event.description}
                     </Typography>
                     <Typography color="text.secondary">
-                      Max Team Size: {event.maxStudents}
+                      Max Team Size: {event.teamSize}
                     </Typography>
                   </CardContent>
                 </Card>
