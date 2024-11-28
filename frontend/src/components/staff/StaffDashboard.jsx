@@ -40,7 +40,6 @@ const STAFF_NAVIGATION = [
   { kind: "divider" },
   { kind: "header", title: "Profile" },
   { segment: "staff/profile", title: "Profile", icon: <AccountCircleIcon /> },
-  { segment: "staff/leaves", title: "Leave Requests", icon: <LogoutIcon /> },
   { segment: "staff/logout", title: "Log Out", icon: <LogoutIcon /> },
 ];
 

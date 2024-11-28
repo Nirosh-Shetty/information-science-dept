@@ -3,10 +3,12 @@ import express from "express";
 import router from "./routes/indexRoutes.js";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
 
 app.use(
   cors({
@@ -18,6 +20,7 @@ app.use(
 );
 
 app.use(router);
+app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

@@ -8,9 +8,9 @@ import SignInOptions from "./components/siginOptions/SignInOptions";
 import StaffDashboard from "./components/staff/StaffDashboard";
 
 import SignIn from "./components/SignIn/SignIn";
-import AdminSignIn from "./components/admin/SignIn/AdminSignIn";
 import AdminDashboard from "./components/admin/dashboard/AdminDashboard";
 import Temp from "./components/staff/temp/temp";
+import StudentDashboard from "./components/student/dashboard/StudentDashboard";
 
 function App() {
   const demoTheme = extendTheme({
@@ -30,6 +30,7 @@ function App() {
           <Route path="/signin/:role" element={<SignIn />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/staff/dashboard" element={<StaffDashboard />} />
+          <Route path="/student/dashboard" element={<StudentDashboard />} />
           <Route path="/temp/:type" element={<Temp />} />
         </Routes>
       </Router>

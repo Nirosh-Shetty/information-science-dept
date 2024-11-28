@@ -67,6 +67,7 @@ export default function StudentSection() {
     usn: "",
     fullName: "",
     email: "",
+    password: "",
   });
   const [deleteUSN, setDeleteUSN] = useState("");
 
@@ -199,12 +200,14 @@ const handleDeleteCourse = async (course) => {
   };
 
   const handleDialogSave = async () => {
+    console.log(newStudent, "newStudent");
     try {
       const response = await axios.post(`${BACKEND_URL}/student/add`, {
         fullName: newStudent.fullName,
         className: selected,
         usn: newStudent.usn,
         email: newStudent.email,
+        password: newStudent.password
       });
       setData([...data, response.data.student]);
       setDialogOpen(false);
@@ -428,6 +431,15 @@ const handleDeleteCourse = async (course) => {
               value={newStudent.email}
               onChange={(e) =>
                 setNewStudent({ ...newStudent, email: e.target.value })
+              }
+            />
+            <TextField
+              label="Password"
+              fullWidth
+              margin="normal"
+              value={newStudent.password}
+              onChange={(e) =>
+                setNewStudent({ ...newStudent, password: e.target.value })
               }
             />
           </DialogContent>
