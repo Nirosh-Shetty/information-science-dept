@@ -22,6 +22,7 @@ import AssignmentsContent from "./features/AssignmentContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { classAtom } from "../../../recoil/atoms/classAtom";
+import QuizContent from "./features/QuizContent";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -35,6 +36,7 @@ const STAFF_NAVIGATION = [
   { kind: "divider" },
   { kind: "header", title: "Resources & Analytics" },
   { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
+  { segment: "staff/quiz", title: "Quiz", icon: <BarChartIcon /> },
   { segment: "staff/attendance", title: "Attendance", icon: <BarChartIcon /> }, // Updated from Student Feedback to Attendance
   { kind: "divider" },
   { kind: "header", title: "Profile" },
@@ -145,14 +147,14 @@ export default function StaffDashboard(props) {
     if (courses.length > 0 && Array.isArray(staff?.courses)) {
       // Extract IDs from staff.courses
       const staffCourseIds = staff.courses.map((course) => course._id);
-  
+
       const filteredClasses = courses.filter((course) =>
         staffCourseIds.includes(course._id)
       );
       setClasses(filteredClasses);
     }
   }, [courses, staff]);
-   // Run this logic whenever `courses` or `staff` changes
+  // Run this logic whenever `courses` or `staff` changes
 
   React.useEffect(() => {
     if (
@@ -162,9 +164,9 @@ export default function StaffDashboard(props) {
         "/staff/classes",
         "/staff/assignments",
         "/staff/resources",
+        "/staff/quiz",
         "/staff/attendance",
         "/staff/profile",
-        "/staff/leaves",
       ].includes(router.pathname)
     ) {
       router.navigate("/staff/dashboard");
@@ -181,6 +183,8 @@ export default function StaffDashboard(props) {
         return <AssignmentsContent />;
       case "/staff/resources":
         return <ResourcesContent />;
+      case "/staff/quiz": // Add case for Quiz route
+        return <QuizContent />;
       case "/staff/attendance":
         return <Attendence />;
       case "/staff/profile":
