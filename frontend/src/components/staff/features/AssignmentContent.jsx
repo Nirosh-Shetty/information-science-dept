@@ -34,6 +34,7 @@ import { classAtom } from "../../../../recoil/atoms/classAtom";
 import { BACKEND_URL } from "../../../../globals";
 import axios from "axios";
 import { assignmentAtom } from "../../../../recoil/atoms/assignmentAtom";
+import { format } from "date-fns";
 
 const AssignmentContent = () => {
   const theme = useTheme();
@@ -187,6 +188,8 @@ const AssignmentContent = () => {
     }
   };
 
+  console.log(assignmentDetails,"ssssssssssss")
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -243,7 +246,10 @@ const AssignmentContent = () => {
               >
                 <TableCell>{assignment.title}</TableCell>
                 <TableCell>{assignment.description}</TableCell>
-                <TableCell>{assignment.dueDate}</TableCell>
+                <TableCell>{assignmentDetails?.dueDate
+  ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+  : "No Due Date"}
+</TableCell>
                 <TableCell>
                   {assignment.classes.className} {assignment.classes.subName}
                 </TableCell>
@@ -365,7 +371,9 @@ const AssignmentContent = () => {
             Description: {assignmentDetails?.description}
           </Typography>
           <Typography variant="subtitle1">
-            Due Date: {assignmentDetails?.dueDate}
+            Due Date: {assignmentDetails?.dueDate
+  ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+  : "No Due Date"}
           </Typography>
           <div className="flex gap-4 mt-4">
             <Chip
