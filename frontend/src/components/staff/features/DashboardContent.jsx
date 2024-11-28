@@ -213,7 +213,7 @@ function DashboardContent() {
                 <Typography variant="h6">Assignments</Typography>
               </Box>
               <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                8
+              {staff?.assignment?.length ? staff.assignment.length : "loading..."}
               </Typography>
               <Typography color="text.secondary">
                 Pending assignments to grade

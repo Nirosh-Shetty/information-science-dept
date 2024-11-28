@@ -87,7 +87,7 @@ const DashboardContent = () => {
         {[
           {
             title: "Total Students",
-            count: studentCount ||  "loading...",
+            count: (studentCount > 0 ? studentCount : 0),
             color: theme.palette.primary.main,
           },
           {

@@ -22,6 +22,7 @@ import AssignmentsContent from "./features/AssignmentContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { classAtom } from "../../../recoil/atoms/classAtom";
+import ProfileContent from "./features/ProfileContent";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -80,9 +81,6 @@ function ResourcesContent() {
 //   return <div>Attendance Page - View attendance records and statistics</div>;
 // }
 
-function StaffProfileContent() {
-  return <div>Profile Page - Manage profile details</div>;
-}
 
 function LeaveRequestsContent() {
   return <div>Leave Requests Page - View and submit leave requests</div>;
@@ -185,7 +183,7 @@ export default function StaffDashboard(props) {
       case "/staff/attendance":
         return <Attendence />;
       case "/staff/profile":
-        return <StaffProfileContent />;
+        return <ProfileContent />;
       case "/staff/leaves":
         return <LeaveRequestsContent />;
       case "/staff/logout":
