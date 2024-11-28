@@ -39,7 +39,6 @@ const STAFF_NAVIGATION = [
   { kind: "divider" },
   { kind: "header", title: "Profile" },
   { segment: "staff/profile", title: "Profile", icon: <AccountCircleIcon /> },
-  { segment: "staff/leaves", title: "Leave Requests", icon: <LogoutIcon /> },
   { segment: "staff/logout", title: "Log Out", icon: <LogoutIcon /> },
 ];
 
@@ -84,9 +83,9 @@ function StaffProfileContent() {
   return <div>Profile Page - Manage profile details</div>;
 }
 
-function LeaveRequestsContent() {
-  return <div>Leave Requests Page - View and submit leave requests</div>;
-}
+// function LeaveRequestsContent() {
+//   return <div>Leave Requests Page - View and submit leave requests</div>;
+// }
 
 export default function StaffDashboard(props) {
   const [staff, setStaff] = useRecoilState(staffAtom);
@@ -186,8 +185,6 @@ export default function StaffDashboard(props) {
         return <Attendence />;
       case "/staff/profile":
         return <StaffProfileContent />;
-      case "/staff/leaves":
-        return <LeaveRequestsContent />;
       case "/staff/logout":
         localStorage.setItem("token", "");
         return navigate("/signinoptions");
