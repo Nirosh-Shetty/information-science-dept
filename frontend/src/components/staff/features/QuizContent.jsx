@@ -12,21 +12,20 @@ import {
 import { useRecoilState } from "recoil";
 import {
   classAtom,
-  currentSelectedClass as currentSelectedClassAtom,
+  currentSelectedCourse as currentSelectedCourseAtom,
 } from "../../../../recoil/atoms/classAtom";
 
 export default function QuizContent() {
   const [classes, setClasses] = useRecoilState(classAtom);
-  const [currentSelectedClass, setCurrentSelectedClass] = useRecoilState(
+  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
     currentSelectedClassAtom
   );
   const handleValueChange = (value) => {
     console.log(value);
     const selectedClass = classes.find((item) => item._id === value);
-    setCurrentSelectedClass(selectedClass);
+    setCurrentSelectedCourse(selectedClass);
   };
-  React.useEffect(() => {
-  }, [currentSelectedClass]);
+  React.useEffect(() => {}, [currentSelectedCourse]);
 
   // console.log(classes);
   return (

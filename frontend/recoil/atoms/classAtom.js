@@ -5,7 +5,7 @@ export const classAtom = atom({
   default: null,
 });
 
-export const currentSelectedClass = atom({
+export const currentSelectedCourse = atom({
   key: "selectedClass",
   default: null,
 });

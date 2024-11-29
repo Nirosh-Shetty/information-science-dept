@@ -7,8 +7,11 @@ import jwt from "jsonwebtoken";
 import insertData from "./insertSampleData.js";
 
 export const signIn = async (req, res) => {
+  // console.log(await bcrypt.hash("123456", 10));
+
   const { identifier, password, role } = req.body;
   // insertData();
+  // console.log(role);
   const userModel =
     role == "admin" ? adminModel : role == "staff" ? staffModel : studentModel;
   try {

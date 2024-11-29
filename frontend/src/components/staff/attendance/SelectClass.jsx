@@ -12,22 +12,22 @@ import {
 import { useRecoilState } from "recoil";
 import {
   classAtom,
-  currentSelectedClass as currentSelectedClassAtom,
+  currentSelectedCourse as currentSelectedCourseAtom,
 } from "../../../../recoil/atoms/classAtom";
+import axios from "axios";
+import { BACKEND_URL } from "../../../../globals";
 
 export default function SelectClass() {
   const [classes, setClasses] = useRecoilState(classAtom);
-  const [currentSelectedClass, setCurrentSelectedClass] = useRecoilState(
-    currentSelectedClassAtom
+  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
+    currentSelectedCourseAtom
   );
+  console.log(classes);
   const handleValueChange = (value) => {
-    console.log(value);
+    // console.log(value);
     const selectedClass = classes.find((item) => item._id === value);
-    setCurrentSelectedClass(selectedClass);
+    setCurrentSelectedCourse(selectedClass);
   };
-  React.useEffect(() => {
-    //ftech the attendence list
-  }, [currentSelectedClass]);
 
   // console.log(classes);
   return (

@@ -57,15 +57,15 @@ const AssignmentContent = () => {
   const [classes, setClasses] = useRecoilState(classAtom);
   const [staff, setStaff] = useRecoilState(staffAtom);
   const [assignments, setAssignments] = useRecoilState(assignmentAtom);
-  const [allAssignment, setAllAssignment] = useState()
+  const [allAssignment, setAllAssignment] = useState();
   React.useEffect(() => {
     const fetchAllAssignments = async () => {
       try {
         const response = await fetch(`${BACKEND_URL}/staff/assignments`);
         const data = await response.json();
-        console.log(data,"dddd")
+        console.log(data, "dddd");
         setAllAssignment(data);
-        console.log(allAssignment, "JJJJ")
+        console.log(allAssignment, "JJJJ");
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
@@ -81,7 +81,6 @@ const AssignmentContent = () => {
       setAssignments(filteredAssignments);
     }
   }, [allAssignment, staff]);
-
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -134,7 +133,7 @@ const AssignmentContent = () => {
           console.error(err);
         });
     }
-  
+
     // Reset form data and close the dialog
     setFormData({
       id: "",
@@ -147,7 +146,6 @@ const AssignmentContent = () => {
       },
     });
   };
-  
 
   const handleAssignmentClick = (assignment) => {
     // Mock student data for the selected assignment
@@ -180,9 +178,11 @@ const AssignmentContent = () => {
   };
 
   const handleDeleteAssignment = async (id) => {
-    const data = await axios.delete(`${BACKEND_URL}/staff/deleteAssignment/${id}`)
-    console.log(data,"hjhhjjjh")
-    if(data.status == 200){
+    const data = await axios.delete(
+      `${BACKEND_URL}/staff/deleteAssignment/${id}`
+    );
+    console.log(data, "hjhhjjjh");
+    if (data.status == 200) {
       setAssignments(assignments.filter((assignment) => assignment._id !== id));
     }
   };
