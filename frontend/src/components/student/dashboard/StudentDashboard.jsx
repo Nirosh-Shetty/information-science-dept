@@ -10,6 +10,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import DashboardContent from "./features/DashboardContent";
+import { BACKEND_URL } from "../../../../globals";
+import { useRecoilState } from "recoil";
+import { studentAtom } from "../../../../recoil/atoms/studentAtom";
 
 const NAVIGATION = [
   {
@@ -100,7 +103,7 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 }));
 
 export default function StudentDashboard(props) {
-  const [student, setStudent] = React.useState();
+  const [student, setStudent] = useRecoilState(studentAtom);
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
   const { window } = props;
@@ -121,6 +124,37 @@ export default function StudentDashboard(props) {
     }
   }, [router]);
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${BACKEND_URL}/authoriseuser`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            role: "student",
+          },
+        });
+        const data = await res.json();
+        // console.log("dashboard" + data);
+        setStudent(data.User);
+      } catch (err) {
+        setStudent(null);
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  React.useEffect(() => {
+    if (!loading && (student === undefined || !student)) {
+      navigate("/signin/student");
+    }
+  }, [student, navigate, loading]);
 
   function GradesContent() {
     return <h1>Grades</h1>;
