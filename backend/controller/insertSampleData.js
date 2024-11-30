@@ -8,8 +8,6 @@ import bcrypt from "bcrypt";
 
 // Insert Data
 async function insertData() {
-  console.log(bcrypt.hash("admin1", 10));
-
   // Create Admin
   const admin = await Admin.create({
     username: "admin1",
@@ -53,58 +51,6 @@ async function insertData() {
   });
 
   // Create Students
-  const students = await Student.insertMany([
-    {
-      fullName: "Sita Sharma",
-      usn: "USN001",
-      dob: new Date("2003-02-15"),
-      gender: "Female",
-      phoneNumber: "9123456789",
-      class: classData1._id,
-      role: "student",
-      courses: [],
-    },
-    {
-      fullName: "Rajesh Kumar",
-      usn: "USN002",
-      dob: new Date("2003-05-10"),
-      gender: "Male",
-      phoneNumber: "9987654321",
-      class: classData1._id,
-      role: "student",
-      courses: [],
-    },
-    {
-      fullName: "Pooja Patil",
-      usn: "USN003",
-      dob: new Date("2004-01-22"),
-      gender: "Female",
-      phoneNumber: "9876545678",
-      class: classData2._id,
-      role: "student",
-      courses: [],
-    },
-    {
-      fullName: "Rahul Mehta",
-      usn: "USN004",
-      dob: new Date("2003-09-14"),
-      gender: "Male",
-      phoneNumber: "9123456781",
-      class: classData1._id,
-      role: "student",
-      courses: [],
-    },
-    {
-      fullName: "Anita Desai",
-      usn: "USN005",
-      dob: new Date("2003-11-20"),
-      gender: "Female",
-      phoneNumber: "9123456782",
-      class: classData2._id,
-      role: "student",
-      courses: [],
-    },
-  ]);
 
   const course1 = await Course.create({
     name: "Data Structures",
@@ -137,6 +83,139 @@ async function insertData() {
     class: classData2._id,
     staff: staff1._id,
   });
+
+  const students = await Student.insertMany([
+    {
+      fullName: "Sita Sharma",
+      usn: "USN001",
+      dob: new Date("2003-02-15"),
+      phoneNumber: "9123456789",
+      password: "$2b$10$J4EJvVJdoB3othp3OMGK7uxE/M1Cbx7PpJ0ZmQCvuRbKirCE0YzYa", // Example hashed password
+      email: "a@g.com",
+      className: "3rd Year ISE",
+      role: "student",
+      courses: [
+        {
+          course: course1._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 20 },
+            { internalNumber: 2, marks: 18 },
+          ],
+        },
+        {
+          course: course2._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 22 },
+            { internalNumber: 2, marks: 19 },
+          ],
+        },
+      ],
+    },
+    {
+      fullName: "Rajesh Kumar",
+      usn: "USN002",
+      dob: new Date("2003-05-10"),
+      phoneNumber: "9987654321",
+      password: "$2b$10$J4EJvVJdoB3othp3OMGK7uxE/M1Cbx7PpJ0ZmQCvuRbKirCE0YzYa",
+      email: "rajesh.kumar@example.com",
+      className: "3rd Year ISE",
+      role: "student",
+      courses: [
+        {
+          course: course1._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 25 },
+            { internalNumber: 2, marks: 24 },
+          ],
+        },
+        {
+          course: course2._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 23 },
+            { internalNumber: 2, marks: 21 },
+          ],
+        },
+      ],
+    },
+    {
+      fullName: "Pooja Patil",
+      usn: "USN003",
+      dob: new Date("2004-01-22"),
+      phoneNumber: "9876545678",
+      password: "$2b$10$J4EJvVJdoB3othp3OMGK7uxE/M1Cbx7PpJ0ZmQCvuRbKirCE0YzYa",
+      email: "pooja.patil@example.com",
+      className: "2nd Year ISE",
+      role: "student",
+      courses: [
+        {
+          course: course3._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 20 },
+            { internalNumber: 2, marks: 22 },
+          ],
+        },
+        {
+          course: course4._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 18 },
+            { internalNumber: 2, marks: 20 },
+          ],
+        },
+      ],
+    },
+    {
+      fullName: "Rahul Mehta",
+      usn: "USN004",
+      dob: new Date("2003-09-14"),
+      phoneNumber: "9123456781",
+      password: "$2b$10$J4EJvVJdoB3othp3OMGK7uxE/M1Cbx7PpJ0ZmQCvuRbKirCE0YzYa",
+      email: "rahul.mehta@example.com",
+      className: "3rd Year ISE",
+      role: "student",
+      courses: [
+        {
+          course: course1._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 19 },
+            { internalNumber: 2, marks: 22 },
+          ],
+        },
+        {
+          course: course2._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 20 },
+            { internalNumber: 2, marks: 24 },
+          ],
+        },
+      ],
+    },
+    {
+      fullName: "Anita Desai",
+      usn: "USN005",
+      dob: new Date("2003-11-20"),
+      phoneNumber: "9123456782",
+      password: "$2b$10$J4EJvVJdoB3othp3OMGK7uxE/M1Cbx7PpJ0ZmQCvuRbKirCE0YzYa",
+      email: "anita.desai@example.com",
+      className: "2nd Year ISE",
+      role: "student",
+      courses: [
+        {
+          course: course3._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 21 },
+            { internalNumber: 2, marks: 23 },
+          ],
+        },
+        {
+          course: course4._id,
+          internalMarks: [
+            { internalNumber: 1, marks: 19 },
+            { internalNumber: 2, marks: 22 },
+          ],
+        },
+      ],
+    },
+  ]);
 
   // Assign courses to staff
   staff1.courses.push(course1._id, course2._id, course3._id, course4._id);
