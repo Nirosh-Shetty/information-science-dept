@@ -12,14 +12,11 @@ import {
 import { useRecoilState } from "recoil";
 import {
   classAtom,
-  currentSelectedCourse as currentSelectedCourseAtom,
 } from "../../../../recoil/atoms/classAtom";
 
 export default function QuizContent() {
   const [classes, setClasses] = useRecoilState(classAtom);
-  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
-    currentSelectedClassAtom
-  );
+  const [currentSelectedCourse, setCurrentSelectedCourse] = React.useState();
   const handleValueChange = (value) => {
     console.log(value);
     const selectedClass = classes.find((item) => item._id === value);
@@ -37,9 +34,9 @@ export default function QuizContent() {
         <SelectContent>
           <SelectGroup className="text-2xl">
             <SelectLabel>Class</SelectLabel>
-            {classes.map((item, index) => (
+            {classes.map((item) => (
               <SelectItem key={item._id} value={item._id}>
-                {`${item.name} - ${item.subName}`}
+                {`${item.name} - ${item.className}`}
               </SelectItem>
             ))}
           </SelectGroup>
