@@ -80,3 +80,46 @@ export const getEventById = async (req, res) => {
         res.status(500).json({ message: "Error fetching event", error });
     }
 };
+
+export const getStudentsRegistered = async (req, res) => {
+    const { eventid } = req.params;
+    console.log(eventid);
+    try {
+        const event = await Event.findById(eventid);
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+        res.json(event.registeredStudents);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching registered students", error });
+    }
+}
+
+export const registerStudent = async (req, res) => {
+    const { eventid } = req.params;
+    const { leaderName, email, contactNumber, teamMembers } = req.body;
+
+    try {
+        const event = await Event.findById(eventid);
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        if (!leaderName || !email) {
+            return res.status(400).json({ message: "Leader name and email are required" });
+        }
+
+        event.registeredStudents.push({
+            leaderName,
+            email,
+            contactNumber,
+            teamMembers,
+        });
+
+        await event.save();
+
+        res.json({ message: "Student registered successfully", event });
+    } catch (error) {
+        res.status(500).json({ message: "Error registering student", error: error.message });
+    }
+};

@@ -34,83 +34,129 @@ import SubjectIcon from "@mui/icons-material/Subject";
 import DangerousRoundedIcon from "@mui/icons-material/DangerousRounded";
 import ThumbUpAltRoundedIcon from "@mui/icons-material/ThumbUpAltRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
+import { useRecoilState } from "recoil";
+import {
+  classAtom,
+  currentSelectedCourse as currentSelectedCourseAtom,
+} from "../../../../recoil/atoms/classAtom";
+import axios from "axios";
+import { BACKEND_URL } from "../../../../globals";
 
 const attendanceData = [
   {
     className: "3 ISE A",
     subject: "Operating System",
     time: "10:30 AM Feb 2 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 67, total: 90 },
   },
   {
     className: "2 ISE B",
     subject: "Data Structures",
     time: "11:00 AM Feb 2 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 72, total: 90 },
   },
   {
     className: "7 CSE A",
     subject: "Database Management",
     time: "9:45 AM Feb 1 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 78, total: 90 },
   },
   {
     className: "7 CSE B",
     subject: "Computer Networks",
     time: "10:15 AM Feb 1 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 65, total: 90 },
   },
   {
     className: "3 ISE A",
     subject: "Operating System",
     time: "10:30 AM Feb 2 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 67, total: 90 },
   },
   {
     className: "3 ISE A",
     subject: "Operating System",
     time: "10:30 AM Feb 2 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 67, total: 90 },
   },
   {
     className: "8 ISE A",
     subject: "Machine Learning",
     time: "11:30 AM Feb 3 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 30, total: 80 },
   },
   {
     className: "8 ISE B",
     subject: "Artificial Intelligence",
     time: "12:15 PM Feb 3 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 28, total: 80 },
   },
   {
     className: "3 ISE A",
     subject: "Operating System",
     time: "10:30 AM Feb 2 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 67, total: 90 },
   },
   {
     className: "5 CSE A",
     subject: "Cyber Security",
     time: "2:00 PM Feb 4 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 74, total: 85 },
   },
   {
     className: "6 CSE B",
     subject: "Cloud Computing",
     time: "2:45 PM Feb 4 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 77, total: 85 },
   },
   {
     className: "3 ISE A",
     subject: "Operating System",
     time: "10:30 AM Feb 2 '24",
+    session: "Discussed process scheduling algorithms",
     attendance: { attended: 67, total: 90 },
   },
 ];
 
 export default function Alist() {
+  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
+    currentSelectedCourseAtom
+  );
+  const [attendanceList, setAttendanceList] = useState(attendanceData);
+
+  React.useEffect(() => {
+    const fecthAttendanceList = async () => {
+      try {
+        console.log(currentSelectedCourse);
+        const token = localStorage.getItem("token");
+        // console.log(currentSelectedCourse);
+        const response = await axios.post(
+          `${BACKEND_URL}/staff/getAttendanceList`,
+          { currentSelectedCourse },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response);
+        // setAttendanceList(response.data.filteredData);
+      } catch (error) {}
+    };
+    // if (currentSelectedCourse && currentSelectedCourse.length > 0)
+    fecthAttendanceList();
+  }, [currentSelectedCourse]);
   return (
     <>
       <Sheet
@@ -186,7 +232,7 @@ export default function Alist() {
             </tr>
           </thead>
           <tbody>
-            {attendanceData.map((row, index) => {
+            {attendanceList.map((row, index) => {
               const percentage = (
                 (row.attendance.attended / row.attendance.total) *
                 100

@@ -6,6 +6,19 @@ const eventSchema = new mongoose.Schema({
     description : {type: String},
     teamSize : {type: String},
     imageUrl : {type: String},
+    studentId : {type: String},
+    registeredStudents: [
+        {
+            leaderName: { type: String, required: true },
+            email: { type: String, required: true },
+            contactNumber: { type: String },
+            teamMembers: [
+                {
+                    name: { type: String },
+                }
+            ]
+        }
+    ],
 });
 
 export default mongoose.model("Event", eventSchema);

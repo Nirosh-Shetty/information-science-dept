@@ -2,26 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Grid,
-  Paper,
   Typography,
   Card,
   CardContent,
   Divider,
-  Button,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-} from "recharts";
 import { BACKEND_URL } from "../../../../../globals";
+import EventPage from "./eventRegister/EventPage";
 
 const DashboardContent = () => {
   const theme = useTheme();
@@ -41,12 +29,6 @@ const DashboardContent = () => {
       setGrades(data || []);
     });
   }, []);
-
-  const upcomingEvents = [
-    "Data Science Seminar: Dec 5th",
-    "Sports Meet: Dec 10th",
-    "Placement Drive: Dec 15th",
-  ];
 
   return (
     <Box
@@ -115,42 +97,7 @@ const DashboardContent = () => {
       {/* Charts and Activities */}
       <Grid container spacing={3}>
         {/* Upcoming Events */}
-        <Grid item xs={12}>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              borderRadius: "10px",
-              backgroundColor: theme.palette.background.paper,
-            }}
-          >
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              color={theme.palette.text.primary}
-            >
-              Upcoming Events
-            </Typography>
-            <Box mt={2} sx={{ lineHeight: 1.5 }}>
-              {upcomingEvents.map((event, index) => (
-                <Typography key={index} variant="body1">
-                  • {event}
-                </Typography>
-              ))}
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{
-                  mt: 2,
-                  backgroundColor: theme.palette.primary.main,
-                  "&:hover": { backgroundColor: theme.palette.primary.dark },
-                }}
-              >
-                View All Events
-              </Button>
-            </Box>
-          </Paper>
-        </Grid>
+        <EventPage></EventPage>
       </Grid>
     </Box>
   );
