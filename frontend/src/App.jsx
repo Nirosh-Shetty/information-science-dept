@@ -9,7 +9,6 @@ import StaffDashboard from "./components/staff/StaffDashboard";
 
 import SignIn from "./components/SignIn/SignIn";
 import AdminDashboard from "./components/admin/dashboard/AdminDashboard";
-import Temp from "./components/staff/temp/temp";
 import StudentDashboard from "./components/student/dashboard/StudentDashboard";
 
 function App() {
@@ -31,7 +30,6 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/staff/dashboard" element={<StaffDashboard />} />
           <Route path="/student/dashboard" element={<StudentDashboard />} />
-          <Route path="/temp/:type" element={<Temp />} />
         </Routes>
       </Router>
     </AppProvider>

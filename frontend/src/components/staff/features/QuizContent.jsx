@@ -29,6 +29,7 @@ import { useRecoilState } from "recoil";
 import { classAtom } from "../../../../recoil/atoms/classAtom";
 import { staffAtom } from "../../../../recoil/atoms/staffAtom";
 
+
 export default function QuizContent() {
   const [currentUser] = useRecoilState(staffAtom);
   const [quizMessage, setQuizMessage] = useState("");
@@ -47,10 +48,6 @@ export default function QuizContent() {
   const [isEdit, setIsEdit] = useState(false);  
   const [editIndex, setEditIndex] = useState()
 
-  const handleValueChange = (value) => {
-    const selectedClass = classes.find((item) => item._id === value);
-    setCurrentSelectedClass(selectedClass);
-  };
 
   const handleCreateQuizClick = () => {
     setIsEdit(false)
@@ -167,6 +164,14 @@ export default function QuizContent() {
       console.error("Error fetching quiz titles:", error);
     }
   };
+  
+  const [currentSelectedCourse, setCurrentSelectedCourse] = useState();
+  const handleValueChange = (value) => {
+    console.log(value);
+    const selectedClass = classes.find((item) => item._id === value);
+    setCurrentSelectedCourse(selectedClass);
+  };
+  React.useEffect(() => {}, [currentSelectedCourse]);
 
   return (
     <Box sx={{ padding: "20px" }}>

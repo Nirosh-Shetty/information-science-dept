@@ -14,9 +14,12 @@ import {
   getAssignmentsByClassName,
   updateAssignment,
 } from "../controller/staff/assignment.js";
-import { getAttendanceList } from "../controller/staff/getAttendanceList.js";
-
-import { createQuiz, deleteByQuizId, getQuestionsByQuizTitle,getQuizTitlesByClass, UpdateQuizQuestion} from "../controller/staff/manageQuiz.js";
+import {
+  deleteAttendance,
+  getAttendanceHistory,
+} from "../controller/staff/attendance.js";
+import jwtMiddleware from "../middleware/jwtMiddleware.js";
+import { createQuiz, deleteByQuizId, UpdateQuizQuestion, getQuizTitlesByClass } from "../controller/staff/manageQuiz.js";
 const router = express.Router();
 
 router.post("/add", addStaff);
@@ -34,14 +37,15 @@ router.get("/assignments", getAllAssignments);
 router.get("/assignments/class/:className", getAssignmentsByClassName);
 
 //Attendance
-router.post("/getAttendanceList", getAttendanceList);
-
-// Quiz Routes
-router.post("/createQuiz", createQuiz);
-router.get('/getQuizzesByClass/:classId', getQuizTitlesByClass);
-router.get('/getQuestionsByQuizTitle/:title', getQuestionsByQuizTitle);
-router.put('/updatequizquestion', UpdateQuizQuestion);
-router.delete('/deleteQuizQuestion/:quizId',deleteByQuizId);
-
+router.post("/getAttendanceList", jwtMiddleware, getAttendanceHistory);
 //try using dynamic routing if needed
+
+router.delete("/attendanceList/:_id", deleteAttendance);
+
+//quiz 
+
+router.post("/staff/createQuiz",createQuiz)
+router.post("/staff/updateQuizQuestion",UpdateQuizQuestion)
+router.delete("/staff/deleteQuizQuestion/:quizId",deleteByQuizId)
+router.get("/staff/getQuizzesByClass:/classId",getQuizTitlesByClass)
 export default router;

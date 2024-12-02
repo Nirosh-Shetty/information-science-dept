@@ -83,7 +83,6 @@ export const getEventById = async (req, res) => {
 
 export const getStudentsRegistered = async (req, res) => {
     const { eventid } = req.params;
-    console.log(eventid);
     try {
         const event = await Event.findById(eventid);
         if (!event) {
@@ -97,8 +96,8 @@ export const getStudentsRegistered = async (req, res) => {
 
 export const registerStudent = async (req, res) => {
     const { eventid } = req.params;
-    const { leaderName, email, contactNumber, teamMembers } = req.body;
-
+    const { leaderName, email, contactNumber, teamMembers, studentId } = req.body;
+    console.log(req.body)
     try {
         const event = await Event.findById(eventid);
         if (!event) {
@@ -110,6 +109,7 @@ export const registerStudent = async (req, res) => {
         }
 
         event.registeredStudents.push({
+            studentId,
             leaderName,
             email,
             contactNumber,
@@ -121,5 +121,32 @@ export const registerStudent = async (req, res) => {
         res.json({ message: "Student registered successfully", event });
     } catch (error) {
         res.status(500).json({ message: "Error registering student", error: error.message });
+    }
+};
+
+export const getStudentsByStudentId = async (req, res) => {
+    const { studentId, eventId } = req.params;
+    
+    try {
+        // Find the event by eventId
+        const event = await Event.findById(eventId);
+        
+        if (!event) {
+            return res.status(404).json({ message: "Event not found" });
+        }
+
+        // Filter the registered students to find the one with the matching studentId
+        const student = event.registeredStudents.filter(
+            (student) => student.studentId === studentId
+        );
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found in this event" });
+        }
+
+        // If student is found, return the student details
+        res.json(student);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching student", error });
     }
 };

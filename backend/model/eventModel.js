@@ -6,9 +6,9 @@ const eventSchema = new mongoose.Schema({
     description : {type: String},
     teamSize : {type: String},
     imageUrl : {type: String},
-    studentId : {type: String},
     registeredStudents: [
         {
+            studentId: { type: String, required: true },
             leaderName: { type: String, required: true },
             email: { type: String, required: true },
             contactNumber: { type: String },
