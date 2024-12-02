@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import multer from "multer";
-import { createEvent, deleteEvent, getEventById, getEvents, updateEvent } from "../controller/event/manageEvent.js";
+import { createEvent, deleteEvent, getEventById, getEvents, getStudentsByStudentId, getStudentsRegistered, registerStudent, updateEvent } from "../controller/event/manageEvent.js";
 import path from "path"
 
 const storage = multer.diskStorage({
@@ -35,6 +35,9 @@ router.put("/update/:id", upload.single("image"), updateEvent);
 router.delete("/delete/:id", deleteEvent);
 router.get("/get", getEvents);
 router.get("/get/:id", getEventById);
+router.get("/registered/:eventid", getStudentsRegistered);
+router.post("/register/:eventid/", registerStudent);
+router.get("/getbystudent/:studentId/:eventId", getStudentsByStudentId);
 
 
 export default router;

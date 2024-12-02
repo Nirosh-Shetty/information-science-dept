@@ -11,6 +11,10 @@ import {
   IconButton,
   CardMedia,
   Box,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -37,6 +41,10 @@ function DashboardContent() {
   const [eventDescription, setEventDescription] = useState("");
   const [eventMaxStudents, setEventMaxStudents] = useState("");
   const [staff, setStaff] = useRecoilState(staffAtom);
+  const [registeredStudents, setRegisteredStudents] = useState([]);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(false);
+  const [openDetails, setOpenDetails] = useState(false);
+
   const handleOpen = (event = null) => {
     if (event) {
       setIsEditing(true);
@@ -102,29 +110,34 @@ function DashboardContent() {
       description: eventDescription,
       maxStudents: parseInt(eventMaxStudents, 10),
     };
-  
+
     const formData = new FormData();
     formData.append("title", updatedEvent.title || "Untitled Event");
     formData.append("date", updatedEvent.date ? updatedEvent.date : new Date());
-    formData.append("description", updatedEvent.description || "No description available.");
+    formData.append(
+      "description",
+      updatedEvent.description || "No description available."
+    );
     formData.append("teamSize", updatedEvent.maxStudents || 5);
-  
+
     if (eventImage) {
       formData.append("image", eventImage);
     } else if (oldImage) {
       formData.append("oldImage", oldImage);
     }
-  
-    axios.put(`${BACKEND_URL}/event/update/${currentEventId}`, formData)
+
+    axios
+      .put(`${BACKEND_URL}/event/update/${currentEventId}`, formData)
       .then((data) => {
-        setEvents((prevEvents) => prevEvents.map((event) => 
-          event._id === currentEventId ? data?.data?.updatedEvent : event
-        ));
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event._id === currentEventId ? data?.data?.updatedEvent : event
+          )
+        );
         handleClose(); // Close the modal after editing
       })
-      .catch(error => console.error("Error updating event:", error));
+      .catch((error) => console.error("Error updating event:", error));
   };
-  
 
   const handleDeleteEvent = (id) => {
     axios.delete(`${BACKEND_URL}/event/delete/${id}`).then(() => {
@@ -153,6 +166,41 @@ function DashboardContent() {
     };
     fetchEvents();
   }, []);
+
+  const fetchRegisteredStudents = async (eventId) => {
+    if (!eventId) {
+      console.error("Invalid event ID");
+      return;
+    }
+
+    setIsLoadingStudents(true);
+    console.log(eventId, "event id");
+
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/event/registered/${eventId}`
+      );
+      setRegisteredStudents(response.data);
+      console.log(response.data, "registered students");
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      alert("Failed to fetch registered students. Please try again later.");
+    } finally {
+      setIsLoadingStudents(false);
+    }
+  };
+
+  const handleOpenDetails = (eventId) => {
+    setCurrentEventId(eventId);
+    fetchRegisteredStudents(eventId);
+    setOpenDetails(true);
+  };
+
+  const handleCloseDetails = () => {
+    setOpenDetails(false);
+    setRegisteredStudents([]);
+    setCurrentEventId(null);
+  };
 
   return (
     <Box className="p-4" sx={{ bgcolor: "" }}>
@@ -204,7 +252,9 @@ function DashboardContent() {
                 <Typography variant="h6">Assignments</Typography>
               </Box>
               <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-              {staff?.assignment?.length ? staff.assignment.length : "loading..."}
+                {staff?.assignment?.length
+                  ? staff.assignment.length
+                  : "loading..."}
               </Typography>
               <Typography color="text.secondary">
                 Pending assignments to grade
@@ -323,6 +373,15 @@ function DashboardContent() {
                     </Typography>
                   </CardContent>
                   <Box sx={{ p: 1, textAlign: "center" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => {
+                        handleOpenDetails(event._id);
+                      }}
+                      sx={{ color: "#1a73e8" }}
+                    >
+                      Details
+                    </Button>
                     <Button
                       variant="text"
                       onClick={() => {
@@ -472,6 +531,96 @@ function DashboardContent() {
               {isEditing ? "Update Event" : "Add Event"}
             </Button>
           </Card>
+        </Box>
+      </Modal>
+      <Modal
+        open={openDetails}
+        onClose={handleCloseDetails}
+        aria-labelledby="details-modal-title"
+        aria-describedby="details-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "50%",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+          }}
+        >
+          <Typography variant="h6" component="h2" marginBottom={2}>
+            Registered Students
+          </Typography>
+
+          {isLoadingStudents ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "200px",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          ) : registeredStudents && registeredStudents.length > 0 ? (
+            registeredStudents.map((student, i) => (
+              <Box
+                key={student._id}
+                sx={{
+                  marginBottom: 2,
+                  padding: 2,
+                  border: "1px solid #ddd",
+                  borderRadius: 1,
+                }}
+              >
+                <Typography variant="subtitle1">
+                  <strong>{i+1}.</strong> 
+                </Typography>
+                <Typography variant="subtitle1">
+                  <strong>Leader Name:</strong> {student.leaderName}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Email:</strong> {student.email}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Contact Number:</strong> {student.contactNumber}
+                </Typography>
+                <Typography variant="body2" marginTop={1}>
+                  <strong>Team Members:</strong>
+                </Typography>
+                {student.teamMembers && student.teamMembers.length > 0 ? (
+                  <ul>
+                    {student.teamMembers.map((member, index) => (
+                      <li key={index}>
+                        {typeof member === "object" ? member.name : member}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Typography variant="body2">
+                    No team members listed.
+                  </Typography>
+                )}
+              </Box>
+            ))
+          ) : (
+            <Typography variant="body2">
+              No registered students available for this event.
+            </Typography>
+          )}
+
+          <Button
+            variant="contained"
+            onClick={handleCloseDetails}
+            sx={{ mt: 2 }}
+          >
+            Close
+          </Button>
         </Box>
       </Modal>
     </Box>
