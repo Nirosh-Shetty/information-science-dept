@@ -20,6 +20,7 @@ app.use(
 );
 
 app.use(router);
+app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 8000;
