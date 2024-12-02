@@ -44,7 +44,7 @@ function DashboardContent() {
   const [registeredStudents, setRegisteredStudents] = useState([]);
   const [isLoadingStudents, setIsLoadingStudents] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
-
+  
   const handleOpen = (event = null) => {
     if (event) {
       setIsEditing(true);
@@ -252,7 +252,7 @@ function DashboardContent() {
                 <Typography variant="h6">Assignments</Typography>
               </Box>
               <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                {staff?.assignment?.length
+                {staff?.assignment
                   ? staff.assignment.length
                   : "loading..."}
               </Typography>

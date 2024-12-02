@@ -24,6 +24,8 @@ import Box from "@mui/material/Box";
 import { classAtom } from "../../../recoil/atoms/classAtom";
 import QuizContent from "./features/QuizContent";
 import ProfileContent from "./features/ProfileContent";
+import SchoolIcon from "@mui/icons-material/School";
+import Marks from "./features/marks/Marks";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -37,6 +39,7 @@ const STAFF_NAVIGATION = [
   { kind: "divider" },
   { kind: "header", title: "Resources & Analytics" },
   { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
+  {segment: "staff/marks", title: "Marks", icon: <SchoolIcon />},
   { segment: "staff/quiz", title: "Quiz", icon: <BarChartIcon /> },
   { segment: "staff/attendance", title: "Attendance", icon: <BarChartIcon /> }, // Updated from Student Feedback to Attendance
   { kind: "divider" },
@@ -162,6 +165,7 @@ export default function StaffDashboard(props) {
         "/staff/classes",
         "/staff/assignments",
         "/staff/resources",
+        "/staff/marks",
         "/staff/quiz",
         "/staff/attendance",
         "/staff/profile",
@@ -179,6 +183,8 @@ export default function StaffDashboard(props) {
         return <MyClassesContent />;
       case "/staff/assignments":
         return <AssignmentsContent />;
+      case "/staff/marks":
+        return <Marks/>;
       case "/staff/resources":
         return <ResourcesContent />;
       case "/staff/quiz": // Add case for Quiz route

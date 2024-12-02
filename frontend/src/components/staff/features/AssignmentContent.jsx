@@ -34,6 +34,7 @@ import { classAtom } from "../../../../recoil/atoms/classAtom";
 import { BACKEND_URL } from "../../../../globals";
 import axios from "axios";
 import { assignmentAtom } from "../../../../recoil/atoms/assignmentAtom";
+import { format } from "date-fns";
 
 const AssignmentContent = () => {
   const theme = useTheme();
@@ -71,7 +72,7 @@ const AssignmentContent = () => {
       }
     };
     fetchAllAssignments();
-  }, []);
+  }, [staff]);
 
   React.useEffect(() => {
     if (allAssignment?.length > 0 && staff?.assignment) {
@@ -126,6 +127,10 @@ const AssignmentContent = () => {
             ...assignments,
             { ...res.data.assignment, id: res.data.assignment._id },
           ]);
+          setStaff({
+            ...staff,
+            assignment: [...staff.assignment, res.data.assignment._id],
+          });
           console.log(res.data.assignment);
           handleClose();
         })
@@ -182,6 +187,10 @@ const AssignmentContent = () => {
       `${BACKEND_URL}/staff/deleteAssignment/${id}`
     );
     console.log(data, "hjhhjjjh");
+    setStaff({
+      ...staff,
+      assignment: staff.assignment.filter((assignment) => assignment !== id),
+    });
     if (data.status == 200) {
       setAssignments(assignments.filter((assignment) => assignment._id !== id));
     }
@@ -243,7 +252,9 @@ const AssignmentContent = () => {
               >
                 <TableCell>{assignment.title}</TableCell>
                 <TableCell>{assignment.description}</TableCell>
-                <TableCell>{assignment.dueDate}</TableCell>
+                <TableCell>
+                  {format(new Date(assignment.dueDate), "dd MMM yyyy")}
+                </TableCell>
                 <TableCell>
                   {assignment.classes.className} {assignment.classes.subName}
                 </TableCell>
