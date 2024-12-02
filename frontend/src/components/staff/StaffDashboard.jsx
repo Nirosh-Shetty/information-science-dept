@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { staffAtom } from "../../../recoil/atoms/staffAtom";
 import DashboardContent from "./features/DashboardContent";
 import Attendence from "./attendance/Attendance";
-import Temp from "./temp/temp";
+// import Temp from "./temp/temp";
 import MyClassesContent from "./features/MyClassesContent";
 import AssignmentsContent from "./features/AssignmentContent";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -40,6 +40,7 @@ const STAFF_NAVIGATION = [
   { kind: "header", title: "Resources & Analytics" },
   { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
   {segment: "staff/marks", title: "Marks", icon: <SchoolIcon />},
+  // { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
   { segment: "staff/quiz", title: "Quiz", icon: <BarChartIcon /> },
   { segment: "staff/attendance", title: "Attendance", icon: <BarChartIcon /> }, // Updated from Student Feedback to Attendance
   { kind: "divider" },
@@ -78,13 +79,13 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 }));
 
 function ResourcesContent() {
-  return <Temp />;
+  // return <Temp />;
+  <>empty</>;
 }
 
 // function AttendanceContent() {
 //   return <div>Attendance Page - View attendance records and statistics</div>;
 // }
-
 
 function LeaveRequestsContent() {
   return <div>Leave Requests Page - View and submit leave requests</div>;

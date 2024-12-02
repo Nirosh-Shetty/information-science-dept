@@ -14,7 +14,11 @@ import {
   getAssignmentsByClassName,
   updateAssignment,
 } from "../controller/staff/assignment.js";
-import { getAttendanceList } from "../controller/staff/getAttendanceList.js";
+import {
+  deleteAttendance,
+  getAttendanceHistory,
+} from "../controller/staff/attendance.js";
+import jwtMiddleware from "../middleware/jwtMiddleware.js";
 const router = express.Router();
 
 router.post("/add", addStaff);
@@ -32,6 +36,8 @@ router.get("/assignments", getAllAssignments);
 router.get("/assignments/class/:className", getAssignmentsByClassName);
 
 //Attendance
-router.post("/getAttendanceList", getAttendanceList);
+router.post("/getAttendanceList", jwtMiddleware, getAttendanceHistory);
 //try using dynamic routing if needed
+
+router.delete("/attendanceList/:_id", deleteAttendance);
 export default router;
