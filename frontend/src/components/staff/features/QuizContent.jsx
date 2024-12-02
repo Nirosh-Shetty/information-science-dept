@@ -26,146 +26,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRecoilState } from "recoil";
-import { classAtom } from "../../../../recoil/atoms/classAtom";
-import { staffAtom } from "../../../../recoil/atoms/staffAtom";
-
+import {
+  classAtom,
+  currentSelectedCourse as currentSelectedCourseAtom,
+} from "../../../../recoil/atoms/classAtom";
 
 export default function QuizContent() {
-  const [currentUser] = useRecoilState(staffAtom);
-  const [quizMessage, setQuizMessage] = useState("");
-  const [addedQuestions, setAddedQuestions] = useState([]);
-  const [classes] = useRecoilState(classAtom);
-  const [currentSelectedClass, setCurrentSelectedClass] = useState();
-  const [openDialog, setOpenDialog] = useState(false);
-  const [question, setQuestion] = useState("");
-  const [options, setOptions] = useState(["", "", "", ""]);
-  const [correctAnswer, setCorrectAnswer] = useState("");
-  const [title, setTitle] = useState("");
-  const [quizId, setQuizId] = useState("");
-  const [quizTitles, setQuizTitles] = useState([]);
-  const [selectedTitle, setSelectedTitle] = useState("");
-  const [quizQuestions, setQuizQuestions] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);  
-  const [editIndex, setEditIndex] = useState()
-
-
-  const handleCreateQuizClick = () => {
-    setIsEdit(false)
-    setQuizMessage("");
-    setOptions(["","","",""])
-    setQuestion("")
-    setTitle("");
-    setCorrectAnswer("")
-    setOpenDialog(true);
-    setQuizId(uuidv4());
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setQuizMessage("");
-    setAddedQuestions([]);
-    setTitle("");
-    setQuizId("");
-  };
-
-  const handleAddQuestion = (index) => {
-    if (!currentUser) {
-      console.error("No user is logged in.");
-      return;
-    }
-    if(isEdit){
-      axios
-        .put(`${BACKEND_URL}/staff/updatequizquestion`, {
-          quizId,
-          title,
-          question,
-          options,
-          correctAnswer,
-          classId: currentSelectedClass?._id,
-          staffId: currentUser._id,
-        })
-        .then((response) => {
-          const updatedQuestions = [...quizQuestions];
-          console.log(updatedQuestions, "FFFFFFFF")
-          updatedQuestions[editIndex] = response.data.UpdateQuizQuestion
-          setQuizQuestions(updatedQuestions);
-          handleCloseDialog()
-        })
-        .catch((error) => {
-          setQuizMessage(error.response?.data?.message || error.message);
-        });
-    }
-    else{
-      axios
-        .post(`${BACKEND_URL}/staff/createQuiz`, {
-          quizId,
-          title,
-          question,
-          options,
-          correctAnswer,
-          classId: currentSelectedClass?._id,
-          staffId: currentUser._id,
-        })
-        .then((response) => {
-          setAddedQuestions((prev) => [...prev, { question, options, correctAnswer }]);
-          setQuizMessage("Question added successfully! Add another.");
-          setCorrectAnswer("");
-          setOptions(["", "", "", ""]);
-          setQuestion("");
-        })
-        .catch((error) => {
-          setQuizMessage(error.response?.data?.message || error.message);
-        });
-    }
-  };
-
-  const handleEditQuestion = (index, quizId) => {
-    console.log(index, "INDEX")
-    setEditIndex(index);
-    setIsEdit(true)
-    setQuizId(quizId)
-    const questionToEdit = quizQuestions[index];
-    setTitle(selectedTitle)
-    setQuestion(questionToEdit.question);
-    setOptions(questionToEdit.options);
-    setCorrectAnswer(questionToEdit.correctAnswer);
-    setOpenDialog(true);
-  };
-
-  const handleOptionChange = (index, value) => {
-    setOptions((prevOptions) => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions[index] = value; // Update the specific option at the given index
-      return updatedOptions;
-    });
-  };
-  
-
-  const handleDeleteQuestion = async(index, quizId) => {
-    setQuizId(quizId);
-    try {
-      const response = await axios.delete(`${BACKEND_URL}/staff/deleteQuizQuestion/${quizId}`);
-      if(response.data.deletedQuestion){
-        const updatedQuestions = quizQuestions.filter((_, i) => i !== index);
-        setQuizQuestions(updatedQuestions);
-      }
-    } catch (error) {
-      console.error("Error fetching quiz titles:", error);
-    }
-  };
-
-  const fetchQuizTitles = async () => {
-    if (!currentSelectedClass) return;
-
-    try {
-      const response = await axios.get(`${BACKEND_URL}/staff/getQuizzesByClass/${currentSelectedClass._id}`);
-      setQuizTitles(response.data.title);
-    } catch (error) {
-      console.error("Error fetching quiz titles:", error);
-    }
-  };
-  
-  const [currentSelectedCourse, setCurrentSelectedCourse] = useState();
+  const [classes, setClasses] = useRecoilState(classAtom);
+  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
+    currentSelectedCourseAtom
+  );
   const handleValueChange = (value) => {
     console.log(value);
     const selectedClass = classes.find((item) => item._id === value);
