@@ -18,7 +18,7 @@ import {
 export default function QuizContent() {
   const [classes, setClasses] = useRecoilState(classAtom);
   const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
-    currentSelectedClassAtom
+    currentSelectedCourseAtom
   );
   const handleValueChange = (value) => {
     console.log(value);

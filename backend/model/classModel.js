@@ -6,6 +6,5 @@ const classSchema = new mongoose.Schema({
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
 });
-22;
 
 export default mongoose.model("Class", classSchema);

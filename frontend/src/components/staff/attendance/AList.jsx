@@ -133,12 +133,24 @@ export default function Alist() {
   const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
     currentSelectedCourseAtom
   );
-  const [attendanceList, setAttendanceList] = useState(attendanceData);
+  const [attendanceList, setAttendanceList] = useState([]);
+  const [isUpdateOrEditAttendanceState, setIsUpdateOrEditAttendanceState] =
+    useState(false);
+
+  const handleEditOption = async (id) => {
+    //TODO: try doing the deletion in frontend first and then backend for better and faster response.. store the old date temp var and rol back to it if any error occured while sending a error message to the user
+    try {
+      const response = await axios.delete(
+        `${BACKEND_URL}/attendanceList/${id}`
+      );
+    } catch (error) {}
+  };
+  const handleDeleteOption = () => {};
 
   React.useEffect(() => {
     const fecthAttendanceList = async () => {
       try {
-        console.log(currentSelectedCourse);
+        // console.log(currentSelectedCourse);
         const token = localStorage.getItem("token");
         // console.log(currentSelectedCourse);
         const response = await axios.post(
@@ -151,7 +163,7 @@ export default function Alist() {
           }
         );
         console.log(response);
-        // setAttendanceList(response.data.filteredData);
+        setAttendanceList(response.data.filteredData);
       } catch (error) {}
     };
     // if (currentSelectedCourse && currentSelectedCourse.length > 0)
@@ -159,181 +171,187 @@ export default function Alist() {
   }, [currentSelectedCourse]);
   return (
     <>
-      <Sheet
-        variant="outlined"
-        sx={{
-          width: "100%",
-          borderRadius: "sm",
-          flexShrink: 1,
-        }}
-      >
-        <Table
-          aria-labelledby="Attedance"
-          stickyHeader
-          hoverRow
-          sx={{
-            "--TableCell-headBackground":
-              "var(--joy-palette-background-level1)",
-            "--Table-headerUnderlineThickness": "1px",
-            "--TableRow-hoverBackground":
-              "var(--joy-palette-background-level1)",
-            "--TableCell-paddingY": "4px",
-            "--TableCell-paddingX": "8px",
-            cursor: "pointer",
-          }}
-        >
-          <thead>
-            <tr style={{ fontSize: "1.4em" }}>
-              <th
-                style={{ width: 30, textAlign: "center", padding: "12px 6px" }}
-              ></th>
-              <th style={{ width: 180, padding: "15px 6px" }}>
-                <Groups2Icon
-                  sx={{
-                    fontSize: "1.8rem",
-                    paddingBottom: "1.5px",
-                    paddingRight: "7px",
-                  }}
-                />
-                Class
-              </th>
-              <th style={{ width: 200, padding: "15px 6px" }}>
-                <SubjectIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    paddingBottom: "1.5px",
-                    paddingRight: "5px",
-                  }}
-                />
-                Subject
-              </th>
-              <th style={{ width: 170, padding: "15px 6px" }}>
-                <AccessTimeFilledOutlinedIcon
-                  sx={{
-                    fontSize: "1.5rem",
-                    paddingBottom: "1.5px",
-                    paddingRight: "5px",
-                  }}
-                />
-                Time
-              </th>
-              <th style={{ width: 170, padding: "15px 6px" }}>
-                <RuleIcon
-                  sx={{
-                    fontSize: "1.4rem",
-                    paddingBottom: "1.5px",
-                    paddingRight: "5px",
-                    columnSpan: 2,
-                  }}
-                />
-                Attendance
-              </th>
-              <th style={{ width: 100, padding: "15px 6px" }}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {attendanceList.map((row, index) => {
-              const percentage = (
-                (row.attendance.attended / row.attendance.total) *
-                100
-              ).toFixed(2);
-              const attendenaceTheme =
-                percentage > 80 ? "A" : percentage > 70 ? "B" : "C";
-              const classYear = Math.ceil(parseInt(row.className[0]) / 2);
-              return (
-                <tr key={index}>
-                  <td style={{ textAlign: "center", width: 100 }}></td>
-                  <td>
-                    <Box
+      {!isUpdateOrEditAttendanceState ? (
+        <>
+          <Sheet
+            variant="outlined"
+            sx={{
+              width: "100%",
+              borderRadius: "sm",
+              flexShrink: 1,
+            }}
+          >
+            <Table
+              aria-labelledby="Attedance"
+              stickyHeader
+              hoverRow
+              sx={{
+                "--TableCell-headBackground":
+                  "var(--joy-palette-background-level1)",
+                "--Table-headerUnderlineThickness": "1px",
+                "--TableRow-hoverBackground":
+                  "var(--joy-palette-background-level1)",
+                "--TableCell-paddingY": "4px",
+                "--TableCell-paddingX": "8px",
+                cursor: "pointer",
+              }}
+            >
+              <thead>
+                <tr style={{ fontSize: "1.4em" }}>
+                  <th
+                    style={{
+                      width: 30,
+                      textAlign: "center",
+                      padding: "12px 6px",
+                    }}
+                  ></th>
+                  <th style={{ width: 180, padding: "15px 6px" }}>
+                    <Groups2Icon
                       sx={{
-                        display: "flex",
-                        gap: 2,
-                        alignItems: "center",
-                        padding: 2,
-                        paddingLeft: 0,
+                        fontSize: "1.8rem",
+                        paddingBottom: "1.5px",
+                        paddingRight: "7px",
                       }}
-                    >
-                      <Avatar size="sm" sx={{ fontSize: "0.7rem" }}>
-                        {classYear}
-                        <sup>
-                          {classYear == 1
-                            ? "st"
-                            : classYear == 2
-                              ? "nd"
-                              : classYear == 3
-                                ? "rd"
-                                : "th"}
-                        </sup>
-                      </Avatar>
-                      <Typography
-                        level="body-xs"
-                        // sx={{ fontWeight: 600, fontSize: "0.9rem" }}
-                      >
-                        {row.className}
-                      </Typography>
-                    </Box>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">{row.subject}</Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">{row.time}</Typography>
-                  </td>
+                    />
+                    Class
+                  </th>
+                  <th style={{ width: 200, padding: "15px 6px" }}>
+                    <SubjectIcon
+                      sx={{
+                        fontSize: "1.5rem",
+                        paddingBottom: "1.5px",
+                        paddingRight: "5px",
+                      }}
+                    />
+                    Subject
+                  </th>
+                  <th style={{ width: 170, padding: "15px 6px" }}>
+                    <AccessTimeFilledOutlinedIcon
+                      sx={{
+                        fontSize: "1.5rem",
+                        paddingBottom: "1.5px",
+                        paddingRight: "5px",
+                      }}
+                    />
+                    Time
+                  </th>
+                  <th style={{ width: 170, padding: "15px 6px" }}>
+                    <RuleIcon
+                      sx={{
+                        fontSize: "1.4rem",
+                        paddingBottom: "1.5px",
+                        paddingRight: "5px",
+                        columnSpan: 2,
+                      }}
+                    />
+                    Attendance
+                  </th>
+                  <th style={{ width: 100, padding: "15px 6px" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {attendanceList.map((row, index) => {
+                  const percentage = (
+                    (row.attendance.attended / row.attendance.total) *
+                    100
+                  ).toFixed(2);
+                  const attendenaceTheme =
+                    percentage > 80 ? "A" : percentage > 70 ? "B" : "C";
+                  const classYear = Math.ceil(parseInt(row.className[0]) / 2);
+                  return (
+                    <tr key={row._id}>
+                      <td style={{ textAlign: "center", width: 100 }}></td>
+                      <td>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 2,
+                            alignItems: "center",
+                            padding: 2,
+                            paddingLeft: 0,
+                          }}
+                        >
+                          <Avatar size="sm" sx={{ fontSize: "0.7rem" }}>
+                            {classYear}
+                            <sup>
+                              {classYear == 1
+                                ? "st"
+                                : classYear == 2
+                                  ? "nd"
+                                  : classYear == 3
+                                    ? "rd"
+                                    : "th"}
+                            </sup>
+                          </Avatar>
+                          <Typography
+                            level="body-xs"
+                            // sx={{ fontWeight: 600, fontSize: "0.9rem" }}
+                          >
+                            {row.className}
+                          </Typography>
+                        </Box>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{row.subject}</Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{row.time}</Typography>
+                      </td>
 
-                  {/* Attendance with Percentage in one <td> */}
-                  <td>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: 1,
-                        alignItems: "center",
-                        justifyContent: "space-evenly",
-                        paddingRight: "20px",
-                      }}
-                    >
-                      <Chip
-                        variant="soft"
-                        // size="sm"
-                        sx={{
-                          padding: "5px 8px",
-                          fontSize: "0.8rem",
-                        }}
-                        startDecorator={
-                          {
-                            A: (
-                              <ThumbUpAltRoundedIcon
-                                sx={{ opacity: 0.5, paddingX: "2px" }}
-                              />
-                            ),
-                            B: (
-                              <WarningAmberRoundedIcon
-                                sx={{ opacity: 0.5, paddingX: "1px" }}
-                              />
-                            ),
-                            C: (
-                              <DangerousRoundedIcon
-                                sx={{ opacity: 0.5, paddingX: "1px" }}
-                              />
-                            ),
-                          }[attendenaceTheme]
-                        }
-                        color={
-                          {
-                            A: "success",
-                            B: "warning",
-                            C: "danger",
-                          }[attendenaceTheme]
-                        }
-                      >
-                        {row.attendance.attended}/{row.attendance.total}
-                        &nbsp;&nbsp;
-                        <span className=" font-thin text-opacity-20 text-xs">
-                          |
-                        </span>
-                        &nbsp;&nbsp;
-                        {percentage}%
-                      </Chip>
-                      {/* <Chip
+                      {/* Attendance with Percentage in one <td> */}
+                      <td>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 1,
+                            alignItems: "center",
+                            justifyContent: "space-evenly",
+                            paddingRight: "20px",
+                          }}
+                        >
+                          <Chip
+                            variant="soft"
+                            // size="sm"
+                            sx={{
+                              padding: "5px 8px",
+                              fontSize: "0.8rem",
+                            }}
+                            startDecorator={
+                              {
+                                A: (
+                                  <ThumbUpAltRoundedIcon
+                                    sx={{ opacity: 0.5, paddingX: "2px" }}
+                                  />
+                                ),
+                                B: (
+                                  <WarningAmberRoundedIcon
+                                    sx={{ opacity: 0.5, paddingX: "1px" }}
+                                  />
+                                ),
+                                C: (
+                                  <DangerousRoundedIcon
+                                    sx={{ opacity: 0.5, paddingX: "1px" }}
+                                  />
+                                ),
+                              }[attendenaceTheme]
+                            }
+                            color={
+                              {
+                                A: "success",
+                                B: "warning",
+                                C: "danger",
+                              }[attendenaceTheme]
+                            }
+                          >
+                            {row.attendance.attended}/{row.attendance.total}
+                            &nbsp;&nbsp;
+                            <span className=" font-thin text-opacity-20 text-xs">
+                              |
+                            </span>
+                            &nbsp;&nbsp;
+                            {percentage}%
+                          </Chip>
+                          {/* <Chip
                         variant="soft"
                         size="sm"
                         startDecorator={
@@ -353,67 +371,77 @@ export default function Alist() {
                       >
                         {percentage}% 
                       </Chip> */}
-                    </Box>
-                  </td>
-                  <td className="text-xl">
-                    <EditOutlinedIcon
-                      sx={{ color: "#9CCAE9" }}
-                      className="hover:text-blue-800 "
-                    />
-                    &nbsp;&nbsp;
-                    <DeleteOutlineOutlinedIcon
-                      sx={{ color: "#E78081" }}
-                      className="hover:text-red-800 "
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </Sheet>
-      <Box
-        className="Pagination-laptopUp"
-        sx={{
-          pt: 2,
-          gap: 1,
-          borderRadius: "50%",
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
+                        </Box>
+                      </td>
+                      <td className="text-xl">
+                        <EditOutlinedIcon
+                          sx={{ color: "#9CCAE9" }}
+                          className="hover:text-blue-800"
+                          onClick={() => {
+                            handleEditOption(row._id);
+                          }}
+                        />
+                        &nbsp;&nbsp;
+                        <DeleteOutlineOutlinedIcon
+                          sx={{ color: "#E78081" }}
+                          className="hover:text-red-800 "
+                          onClick={() => {
+                            handleDeleteOption(row._id);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Sheet>
+          <Box
+            className="Pagination-laptopUp"
+            sx={{
+              pt: 2,
+              gap: 1,
+              borderRadius: "50%",
+              display: {
+                xs: "none",
+                md: "flex",
+              },
+            }}
           >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box>
+            <Button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              startDecorator={<KeyboardArrowLeftIcon />}
+            >
+              Previous
+            </Button>
+
+            <Box sx={{ flex: 1 }} />
+            {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
+              <IconButton
+                key={page}
+                size="sm"
+                variant={Number(page) ? "outlined" : "plain"}
+                color="neutral"
+              >
+                {page}
+              </IconButton>
+            ))}
+            <Box sx={{ flex: 1 }} />
+            <Button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              endDecorator={<KeyboardArrowRightIcon />}
+            >
+              Next
+            </Button>
+          </Box>
+        </>
+      ) : (
+        ""
+      )}
     </>
   );
 }
