@@ -34,6 +34,7 @@ import { classAtom } from "../../../../recoil/atoms/classAtom";
 import { BACKEND_URL } from "../../../../globals";
 import axios from "axios";
 import { assignmentAtom } from "../../../../recoil/atoms/assignmentAtom";
+import { format } from "date-fns";
 
 const AssignmentContent = () => {
   const theme = useTheme();
@@ -71,7 +72,7 @@ const AssignmentContent = () => {
       }
     };
     fetchAllAssignments();
-  }, []);
+  }, [staff]);
 
   React.useEffect(() => {
     if (allAssignment?.length > 0 && staff?.assignment) {
@@ -126,6 +127,10 @@ const AssignmentContent = () => {
             ...assignments,
             { ...res.data.assignment, id: res.data.assignment._id },
           ]);
+          setStaff({
+            ...staff,
+            assignment: [...staff.assignment, res.data.assignment._id],
+          });
           console.log(res.data.assignment);
           handleClose();
         })
@@ -182,10 +187,16 @@ const AssignmentContent = () => {
       `${BACKEND_URL}/staff/deleteAssignment/${id}`
     );
     console.log(data, "hjhhjjjh");
+    setStaff({
+      ...staff,
+      assignment: staff.assignment.filter((assignment) => assignment !== id),
+    });
     if (data.status == 200) {
       setAssignments(assignments.filter((assignment) => assignment._id !== id));
     }
   };
+
+  console.log(assignmentDetails,"ssssssssssss")
 
   return (
     <div>
@@ -243,7 +254,16 @@ const AssignmentContent = () => {
               >
                 <TableCell>{assignment.title}</TableCell>
                 <TableCell>{assignment.description}</TableCell>
-                <TableCell>{assignment.dueDate}</TableCell>
+<<<<<<< HEAD
+                <TableCell>{assignmentDetails?.dueDate
+  ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+  : "No Due Date"}
+</TableCell>
+=======
+                <TableCell>
+                  {format(new Date(assignment.dueDate), "dd MMM yyyy")}
+                </TableCell>
+>>>>>>> 5d4350dbebc73aef2eff025a0a32c522a4def4f5
                 <TableCell>
                   {assignment.classes.className} {assignment.classes.subName}
                 </TableCell>
@@ -365,7 +385,9 @@ const AssignmentContent = () => {
             Description: {assignmentDetails?.description}
           </Typography>
           <Typography variant="subtitle1">
-            Due Date: {assignmentDetails?.dueDate}
+            Due Date: {assignmentDetails?.dueDate
+  ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+  : "No Due Date"}
           </Typography>
           <div className="flex gap-4 mt-4">
             <Chip
