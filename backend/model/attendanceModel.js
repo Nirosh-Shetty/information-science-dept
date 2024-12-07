@@ -19,7 +19,11 @@ const attendanceSchema = new mongoose.Schema({
         ref: "Student",
         required: true,
       },
-      present: { type: Boolean, required: true },
+      attendance: {
+        type: String,
+        enum: ["Present", "Absent", "Excused"],
+        required: true,
+      },
     },
   ],
 });

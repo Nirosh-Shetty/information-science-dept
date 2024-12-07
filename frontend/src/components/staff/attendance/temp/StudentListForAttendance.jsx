@@ -28,7 +28,7 @@ import { useRecoilState } from "recoil";
 import {
   studentSearchQueryState,
   studentListState,
-} from "../../../../recoil/atoms/attendanceAtom";
+} from "../../../../../recoil/atoms/attendanceAtom";
 
 const sampleData = [
   {
@@ -153,7 +153,7 @@ const sampleData = [
   },
 ];
 
-export default function Temp() {
+export default function StudentListForAttendance() {
   const theme = useTheme();
   // console.log("hhhht", theme.palette.mode);
 

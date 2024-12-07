@@ -1,3 +1,4 @@
+import classModel from "../../model/classModel.js";
 import Course from "../../model/courseModel.js";
 
 export const addCourse = async (req, res) => {
@@ -20,12 +21,10 @@ export const addCourse = async (req, res) => {
           course: existingCourse,
         });
       }
-      return res
-        .status(200)
-        .json({
-          message: "Class name already exists in the course.",
-          course: existingCourse,
-        });
+      return res.status(200).json({
+        message: "Class name already exists in the course.",
+        course: existingCourse,
+      });
     }
 
     const newCourse = new Course({
@@ -183,11 +182,9 @@ export const deleteCourseByClassName = async (req, res) => {
     const course = await Course.findOne({ name, subCode });
 
     if (!course) {
-      return res
-        .status(404)
-        .json({
-          message: "Course not found with the provided name and subject code.",
-        });
+      return res.status(404).json({
+        message: "Course not found with the provided name and subject code.",
+      });
     }
 
     // Check if the `className` exists in the array

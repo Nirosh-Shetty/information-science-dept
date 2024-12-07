@@ -1,12 +1,10 @@
 import courseModel from "../../model/courseModel.js";
 import attendanceModel from "../../model/attendanceModel.js";
 import classModel from "../../model/classModel.js";
-// Get Class List with Attendance and Mapping Details
-
 import mongoose from "mongoose";
-const ObjectId = mongoose.Types.ObjectId;
+import moment from "moment";
 
-import moment from "moment"; // Use moment for date formatting
+const ObjectId = mongoose.Types.ObjectId;
 
 export const getAttendanceHistory = async (req, res) => {
   const { currentSelectedCourse } = req.body;
@@ -22,15 +20,13 @@ export const getAttendanceHistory = async (req, res) => {
       let presentCount = 0;
       let totalCount = 0;
 
-      // Count the attendance
       item.attendance.forEach((attendanceItem) => {
-        if (attendanceItem.present === true) {
+        if (attendanceItem.attendance === "Present") {
           presentCount++;
         }
         totalCount++;
       });
 
-      // Format the time and return the desired structure
       const formattedTime = moment(item.date).format("hh:mm A MMM D 'YY");
 
       return {
@@ -42,7 +38,6 @@ export const getAttendanceHistory = async (req, res) => {
         attendance: { attended: presentCount, total: totalCount },
       };
     });
-    console.log(filteredData);
 
     return res.status(201).json({
       message: "Attendance list fetched successfully",
@@ -57,87 +52,36 @@ export const getAttendanceHistory = async (req, res) => {
   }
 };
 
-//with mongoDB agregation
-// export const getAttendanceList = async (req, res) => {
-//   try {
-//     const attendanceData = await Attendance.aggregate([
-//       {
-//         $lookup: {
-//           from: "classes", // Collection name of Class
-//           localField: "class",
-//           foreignField: "_id",
-//           as: "classDetails",
-//         },
-//       },
-//       {
-//         $lookup: {
-//           from: "courses", // Collection name of Course
-//           localField: "course",
-//           foreignField: "_id",
-//           as: "courseDetails",
-//         },
-//       },
-//       {
-//         $unwind: "$classDetails",
-//       },
-//       {
-//         $unwind: "$courseDetails",
-//       },
-//       {
-//         $project: {
-//           _id: 0, // Exclude the default `_id` field
-//           className: "$classDetails.name",
-//           subject: "$courseDetails.name",
-//           time: {
-//             $dateToString: {
-//               format: "%I:%M %p %b %e '%y", // Format to match your requirement
-//               date: "$date",
-//               timezone: "Asia/Kolkata", // Adjust timezone if necessary
-//             },
-//           },
-//           session: "$session",
-//           totalAttendance: { $size: "$attendance" }, // Total students
-//           attended: {
-//             $size: {
-//               $filter: {
-//                 input: "$attendance",
-//                 as: "entry",
-//                 cond: { $eq: ["$$entry.present", true] }, // Count present students
-//               },
-//             },
-//           },
-//         },
-//       },
-//       {
-//         $addFields: {
-//           attendance: {
-//             attended: "$attended",
-//             total: "$totalAttendance",
-//           },
-//         },
-//       },
-//       {
-//         $project: {
-//           attended: 0,
-//           totalAttendance: 0,
-//         },
-//       },
-//     ]);
+export const deleteAttendance = async (req, res) => {
+  console.log("dfhdsxgdsxggdfghhfgd");
+  const { id } = req.params; // Corrected from `req.prams`
+  try {
+    await attendanceModel.deleteOne({ _id: id });
+    return res.status(201).json({
+      message: "Attendance Deleted successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error deleting attendance:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Server error", success: false, error: error.message });
+  }
+};
 
-//     return res.status(200).json({
-//       success: true,
-//       data: attendanceData,
-//     });
-//   } catch (error) {
-//     console.error("Error with aggregation pipeline:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Failed to fetch attendance data",
-//       error: error.message,
-//     });
-//   }
-// };
-
-export const deleteAttendance = async () => {
-  console.log("hi");
+export const studentListWithAttendance = async (req, res) => {
+  const { id } = req.params; // Corrected from `req.prams`
+  const { data } = req.body; // Corrected from `req.data`
+  // Implement the edit logic here
+  if (id == "new") {
+    console.log("new attendance");
+  } else {
+    const reponse = await attendanceModel.findById(id);
+    console.log(reponse);
+    return res.status(201).json({
+      message: "Attendance fetched successfully",
+      success: true,
+      data: reponse,
+    });
+  }
 };

@@ -29,7 +29,8 @@ import { useRecoilState } from "recoil";
 import {
   studentSearchQueryState,
   studentListState,
-} from "../../../../recoil/atoms/attendanceAtom";
+} from "../../../../../recoil/atoms/attendanceAtom";
+
 
 export default function OrderTable({ theme, studentData }) {
   const [rowsData, setRowsData] = useState([]);

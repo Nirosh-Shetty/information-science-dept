@@ -16,12 +16,24 @@ import {
   currentSelectedCourse as currentSelectedCourseAtom,
 } from "../../../../recoil/atoms/classAtom";
 import { useRecoilState } from "recoil";
+import { BACKEND_URL } from "../../../../globals";
+import axios from "axios";
 
 const Attendence = () => {
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
     currentSelectedCourseAtom
   );
+
+  const handleTakeNewAttendance = async () => {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/staff/studentListWithAttendance/new`
+      );
+    } catch (error) {
+      console.log("failed to edit the attedance");
+    }
+  };
   return (
     <div>
       <SelectClass />
@@ -57,6 +69,7 @@ const Attendence = () => {
                     padding: "10px",
                   }
                 }
+                onClick={handleTakeNewAttendance}
               >
                 Take Attendance
               </Button>
