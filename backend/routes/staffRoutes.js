@@ -15,8 +15,9 @@ import {
   updateAssignment,
 } from "../controller/staff/assignment.js";
 import {
-  deleteAttendance,
   getAttendanceHistory,
+  deleteAttendance,
+  studentListWithAttendance,
 } from "../controller/staff/attendance.js";
 import jwtMiddleware from "../middleware/jwtMiddleware.js";
 import { createQuiz, deleteByQuizId, UpdateQuizQuestion, getQuizTitlesByClass, getQuestionsByQuizTitle } from "../controller/staff/manageQuiz.js";
@@ -36,11 +37,12 @@ router.delete("/deleteAssignment/:_id", deleteAssignment);
 router.get("/assignments", getAllAssignments);
 router.get("/assignments/class/:className", getAssignmentsByClassName);
 
-//Attendance
-router.post("/getAttendanceList", jwtMiddleware, getAttendanceHistory);
-//try using dynamic routing if needed
+// Attendance
+router.post("/getAttendanceHistory", jwtMiddleware, getAttendanceHistory);
+router.delete("/attendanceList/:id", deleteAttendance);
+router.get("/studentListWithAttendance/:id", studentListWithAttendance);
 
-router.delete("/attendanceList/:_id", deleteAttendance);
+//quiz
 
 //quiz 
 router.post("/createQuiz", createQuiz);

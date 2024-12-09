@@ -50,8 +50,7 @@ async function insertData() {
     password: "$2b$10$fBkXcO0LgllYFVZxtZBYGO2qA/GQkCSCsvYTefVsmn908CBMxX.gy",
   });
 
-  // Create Students
-
+  // Create Courses
   const course1 = await Course.create({
     name: "Data Structures",
     code: "CS101",
@@ -84,6 +83,7 @@ async function insertData() {
     staff: staff1._id,
   });
 
+  // Create Students
   const students = await Student.insertMany([
     {
       fullName: "Sita Sharma",
@@ -246,9 +246,9 @@ async function insertData() {
       session: "did something",
       date: new Date("2024-10-28"),
       attendance: [
-        { student: students[0]._id, present: true },
-        { student: students[1]._id, present: false },
-        { student: students[3]._id, present: true },
+        { student: students[0]._id, attendance: "Present" },
+        { student: students[1]._id, attendance: "Absent" },
+        { student: students[3]._id, attendance: "Present" },
       ],
     },
     {
@@ -257,9 +257,9 @@ async function insertData() {
       course: course2._id,
       date: new Date("2024-11-01"),
       attendance: [
-        { student: students[0]._id, present: true },
-        { student: students[1]._id, present: true },
-        { student: students[3]._id, present: false },
+        { student: students[0]._id, attendance: "Present" },
+        { student: students[1]._id, attendance: "Present" },
+        { student: students[3]._id, attendance: "Absent" },
       ],
     },
     {
@@ -268,8 +268,8 @@ async function insertData() {
       session: "did something",
       date: new Date("2024-10-30"),
       attendance: [
-        { student: students[2]._id, present: true },
-        { student: students[4]._id, present: false },
+        { student: students[2]._id, attendance: "Present" },
+        { student: students[4]._id, attendance: "Absent" },
       ],
     },
     {
@@ -278,8 +278,8 @@ async function insertData() {
       session: "did something",
       date: new Date("2024-11-02"),
       attendance: [
-        { student: students[2]._id, present: true },
-        { student: students[4]._id, present: true },
+        { student: students[2]._id, attendance: "Present" },
+        { student: students[4]._id, attendance: "Present" },
       ],
     },
   ];

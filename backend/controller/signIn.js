@@ -4,7 +4,7 @@ import studentModel from "../model/studentModel.js";
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import insertData from "./insertSampleData.js";
+import insertData from "../lib/insertSampleData.js";
 
 export const signIn = async (req, res) => {
   // console.log(await bcrypt.hash("123456", 10));
