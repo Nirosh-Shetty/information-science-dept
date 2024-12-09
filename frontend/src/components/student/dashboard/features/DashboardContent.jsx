@@ -10,8 +10,16 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { BACKEND_URL } from "../../../../../globals";
 import EventPage from "./eventRegister/EventPage";
+import axios from "axios";
+import { studentAtom } from "../../../../../recoil/atoms/studentAtom";
+import { studentClassAtom } from "../../../../../recoil/atoms/classAtom";
+import { useRecoilState } from "recoil";
+import { assignmentAtom } from "../../../../../recoil/atoms/assignmentAtom";
 
 const DashboardContent = () => {
+  const [student, setStudent] = useRecoilState(studentAtom);
+  const [courses, setCourses] = useRecoilState(studentClassAtom);
+  const [assignments, setAssignments] = useRecoilState(assignmentAtom);
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === "dark";
 
@@ -29,6 +37,24 @@ const DashboardContent = () => {
       setGrades(data || []);
     });
   }, []);
+
+  React.useEffect(() => {
+    if (student) {
+      axios.get(`${BACKEND_URL}/courses/get/${student.className}`).then((res) => {
+        setCourses(res.data);
+        // setStudent({ ...student, courses: res.data });
+        console.log(res.data);
+      });
+    }
+  }, [student]);
+
+  React.useEffect(() => {
+    if(student) {
+      axios.get(`${BACKEND_URL}/staff/assignments/class/${student.className}`).then((res) => {
+        console.log(res.data,"assignments");
+        setAssignments(res.data);
+      });
+    }}, [student]);
 
   return (
     <Box

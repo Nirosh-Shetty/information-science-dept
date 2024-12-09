@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { BACKEND_URL } from "../../../../globals";
@@ -26,22 +26,158 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRecoilState } from "recoil";
-import {
-  classAtom,
-  currentSelectedCourse as currentSelectedCourseAtom,
-} from "../../../../recoil/atoms/classAtom";
+import { classAtom } from "../../../../recoil/atoms/classAtom";
+import { staffAtom } from "../../../../recoil/atoms/staffAtom";
 
 export default function QuizContent() {
-  const [classes, setClasses] = useRecoilState(classAtom);
-  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
-    currentSelectedCourseAtom
-  );
+  const [currentUser] = useRecoilState(staffAtom);
+  const [classes] = useRecoilState(classAtom);
+
+  const [quizMessage, setQuizMessage] = useState("");
+  const [quizQuestions, setQuizQuestions] = useState([]);
+  const [quizTitles, setQuizTitles] = useState([]);
+  const [currentSelectedClass, setCurrentSelectedClass] = useState(null);
+  const [selectedTitle, setSelectedTitle] = useState("");
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
+
+  const [quizId, setQuizId] = useState("");
+  const [title, setTitle] = useState("");
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState(["", "", "", ""]);
+  const [correctAnswer, setCorrectAnswer] = useState("");
+
+  // Handle class selection
   const handleValueChange = (value) => {
-    console.log(value);
     const selectedClass = classes.find((item) => item._id === value);
-    setCurrentSelectedCourse(selectedClass);
+    setCurrentSelectedClass(selectedClass);
   };
-  React.useEffect(() => {}, [currentSelectedCourse]);
+
+  // Fetch quiz titles based on selected class
+  const fetchQuizTitles = async () => {
+    if (!currentSelectedClass) return;
+
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/staff/getQuizzesByClass/${currentSelectedClass._id}`
+      );
+      response.data.title && setQuizTitles(response.data.title);
+    } catch (error) {
+      console.error("Error fetching quiz titles:", error);
+    }
+  };
+
+  // Fetch questions for a selected quiz title
+  const fetchQuizQuestions = async (title) => {
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/staff/getQuestionsByQuizTitle/${title}`
+      );
+      setQuizQuestions(response.data.questions);
+    } catch (error) {
+      console.error("Error fetching quiz questions:", error);
+    }
+  };
+
+  // Handle dialog open/close
+  const handleCreateQuizClick = () => {
+    setIsEdit(false);
+    resetDialogFields();
+    setQuizId(uuidv4());
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    resetDialogFields();
+  };
+
+  const resetDialogFields = () => {
+    setQuizMessage("");
+    setTitle("");
+    setQuestion("");
+    setOptions(["", "", "", ""]);
+    setCorrectAnswer("");
+    setEditIndex(null);
+  };
+
+  // Add or edit a question
+  const handleAddQuestion = () => {
+    const endpoint = isEdit
+      ? `${BACKEND_URL}/staff/updatequizquestion`
+      : `${BACKEND_URL}/staff/createQuiz`;
+
+    const payload = {
+      quizId,
+      title,
+      question,
+      options,
+      correctAnswer,
+      classId: currentSelectedClass?._id,
+      staffId: currentUser?._id,
+    };
+
+    const axiosMethod = isEdit ? axios.put : axios.post;
+
+    axiosMethod(endpoint, payload)
+      .then((response) => {
+        if (isEdit) {
+          const updatedQuestions = [...quizQuestions];
+          console.log(response.data)
+          updatedQuestions[editIndex] = response.data.UpdateQuizQuestion;
+          setQuizQuestions(updatedQuestions);
+        } else {
+          setQuizQuestions((prev) => [
+            ...prev,
+            { question, options, correctAnswer },
+          ]);
+        }
+        setQuizMessage("Question saved successfully!");
+        handleCloseDialog();
+      })
+      .catch((error) => {
+        setQuizMessage(error.response?.data?.message || error.message);
+      });
+  };
+
+  // Edit a question
+  const handleEditQuestion = (index, quizId) => {
+    setQuizId(quizId);
+    const questionToEdit = quizQuestions[index];
+    setEditIndex(index);
+    setIsEdit(true);
+    setTitle(selectedTitle);
+    setQuestion(questionToEdit.question);
+    setOptions(questionToEdit.options);
+    setCorrectAnswer(questionToEdit.correctAnswer);
+    setOpenDialog(true);
+  };
+
+  // Delete a question
+  const handleDeleteQuestion = async (index, quizId) => {
+    console.log(quizId)
+    try {
+      const response = await axios.delete(
+        `${BACKEND_URL}/staff/deleteQuizQuestion/${quizId}`
+      );
+      if (response.data.deletedQuestion) {
+        const updatedQuestions = quizQuestions.filter((_, i) => i !== index);
+        setQuizQuestions(updatedQuestions);
+      }
+    } catch (error) {
+      console.error("Error deleting quiz question:", error);
+    }
+  };
+
+  const handleOptionChange = (index, value) => {
+    const updatedOptions = [...options];
+    updatedOptions[index] = value;
+    setOptions(updatedOptions);
+  };
+
+  useEffect(() => {}, [currentSelectedClass]);
 
   return (
     <Box sx={{ padding: "20px" }}>
@@ -147,28 +283,28 @@ export default function QuizContent() {
                 >
                   <Box>
                     <Typography variant="body1" fontWeight="bold">
-                      {index + 1}. {q.question}
+                      {index + 1}. {q?.question}
                     </Typography>
-                    {q.options.map((option, idx) => (
+                    {q?.options.map((option, idx) => (
                       <Typography key={idx} variant="body2">
                         {`${String.fromCharCode(65 + idx)}. ${option}`}
                       </Typography>
                     ))}
                     <Typography>
-                      Correct Answer: <strong>{q.correctAnswer}</strong>
+                      Correct Answer: <strong>{q?.correctAnswer}</strong>
                     </Typography>
                   </Box>
                   <Box>
                     <IconButton
                       color="primary"
-                      onClick={() => handleEditQuestion(index, q.quizId)}
+                      onClick={() => handleEditQuestion(index, q?.quizId)}
                       sx={{ mx: 1 }}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       color="error"
-                      onClick={() => handleDeleteQuestion(index, q.quizId)}
+                      onClick={() => handleDeleteQuestion(index, q?.quizId)}
                       sx={{ mx: 1 }}
                     >
                       <DeleteIcon />

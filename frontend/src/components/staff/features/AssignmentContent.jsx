@@ -196,7 +196,7 @@ const AssignmentContent = () => {
     }
   };
 
-  console.log(assignmentDetails,"ssssssssssss")
+  console.log(assignmentDetails, "ssssssssssss");
 
   return (
     <div>
@@ -254,16 +254,11 @@ const AssignmentContent = () => {
               >
                 <TableCell>{assignment.title}</TableCell>
                 <TableCell>{assignment.description}</TableCell>
-<<<<<<< HEAD
-                <TableCell>{assignmentDetails?.dueDate
-  ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
-  : "No Due Date"}
-</TableCell>
-=======
                 <TableCell>
-                  {format(new Date(assignment.dueDate), "dd MMM yyyy")}
+                  {assignmentDetails?.dueDate
+                    ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+                    : "No Due Date"}
                 </TableCell>
->>>>>>> 5d4350dbebc73aef2eff025a0a32c522a4def4f5
                 <TableCell>
                   {assignment.classes.className} {assignment.classes.subName}
                 </TableCell>
@@ -385,9 +380,10 @@ const AssignmentContent = () => {
             Description: {assignmentDetails?.description}
           </Typography>
           <Typography variant="subtitle1">
-            Due Date: {assignmentDetails?.dueDate
-  ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
-  : "No Due Date"}
+            Due Date:{" "}
+            {assignmentDetails?.dueDate
+              ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+              : "No Due Date"}
           </Typography>
           <div className="flex gap-4 mt-4">
             <Chip

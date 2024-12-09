@@ -10,6 +10,7 @@ import StaffDashboard from "./components/staff/StaffDashboard";
 import SignIn from "./components/SignIn/SignIn";
 import AdminDashboard from "./components/admin/dashboard/AdminDashboard";
 import StudentDashboard from "./components/student/dashboard/StudentDashboard";
+import { QuizSubmission } from "./components/student/dashboard/features/quiz/quizSubmisson/QuizSubmission";
 
 function App() {
   const demoTheme = extendTheme({
@@ -30,6 +31,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/staff/dashboard" element={<StaffDashboard />} />
           <Route path="/student/dashboard" element={<StudentDashboard />} />
+          <Route path="/quiz/:quizId/:studentId" element={<QuizSubmission />} />
         </Routes>
       </Router>
     </AppProvider>

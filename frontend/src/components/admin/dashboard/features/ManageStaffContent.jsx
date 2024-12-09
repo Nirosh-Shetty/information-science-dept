@@ -98,6 +98,7 @@ const ManageStaffContent = () => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/courses/getall`);
+        console.log(response.data);
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);

@@ -10,24 +10,6 @@ export const addCourse = async (req, res) => {
       });
     }
 
-    const existingCourse = await Course.findOne({ name, subCode });
-    if (existingCourse) {
-      if (!existingCourse.className.includes(className)) {
-        existingCourse.className.push(className);
-        await existingCourse.save();
-        return res.status(200).json({
-          message: "Class name added to the existing course.",
-          course: existingCourse,
-        });
-      }
-      return res
-        .status(200)
-        .json({
-          message: "Class name already exists in the course.",
-          course: existingCourse,
-        });
-    }
-
     const newCourse = new Course({
       name,
       subCode,
@@ -49,7 +31,7 @@ export const addCourse = async (req, res) => {
 
 export const getCourseByClass = async (req, res) => {
   try {
-    const { className } = req.query;
+    const { className } = req.params;
 
     if (!className) {
       return res

@@ -19,7 +19,7 @@ import {
   getAttendanceHistory,
 } from "../controller/staff/attendance.js";
 import jwtMiddleware from "../middleware/jwtMiddleware.js";
-import { createQuiz, deleteByQuizId, UpdateQuizQuestion, getQuizTitlesByClass } from "../controller/staff/manageQuiz.js";
+import { createQuiz, deleteByQuizId, UpdateQuizQuestion, getQuizTitlesByClass, getQuestionsByQuizTitle } from "../controller/staff/manageQuiz.js";
 const router = express.Router();
 
 router.post("/add", addStaff);
@@ -43,9 +43,10 @@ router.post("/getAttendanceList", jwtMiddleware, getAttendanceHistory);
 router.delete("/attendanceList/:_id", deleteAttendance);
 
 //quiz 
+router.post("/createQuiz", createQuiz);
+router.put("/updateQuizQuestion", UpdateQuizQuestion);
+router.delete("/deleteQuizQuestion/:quizId", deleteByQuizId);
+router.get("/getQuizzesByClass/:classId", getQuizTitlesByClass);
+router.get("/getQuestionsByQuizTitle/:title", getQuestionsByQuizTitle);
 
-router.post("/staff/createQuiz",createQuiz)
-router.post("/staff/updateQuizQuestion",UpdateQuizQuestion)
-router.delete("/staff/deleteQuizQuestion/:quizId",deleteByQuizId)
-router.get("/staff/getQuizzesByClass:/classId",getQuizTitlesByClass)
 export default router;

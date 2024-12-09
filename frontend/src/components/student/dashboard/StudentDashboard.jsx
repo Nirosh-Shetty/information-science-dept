@@ -13,6 +13,13 @@ import DashboardContent from "./features/DashboardContent";
 import { BACKEND_URL } from "../../../../globals";
 import { useRecoilState } from "recoil";
 import { studentAtom } from "../../../../recoil/atoms/studentAtom";
+import { QuizContent } from "./features/quiz/QuizContent";
+import BarChartIcon  from "@mui/icons-material/BarChart";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import axios from "axios";
+import { studentClassAtom } from "../../../../recoil/atoms/classAtom";
+import { Classes } from "./features/class/Classes";
+import { Assignment } from "./features/assignment/Assignment";
 
 const NAVIGATION = [
   {
@@ -23,25 +30,39 @@ const NAVIGATION = [
     segment: "student/dashboard",
     title: "Dashboard",
     icon: <DashboardIcon />,
-    onclick: () => console.log("I am clicked - Dashboard"),
   },
   {
     segment: "student/grades",
     title: "Grades",
     icon: <SchoolIcon />,
-    onclick: () => console.log("I am clicked - Grades"),
   },
   {
     segment: "student/attendance",
     title: "Attendance",
     icon: <AssignmentIcon />,
-    onclick: () => console.log("I am clicked - Attendance"),
+  },
+  {
+    segment: "student/quiz",
+    title: "Quiz",
+    icon: <BarChartIcon />,
   },
   {
     segment: "student/assignments",
     title: "Assignments",
     icon: <AssignmentIcon />,
-    onclick: () => console.log("I am clicked - Assignments"),
+    
+  },
+  {
+    kind: "divider",
+  },
+  {
+    kind: "header",
+    title: "Resources",
+  },
+  {
+    segment: "student/class",
+    title: "Classes",
+    icon: <PeopleAltIcon />,
   },
   {
     kind: "divider",
@@ -54,14 +75,12 @@ const NAVIGATION = [
     segment: "student/profile",
     title: "Profile",
     icon: <AccountCircleIcon />,
-    onclick: () => console.log("I am clicked - Profile"),
   },
   {
     segment: "student/logout",
     title: "Log Out",
     icon: <LogoutIcon />,
     onclick: () => {
-      console.log("I am clicked - Log Out");
       localStorage.setItem("token", "");
     },
   },
@@ -105,6 +124,7 @@ const Skeleton = styled("div")(({ theme, height }) => ({
 export default function StudentDashboard(props) {
   const [student, setStudent] = useRecoilState(studentAtom);
   const [loading, setLoading] = React.useState(true);
+  const [courses, setCourses] = useRecoilState(studentClassAtom);
   const navigate = useNavigate();
   const { window } = props;
   const router = useDemoRouter("/student/dashboard");
@@ -117,7 +137,10 @@ export default function StudentDashboard(props) {
         "/student/grades",
         "/student/attendance",
         "/student/assignments",
+        "/student/quiz",
         "/student/profile",
+        "/student/logout",
+        "/student/class",
       ].includes(router.pathname)
     ) {
       router.navigate("/student/dashboard");
@@ -162,23 +185,27 @@ export default function StudentDashboard(props) {
   function AttendanceContent() {
     return <h1>Attendance</h1>;
   }
-    function AssignmentsContent() {
+  function AssignmentsContent() {
     return <h1>Assignments</h1>;
-    }
-    function ProfileContent() {
+  }
+  function ProfileContent() {
     return <h1>Profile</h1>;
-    }
+  }
 
   const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
       case "/student/dashboard":
-        return <DashboardContent/>
+        return <DashboardContent />;
       case "/student/grades":
         return <GradesContent />;
       case "/student/attendance":
         return <AttendanceContent />;
       case "/student/assignments":
-        return <AssignmentsContent />;
+        return  <Assignment/>;
+      case "/student/quiz":
+        return <QuizContent />;
+      case "/student/class":
+        return <Classes/>;
       case "/student/profile":
         return <ProfileContent />;
       case "/student/logout":
@@ -190,23 +217,23 @@ export default function StudentDashboard(props) {
   }, [router.pathname]);
 
   return (
-      <AppProvider
-        navigation={NAVIGATION}
-        router={router}
-        theme={demoTheme}
-        branding={{ title: "Atria IT Student Portal" }}
-        window={demoWindow}
+    <AppProvider
+      navigation={NAVIGATION}
+      router={router}
+      theme={demoTheme}
+      branding={{ title: "Atria IT Student Portal" }}
+      window={demoWindow}
+    >
+      <DashboardLayout
+        sx={{
+          overflow: "hidden",
+          maxWidth: "100%",
+          whiteSpace: "nowrap",
+          position: "relative",
+        }}
       >
-        <DashboardLayout
-          sx={{
-            overflow: "hidden",
-            maxWidth: "100%",
-            whiteSpace: "nowrap",
-            position: "relative",
-          }}
-        >
-          <PageContainer>{renderPageContent()}</PageContainer>
-        </DashboardLayout>
-      </AppProvider>
-    )
+        <PageContainer>{renderPageContent()}</PageContainer>
+      </DashboardLayout>
+    </AppProvider>
+  );
 }
