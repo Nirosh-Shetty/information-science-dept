@@ -20,6 +20,8 @@ import axios from "axios";
 import { studentClassAtom } from "../../../../recoil/atoms/classAtom";
 import { Classes } from "./features/class/Classes";
 import { Assignment } from "./features/assignment/Assignment";
+import { Marks } from "./features/marks/Marks";
+import ProfileContent from "./ProfileContent";
 
 const NAVIGATION = [
   {
@@ -185,19 +187,13 @@ export default function StudentDashboard(props) {
   function AttendanceContent() {
     return <h1>Attendance</h1>;
   }
-  function AssignmentsContent() {
-    return <h1>Assignments</h1>;
-  }
-  function ProfileContent() {
-    return <h1>Profile</h1>;
-  }
 
   const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
       case "/student/dashboard":
         return <DashboardContent />;
       case "/student/grades":
-        return <GradesContent />;
+        return <Marks />;
       case "/student/attendance":
         return <AttendanceContent />;
       case "/student/assignments":

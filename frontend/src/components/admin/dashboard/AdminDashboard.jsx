@@ -52,20 +52,20 @@ const NAVIGATION = [
     kind: "header",
     title: "Analytics",
   },
-  {
-    segment: "admin/studentperformance",
-    title: "Student Performance",
-    icon: <BarChartIcon />,
-    onclick: () => console.log("I am clicked - Student Performance"),
-    children: [
-      {
-        segment: "academic",
-        title: "Academic",
-        icon: <DescriptionIcon />,
-        onclick: () => console.log("I am clicked - Academic"),
-      },
-    ],
-  },
+  // {
+  //   segment: "admin/studentperformance",
+  //   title: "Student Performance",
+  //   icon: <BarChartIcon />,
+  //   onclick: () => console.log("I am clicked - Student Performance"),
+  //   children: [
+  //     {
+  //       segment: "academic",
+  //       title: "Academic",
+  //       icon: <DescriptionIcon />,
+  //       onclick: () => console.log("I am clicked - Academic"),
+  //     },
+  //   ],
+  // },
   {
     segment: "admin/placements",
     title: "Placement",
@@ -201,8 +201,8 @@ export default function AdminDashboard(props) {
         return <ManageStaffContent />;
       case "/admin/managestudent":
         return <ManageStudentContent />;
-      case "/admin/studentperformance/academic":
-        return <Academic />;
+      // case "/admin/studentperformance/academic":
+      //   return <Academic />;
       case "/admin/placements":
         return <Placement />;
       case "/admin/profile":

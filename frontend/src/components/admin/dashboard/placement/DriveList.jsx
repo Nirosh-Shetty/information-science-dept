@@ -1,13 +1,13 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 import {
+  List,
+  ListItem,
+  Divider,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Typography,
   IconButton,
   Button,
   Dialog,
@@ -18,49 +18,50 @@ import {
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AddIcon from "@mui/icons-material/Add";
+import { format } from "date-fns";
 
 let upcomingDrives = [
   {
     id: 1,
-    title: "Accenture - Associate Software Developer",
-    ctc: "Expected CTC: 4.5LPA",
-    date: "Drive Date: 5th Nov 24",
-    avatar: "/companies/companies.png",
+    role: "Associate Software Developer",
+    company: "Accenture",
+    ctc: "4.5LPA",
+    date: "2024-11-05", // ISO format
   },
 ];
 
 const completedDrives = [
   {
     id: 1,
-    title: "Accenture - Associate Software Developer",
-    ctc: "Expected CTC: 4.5LPA",
-    date: "Drive Date: 5th Oct 24",
-    avatar: "/companies/companies.png",
+    role: "Associate Software Developer",
+    company: "Accenture",
+    ctc: "4.5LPA",
+    date: "2024-10-05", // ISO format
   },
 ];
 
 const DriveList = () => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [edit, setEdit] = React.useState(false);
-  const [selectedId, setSelectedId] = React.useState(null);
-  const [newDrive, setNewDrive] = React.useState({
-    title: "",
+  const [open, setOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [newDrive, setNewDrive] = useState({
+    role: "",
+    company: "",
     ctc: "",
     date: "",
-    avatar: "",
   });
-  const [editData, setEditData] = React.useState({
-    title: "",
+  const [editData, setEditData] = useState({
+    role: "",
+    company: "",
     ctc: "",
     date: "",
-    avatar: "",
   });
 
   const handleOpenDialog = () => setOpen(true);
   const handleCloseDialog = () => {
     setOpen(false);
-    setNewDrive({ title: "", ctc: "", date: "", avatar: "" });
+    setNewDrive({ role: "", company: "", ctc: "", date: "" });
   };
 
   const handleEditOpen = (drive) => {
@@ -68,9 +69,10 @@ const DriveList = () => {
     setSelectedId(drive.id);
     setEdit(true);
   };
+
   const editCloseDialog = () => {
     setEdit(false);
-    setEditData({ title: "", ctc: "", date: "", avatar: "" });
+    setEditData({ role: "", company: "", ctc: "", date: "" });
   };
 
   const handleInputChange = (e) => {
@@ -84,17 +86,31 @@ const DriveList = () => {
   };
 
   const handleAddDrive = () => {
-    upcomingDrives.push({ ...newDrive, id: upcomingDrives.length + 1 });
+    upcomingDrives.push({
+      ...newDrive,
+      id: upcomingDrives.length + 1,
+      date: newDrive.date,
+    });
     setOpen(false);
-    setNewDrive({ title: "", ctc: "", date: "", avatar: "" });
+    setNewDrive({ role: "", company: "", ctc: "", date: "" });
   };
 
   const handleEditDrive = () => {
     upcomingDrives = upcomingDrives.map((drive) =>
-      drive.id === selectedId ? { ...editData, id: selectedId } : drive
+      drive.id === selectedId
+        ? { ...editData, id: selectedId }
+        : drive
     );
     setEdit(false);
-    setEditData({ title: "", ctc: "", date: "", avatar: "" });
+    setEditData({ role: "", company: "", ctc: "", date: "" });
+  };
+
+  const safeFormatDate = (dateStr) => {
+    try {
+      return format(new Date(dateStr), "do MMM yyyy");
+    } catch {
+      return "Invalid date";
+    }
   };
 
   return (
@@ -156,7 +172,7 @@ const DriveList = () => {
                 <ListItemText
                   primary={
                     <Typography variant="h6" style={{ fontWeight: 600 }}>
-                      {drive.title}
+                      {drive.company} - {drive.role}
                     </Typography>
                   }
                   secondary={
@@ -166,14 +182,14 @@ const DriveList = () => {
                         variant="body2"
                         color="text.primary"
                       >
-                        {drive.ctc}
+                        Expected CTC: {drive.ctc}
                       </Typography>
                       <Typography
                         variant="caption"
                         display="block"
                         style={{ marginTop: "0.5rem" }}
                       >
-                        {drive.date}
+                        Drive Date: {safeFormatDate(drive.date)}
                       </Typography>
                     </>
                   }
@@ -192,72 +208,6 @@ const DriveList = () => {
         </List>
       </section>
 
-      {/* Completed Drives */}
-      <section>
-        <Typography
-          variant="h5"
-          style={{
-            color: theme.palette.warning.main,
-            fontWeight: 600,
-            marginBottom: "1rem",
-          }}
-        >
-          Completed Drives
-        </Typography>
-        <List
-          sx={{
-            bgcolor: "background.paper",
-            borderRadius: "8px",
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? "0 4px 8px rgba(255, 255, 255, 0.3)"
-                : theme.shadows[3],
-            padding: "10px",
-          }}
-        >
-          {completedDrives.map((drive) => (
-            <React.Fragment key={drive.id}>
-              <ListItem
-                alignItems="flex-start"
-                sx={{
-                  "&:hover": { backgroundColor: theme.palette.action.hover },
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar alt={drive.title} src={drive.avatar} />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={
-                    <Typography variant="h6" style={{ fontWeight: 600 }}>
-                      {drive.title}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      <Typography
-                        component="span"
-                        variant="body2"
-                        color="text.primary"
-                      >
-                        {drive.ctc}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        display="block"
-                        style={{ marginTop: "0.5rem" }}
-                      >
-                        {drive.date}
-                      </Typography>
-                    </>
-                  }
-                />
-              </ListItem>
-              <Divider variant="inset" component="li" />
-            </React.Fragment>
-          ))}
-        </List>
-      </section>
-
       {/* Add Drive Dialog */}
       <Dialog open={open} onClose={handleCloseDialog}>
         <DialogTitle>Add New Drive</DialogTitle>
@@ -265,11 +215,20 @@ const DriveList = () => {
           <TextField
             autoFocus
             margin="dense"
-            label="Title"
-            name="title"
+            label="Role"
+            name="role"
             fullWidth
             variant="outlined"
-            value={newDrive.title}
+            value={newDrive.role}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            label="Company"
+            name="company"
+            fullWidth
+            variant="outlined"
+            value={newDrive.company}
             onChange={handleInputChange}
           />
           <TextField
@@ -285,18 +244,11 @@ const DriveList = () => {
             margin="dense"
             label="Date"
             name="date"
+            type="date"
             fullWidth
             variant="outlined"
+            InputLabelProps={{ shrink: true }}
             value={newDrive.date}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="dense"
-            label="Avatar URL"
-            name="avatar"
-            fullWidth
-            variant="outlined"
-            value={newDrive.avatar}
             onChange={handleInputChange}
           />
         </DialogContent>
@@ -306,57 +258,6 @@ const DriveList = () => {
           </Button>
           <Button onClick={handleAddDrive} variant="contained" color="primary">
             Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Edit drive details dialog */}
-      <Dialog open={edit} onClose={editCloseDialog}>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Title"
-            name="title"
-            fullWidth
-            variant="outlined"
-            value={editData.title}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            margin="dense"
-            label="CTC"
-            name="ctc"
-            fullWidth
-            variant="outlined"
-            value={editData.ctc}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            margin="dense"
-            label="Date"
-            name="date"
-            fullWidth
-            variant="outlined"
-            value={editData.date}
-            onChange={handleEditInputChange}
-          />
-          <TextField
-            margin="dense"
-            label="Avatar URL"
-            name="avatar"
-            fullWidth
-            variant="outlined"
-            value={editData.avatar}
-            onChange={handleEditInputChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={editCloseDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleEditDrive} variant="contained" color="primary">
-            Save
           </Button>
         </DialogActions>
       </Dialog>

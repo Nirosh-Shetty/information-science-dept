@@ -15,6 +15,9 @@ import { studentAtom } from "../../../../../recoil/atoms/studentAtom";
 import { studentClassAtom } from "../../../../../recoil/atoms/classAtom";
 import { useRecoilState } from "recoil";
 import { assignmentAtom } from "../../../../../recoil/atoms/assignmentAtom";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import DescriptionIcon from "@mui/icons-material/Description";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 const DashboardContent = () => {
   const [student, setStudent] = useRecoilState(studentAtom);
@@ -40,21 +43,26 @@ const DashboardContent = () => {
 
   React.useEffect(() => {
     if (student) {
-      axios.get(`${BACKEND_URL}/courses/get/${student.className}`).then((res) => {
-        setCourses(res.data);
-        // setStudent({ ...student, courses: res.data });
-        console.log(res.data);
-      });
+      axios
+        .get(`${BACKEND_URL}/courses/get/${student.className}`)
+        .then((res) => {
+          setCourses(res.data);
+          // setStudent({ ...student, courses: res.data });
+          console.log(res.data);
+        });
     }
   }, [student]);
 
   React.useEffect(() => {
-    if(student) {
-      axios.get(`${BACKEND_URL}/staff/assignments/class/${student.className}`).then((res) => {
-        console.log(res.data,"assignments");
-        setAssignments(res.data);
-      });
-    }}, [student]);
+    if (student) {
+      axios
+        .get(`${BACKEND_URL}/staff/assignments/class/${student.className}`)
+        .then((res) => {
+          console.log(res.data, "assignments");
+          setAssignments(res.data);
+        });
+    }
+  }, [student]);
 
   return (
     <Box
@@ -78,44 +86,89 @@ const DashboardContent = () => {
       </style>
 
       {/* Overview Section */}
-      <Grid container spacing={3}>
-        {[
-          {
-            title: "Attendance",
-            count: `${attendancePercentage || "loading..."}%`,
-            color: isDarkMode ? "#6EDCD9" : "#0081B4",
-          },
-          {
-            title: "Current GPA",
-            count: grades.length
-              ? (
-                  grades.reduce((acc, curr) => acc + curr.grade, 0) /
-                  grades.length
-                ).toFixed(2)
-              : "loading...",
-            color: theme.palette.primary.main,
-          },
-          {
-            title: "Next Exam",
-            count: "Dec 15th",
-            color: isDarkMode ? "#F2AAAA" : "#E36387",
-          },
-        ].map((item, index) => (
-          <Grid item xs={12} md={4} key={index}>
-            <Card
-              className="hover-card"
-              sx={{
-                backgroundColor: item.color,
-                color: theme.palette.getContrastText(item.color),
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6">{item.title}</Typography>
-                <Typography variant="h5">{item.count}</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+      <Grid container spacing={3} sx={{ mb: 6 }}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 3,
+              transition: "transform 0.3s",
+              "&:hover": { transform: "scale(1.02)", boxShadow: 5 },
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" mb={1}>
+                <PeopleAltIcon fontSize="large" color="primary" />
+                <Typography variant="h6" sx={{ ml: 2 }}>
+                  My Classes
+                </Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {courses?.length ? courses.length : "loading..."}
+              </Typography>
+              <Typography color="text.secondary">
+                Current classes assigned
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 3,
+              transition: "transform 0.3s",
+              "&:hover": { transform: "scale(1.02)", boxShadow: 5 },
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" mb={1}>
+                <DescriptionIcon
+                  fontSize="large"
+                  sx={{ color: "green", mr: 2 }}
+                />
+                <Typography variant="h6">Assignments</Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {assignments ? assignments.length : "loading..."}
+              </Typography>
+              <Typography color="text.secondary">
+                Pending assignments to submit
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4}>
+          <Card
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              boxShadow: 3,
+              transition: "transform 0.3s",
+              "&:hover": { transform: "scale(1.02)", boxShadow: 5 },
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" mb={1}>
+                <BarChartIcon
+                  fontSize="large"
+                  sx={{ color: "orange", mr: 2 }}
+                />
+                <Typography variant="h6">Attendance</Typography>
+              </Box>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                95%
+              </Typography>
+              <Typography color="text.secondary">
+                Average attendance rate
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
 
       <Divider sx={{ my: 3, backgroundColor: isDarkMode ? "#555" : "#ddd" }} />
