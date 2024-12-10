@@ -84,7 +84,7 @@ export default function StudentSection() {
   const handleCoursesDialogOpen = async () => {
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/courses/get?className=${selected}`
+        `${BACKEND_URL}/courses/get/${selected}`
       );
       setCourses(response.data || []);
       setCoursesDialogOpen(true);

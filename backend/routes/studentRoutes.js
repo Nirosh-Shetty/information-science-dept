@@ -6,6 +6,6 @@ router.post("/add", addStudent);
 router.get("/get", getStudentsByClass);
 router.put("/update", updateStudentByUsn);
 router.delete("/delete", deleteStudentByUsn);
-router.get("/allstudents", getAllStudents)
+router.get("/allstudents", getAllStudents);
 
 export default router;

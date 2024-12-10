@@ -9,3 +9,8 @@ export const currentSelectedCourse = atom({
   key: "selectedClass",
   default: null,
 });
+
+export const studentClassAtom = atom({
+  key: "studentClassAtom",
+  default: null,
+});

@@ -26,6 +26,7 @@ import QuizContent from "./features/QuizContent";
 import ProfileContent from "./features/ProfileContent";
 import SchoolIcon from "@mui/icons-material/School";
 import Marks from "./features/marks/Marks";
+import { QuizContent2 } from "./features/quiz2/QuizContent2";
 
 const STAFF_NAVIGATION = [
   { kind: "header", title: "Main items" },
@@ -38,9 +39,7 @@ const STAFF_NAVIGATION = [
   },
   { kind: "divider" },
   { kind: "header", title: "Resources & Analytics" },
-  { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
   { segment: "staff/marks", title: "Marks", icon: <SchoolIcon /> },
-  // { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
   { segment: "staff/quiz", title: "Quiz", icon: <BarChartIcon /> },
   { segment: "staff/attendance", title: "Attendance", icon: <BarChartIcon /> }, // Updated from Student Feedback to Attendance
   { kind: "divider" },
@@ -189,7 +188,7 @@ export default function StaffDashboard(props) {
       case "/staff/resources":
         return <ResourcesContent />;
       case "/staff/quiz": // Add case for Quiz route
-        return <QuizContent />;
+        return <QuizContent2 />;
       case "/staff/attendance":
         return <Attendence />;
       case "/staff/profile":

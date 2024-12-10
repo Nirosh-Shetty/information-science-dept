@@ -3,7 +3,7 @@ import { addCourse, deleteCourseByClassName, getAllCourses, getCourseByClass, up
 const router = express.Router();
 
 router.post("/add", addCourse);
-router.get("/get", getCourseByClass);
+router.get("/get/:className", getCourseByClass);
 router.get("/getall", getAllCourses);
 router.put("/update", updateCourseById);
 router.delete("/delete", deleteCourseByClassName);

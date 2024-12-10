@@ -24,8 +24,9 @@ export default function SelectClass() {
   );
   console.log(classes);
   const handleValueChange = (value) => {
-    // console.log(value);
+    console.log(value, "VVVVVVV");
     const selectedClass = classes.find((item) => item._id === value);
+    console.log(selectedClass, "DHSGDHGDSHG")
     setCurrentSelectedCourse(selectedClass);
   };
 
@@ -41,7 +42,7 @@ export default function SelectClass() {
             <SelectLabel>Class</SelectLabel>
             {classes.map((item, index) => (
               <SelectItem key={item._id} value={item._id}>
-                {item.name}
+                {item.name} {item.className}
               </SelectItem>
             ))}
           </SelectGroup>
