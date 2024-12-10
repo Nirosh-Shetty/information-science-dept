@@ -39,7 +39,7 @@ const STAFF_NAVIGATION = [
   { kind: "divider" },
   { kind: "header", title: "Resources & Analytics" },
   { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
-  {segment: "staff/marks", title: "Marks", icon: <SchoolIcon />},
+  { segment: "staff/marks", title: "Marks", icon: <SchoolIcon /> },
   // { segment: "staff/resources", title: "Resources", icon: <LayersIcon /> },
   { segment: "staff/quiz", title: "Quiz", icon: <BarChartIcon /> },
   { segment: "staff/attendance", title: "Attendance", icon: <BarChartIcon /> }, // Updated from Student Feedback to Attendance
@@ -185,7 +185,7 @@ export default function StaffDashboard(props) {
       case "/staff/assignments":
         return <AssignmentsContent />;
       case "/staff/marks":
-        return <Marks/>;
+        return <Marks />;
       case "/staff/resources":
         return <ResourcesContent />;
       case "/staff/quiz": // Add case for Quiz route

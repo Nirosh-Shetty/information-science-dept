@@ -18,26 +18,26 @@ import {
 import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../../globals";
 import axios from "axios";
-
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 const Attendence = () => {
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
   const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
     currentSelectedCourseAtom
   );
-
+  const handleGoback = () => {};
   const handleTakeNewAttendance = async () => {
     try {
       const response = await axios.get(
-        `${BACKEND_URL}/staff/studentListWithAttendance/new`
+        `${BACKEND_URL}/staff/studentListWithAttendance/${currentSelectedCourse._id}`
       );
     } catch (error) {
-      console.log("failed to edit the attedance");
+      console.log("failed to take new attedance");
     }
   };
   return (
     <div>
+      {/* <Button onClick={handleGoback}>sds</Button> */}
       <SelectClass />
-
       <CssVarsProvider disableTransitionOnChange>
         {currentSelectedCourse ? (
           <>

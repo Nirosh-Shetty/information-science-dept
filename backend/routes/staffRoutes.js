@@ -18,6 +18,7 @@ import {
   getAttendanceHistory,
   deleteAttendance,
   studentListWithAttendance,
+  saveOrUpdateAttendance,
 } from "../controller/staff/attendance.js";
 import jwtMiddleware from "../middleware/jwtMiddleware.js";
 
@@ -47,9 +48,9 @@ router.get("/assignments/class/:className", getAssignmentsByClassName);
 router.post("/getAttendanceHistory", jwtMiddleware, getAttendanceHistory);
 router.delete("/attendanceList/:id", deleteAttendance);
 router.get("/studentListWithAttendance/:id", studentListWithAttendance);
+router.post("/saveOrUpdateAttendance", saveOrUpdateAttendance);
 
 //quiz
-
 router.post("/staff/createQuiz", createQuiz);
 router.post("/staff/updateQuizQuestion", UpdateQuizQuestion);
 router.delete("/staff/deleteQuizQuestion/:quizId", deleteByQuizId);

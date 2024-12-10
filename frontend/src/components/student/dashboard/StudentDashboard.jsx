@@ -162,17 +162,17 @@ export default function StudentDashboard(props) {
   function AttendanceContent() {
     return <h1>Attendance</h1>;
   }
-    function AssignmentsContent() {
+  function AssignmentsContent() {
     return <h1>Assignments</h1>;
-    }
-    function ProfileContent() {
+  }
+  function ProfileContent() {
     return <h1>Profile</h1>;
-    }
+  }
 
   const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
       case "/student/dashboard":
-        return <DashboardContent/>
+        return <DashboardContent />;
       case "/student/grades":
         return <GradesContent />;
       case "/student/attendance":
@@ -190,23 +190,23 @@ export default function StudentDashboard(props) {
   }, [router.pathname]);
 
   return (
-      <AppProvider
-        navigation={NAVIGATION}
-        router={router}
-        theme={demoTheme}
-        branding={{ title: "Atria IT Student Portal" }}
-        window={demoWindow}
+    <AppProvider
+      navigation={NAVIGATION}
+      router={router}
+      theme={demoTheme}
+      branding={{ title: "Atria IT Student Portal" }}
+      window={demoWindow}
+    >
+      <DashboardLayout
+        sx={{
+          overflow: "hidden",
+          maxWidth: "100%",
+          whiteSpace: "nowrap",
+          position: "relative",
+        }}
       >
-        <DashboardLayout
-          sx={{
-            overflow: "hidden",
-            maxWidth: "100%",
-            whiteSpace: "nowrap",
-            position: "relative",
-          }}
-        >
-          <PageContainer>{renderPageContent()}</PageContainer>
-        </DashboardLayout>
-      </AppProvider>
-    )
+        <PageContainer>{renderPageContent()}</PageContainer>
+      </DashboardLayout>
+    </AppProvider>
+  );
 }
