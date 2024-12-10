@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const MarksSchema = new mongoose.Schema({
   studentId: {
@@ -8,7 +8,7 @@ const MarksSchema = new mongoose.Schema({
   },
   subjectId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Courses", // Reference to the courses collection
+    ref: "Course", // Reference to the courses collection
     required: true,
   },
   marks: {
@@ -18,8 +18,7 @@ const MarksSchema = new mongoose.Schema({
   },
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Staff", // Reference to the staff collection
-    required: true,
+    ref: "Staff", 
   },
   uploadDate: {
     type: Date,

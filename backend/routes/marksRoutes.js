@@ -1,9 +1,10 @@
 import express from "express";
-import { createMarks } from "../controller/marks/manageMarks";
+import { createMarks, getMarksByStudentId, getMarksBySubAndStudId } from "../controller/marks/manageMarks.js";
 const router = express.Router();
 
 router.post("/add", createMarks);
-router.get("/get", );
+router.get("/getbyId/:studentId", getMarksByStudentId );
+router.get("/get/:studentId/:subjectId", getMarksBySubAndStudId);
 router.put("/update", );
 router.delete("/delete", );
 
