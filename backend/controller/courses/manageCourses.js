@@ -3,6 +3,7 @@ import Course from "../../model/courseModel.js";
 import { addDummyClasses } from "./addClass.js";
 
 export const addCourse = async (req, res) => {
+  // addDummyClasses();
   try {
     const { name, subCode, className } = req.body;
 
@@ -17,7 +18,6 @@ export const addCourse = async (req, res) => {
       subCode,
       className: [className],
     });
-
     await newCourse.save();
 
     const cls = await classModel.findOne({ name: className });
@@ -39,7 +39,6 @@ export const addCourse = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
-
 
 export const getCourseByClass = async (req, res) => {
   try {
@@ -193,11 +192,13 @@ export const deleteCourseByClassName = async (req, res) => {
     if (course.className.length > 1) {
       course.className = course.className.filter((c) => c !== className);
       await course.save();
-      
+
       // Remove course ID from the corresponding class document
       const cls = await classModel.findOne({ name: className });
       if (cls) {
-        cls.courses = cls.courses.filter((courseId) => !courseId.equals(course._id));
+        cls.courses = cls.courses.filter(
+          (courseId) => !courseId.equals(course._id)
+        );
         await cls.save();
       }
 
@@ -213,7 +214,9 @@ export const deleteCourseByClassName = async (req, res) => {
     // Remove course ID from the corresponding class document
     const cls = await classModel.findOne({ name: className });
     if (cls) {
-      cls.courses = cls.courses.filter((courseId) => !courseId.equals(course._id));
+      cls.courses = cls.courses.filter(
+        (courseId) => !courseId.equals(course._id)
+      );
       await cls.save();
     }
 

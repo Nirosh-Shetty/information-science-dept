@@ -29,17 +29,31 @@ import { useRecoilState } from "recoil";
 import {
   studentSearchQueryState,
   studentListState,
+  updatedStudentListState,
 } from "../../../../../recoil/atoms/attendanceAtom";
 
-
-export default function OrderTable({ theme, studentData }) {
+export default function OrderTable({ theme }) {
   const [rowsData, setRowsData] = useState([]);
 
   const [studentList, setStudentList] = useRecoilState(studentListState);
   const [searchQuery, setSearchQuery] = useRecoilState(studentSearchQueryState);
-  const [updatedlist, setUpdatedlist] = useState(studentList);
-  const [filteredList, setFilteredList] = useState(updatedlist);
+  const [updatedlist, setUpdatedlist] = useRecoilState(updatedStudentListState);
+  const [filteredList, setFilteredList] = useState([]);
   // console.log(studentList);
+
+  useEffect(() => {
+    // Transform backend data to the required format
+    console.log(studentList);
+    const transformedData = studentList.attendance?.map((record) => ({
+      id: record._id, // Use the attendance ID
+      name: record.student?.fullName || "N/A", // Extract the student's name
+      usn: record.student?.usn || "N/A", // Extract the student's USN
+      attendance: record.attendance, // Attendance status
+    }));
+    setFilteredList(transformedData);
+    setUpdatedlist(transformedData);
+  }, [studentList]);
+
   useEffect(() => {
     if (!searchQuery) {
       setFilteredList(updatedlist);

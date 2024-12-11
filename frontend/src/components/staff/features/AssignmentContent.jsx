@@ -177,7 +177,8 @@ const AssignmentContent = () => {
         className: assignment.classes.className,
         subName: assignment.classes.subName,
       },
-      id: assignment._id, // Include the id for updating the existing assignment
+      id: assignment._id,
+      // Include the id for updating the existing assignment
     });
     setOpen(true); // Open the dialog to edit the assignment
   };

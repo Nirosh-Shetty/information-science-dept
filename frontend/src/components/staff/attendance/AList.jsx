@@ -47,8 +47,15 @@ import {
 import axios from "axios";
 import { BACKEND_URL } from "../../../../globals";
 import StudentListForAttendance from "./temp/StudentListForAttendance";
+import {
+  studentListState,
+  isUpdateOrEditAttendanceStateAtom,
+  attendanceType,
+} from "../../../../recoil/atoms/attendanceAtom";
 
 export default function Alist() {
+  const [studentList, setStudentList] = useRecoilState(studentListState);
+
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -64,10 +71,8 @@ export default function Alist() {
   );
   const [attendanceList, setAttendanceList] = useState([]);
   const [isUpdateOrEditAttendanceState, setIsUpdateOrEditAttendanceState] =
-    useState(false);
-  const [setstudentListForAttendace, setSetstudentListForAttendace] = useState(
-    []
-  );
+    useRecoilState(isUpdateOrEditAttendanceStateAtom);
+  const [studentListForAttendace, setStudentListForAttendace] = useState([]);
   const handleDeleteAttendance = async (id) => {
     //TODO: try doing the deletion in frontend first and then backend for better and faster response.. store the old date temp var and rol back to it if any error occured while sending a error message to the user
     try {
@@ -81,14 +86,18 @@ export default function Alist() {
       handleClose();
     }
   };
+  const [type, setType] = useRecoilState(attendanceType);
+
   const handleEditOption = async (id) => {
+    setType("update");
     //TODO: try doing the deletion in frontend first and then backend for better and faster response.. store the old date temp var and rol back to it if any error occured while sending a error message to the user
     try {
       const response = await axios.get(
         `${BACKEND_URL}/staff/studentListWithAttendance/${id}`
       );
+      console.log(response.data.data);
       setIsUpdateOrEditAttendanceState(true);
-      setstudentListForAttendace(response.data.data);
+      setStudentList(response.data.data);
     } catch (error) {
       console.log("failed to edit the attedance");
     }
@@ -115,7 +124,7 @@ export default function Alist() {
   React.useEffect(() => {
     // if (currentSelectedCourse && currentSelectedCourse.length > 0)
     fecthAttendanceList();
-  }, [currentSelectedCourse]);
+  }, [currentSelectedCourse, isUpdateOrEditAttendanceState]);
 
   return (
     <>

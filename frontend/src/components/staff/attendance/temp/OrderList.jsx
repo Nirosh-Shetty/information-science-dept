@@ -24,7 +24,7 @@ import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 
-export default function OrderList({ studentData }) {
+export default function OrderList() {
   const [listItems, setListItems] = React.useState([]);
   useEffect(() => {
     setRowsData(studentData);
