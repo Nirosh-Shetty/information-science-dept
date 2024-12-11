@@ -19,3 +19,8 @@ export const isUpdateOrEditAttendanceStateAtom = atom({
   key: "isUpdateOrEditAttendanceStateAtom",
   default: false,
 });
+
+export const attendanceType = atom({
+  key: "attendanceType",
+  default: "",
+});

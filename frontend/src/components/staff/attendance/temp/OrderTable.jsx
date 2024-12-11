@@ -44,7 +44,7 @@ export default function OrderTable({ theme }) {
   useEffect(() => {
     // Transform backend data to the required format
     console.log(studentList);
-    const transformedData = studentList.attendance.map((record) => ({
+    const transformedData = studentList.attendance?.map((record) => ({
       id: record._id, // Use the attendance ID
       name: record.student?.fullName || "N/A", // Extract the student's name
       usn: record.student?.usn || "N/A", // Extract the student's USN

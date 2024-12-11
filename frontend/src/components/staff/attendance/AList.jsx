@@ -50,6 +50,7 @@ import StudentListForAttendance from "./temp/StudentListForAttendance";
 import {
   studentListState,
   isUpdateOrEditAttendanceStateAtom,
+  attendanceType,
 } from "../../../../recoil/atoms/attendanceAtom";
 
 export default function Alist() {
@@ -85,7 +86,10 @@ export default function Alist() {
       handleClose();
     }
   };
+  const [type, setType] = useRecoilState(attendanceType);
+
   const handleEditOption = async (id) => {
+    setType("update");
     //TODO: try doing the deletion in frontend first and then backend for better and faster response.. store the old date temp var and rol back to it if any error occured while sending a error message to the user
     try {
       const response = await axios.get(

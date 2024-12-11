@@ -19,6 +19,7 @@ import {
   deleteAttendance,
   studentListWithAttendance,
   saveOrUpdateAttendance,
+  studentListForNewAttendance,
 } from "../controller/staff/attendance.js";
 import jwtMiddleware from "../middleware/jwtMiddleware.js";
 import {
@@ -48,7 +49,8 @@ router.get("/assignments/class/:className", getAssignmentsByClassName);
 router.post("/getAttendanceHistory", jwtMiddleware, getAttendanceHistory);
 router.delete("/attendanceList/:id", deleteAttendance);
 router.get("/studentListWithAttendance/:id", studentListWithAttendance);
-router.post("/saveOrUpdateAttendance", saveOrUpdateAttendance);
+router.post("/saveOrUpdateAttendance/:type", saveOrUpdateAttendance);
+router.post("/studentListForNewAttendance", studentListForNewAttendance);
 
 //quiz
 router.post("/createQuiz", createQuiz);

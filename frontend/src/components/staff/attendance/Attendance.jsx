@@ -15,6 +15,11 @@ import {
   classAtom,
   currentSelectedCourse as currentSelectedCourseAtom,
 } from "../../../../recoil/atoms/classAtom";
+import {
+  studentListState,
+  isUpdateOrEditAttendanceStateAtom,
+  attendanceType,
+} from "../../../../recoil/atoms/attendanceAtom";
 import { useRecoilState } from "recoil";
 import { BACKEND_URL } from "../../../../globals";
 import axios from "axios";
@@ -24,14 +29,32 @@ const Attendence = () => {
   const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
     currentSelectedCourseAtom
   );
+  const [type, setType] = useRecoilState(attendanceType);
+  const [isUpdateOrEditAttendanceState, setIsUpdateOrEditAttendanceState] =
+    useRecoilState(isUpdateOrEditAttendanceStateAtom);
+  const [studentList, setStudentList] = useRecoilState(studentListState);
+
   const handleGoback = () => {};
   const handleTakeNewAttendance = async () => {
+    // alert("jjj");
     try {
-      const response = await axios.get(
-        `${BACKEND_URL}/staff/studentListWithAttendance/${currentSelectedCourse._id}`
+      setType("new");
+      setIsUpdateOrEditAttendanceState(true);
+      console.log({
+        courseId: currentSelectedCourse._id,
+        className: currentSelectedCourse.className[0],
+      });
+      const response = await axios.post(
+        `${BACKEND_URL}/staff/studentListForNewAttendance`,
+        {
+          courseId: currentSelectedCourse._id,
+          className: currentSelectedCourse.className[0],
+        }
       );
+      console.log(response.data.data);
+      setStudentList(response.data.data);
     } catch (error) {
-      console.log("failed to take new attedance");
+      console.log("failed to take new attedance", error);
     }
   };
   return (

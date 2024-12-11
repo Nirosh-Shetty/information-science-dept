@@ -30,6 +30,7 @@ import {
   studentListState,
   updatedStudentListState,
   isUpdateOrEditAttendanceStateAtom,
+  attendanceType,
 } from "../../../../../recoil/atoms/attendanceAtom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import axios from "axios";
@@ -163,11 +164,9 @@ export default function StudentListForAttendance() {
   const [updatedlist, setUpdatedlist] = useRecoilState(updatedStudentListState);
   const [isUpdateOrEditAttendanceState, setIsUpdateOrEditAttendanceState] =
     useRecoilState(isUpdateOrEditAttendanceStateAtom);
+  const [type, setType] = useRecoilState(attendanceType);
 
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
-  const { type } = useParams();
-  const [searchParams] = useSearchParams();
-  const attendanceId = type === "update" ? searchParams.get("id") : null;
 
   const [studentList, setStudentList] = useRecoilState(studentListState);
   const [searchQuery, setSearchQuery] = useRecoilState(studentSearchQueryState);
@@ -201,7 +200,7 @@ export default function StudentListForAttendance() {
     // console.log("Original Format Data:", originalFormat);
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/staff/saveOrUpdateAttendance`,
+        `${BACKEND_URL}/staff/saveOrUpdateAttendance/${type}`,
         originalFormat
       );
       setIsUpdateOrEditAttendanceState(false);

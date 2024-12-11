@@ -16,7 +16,6 @@ export const addCourse = async (req, res) => {
       subCode,
       className: [className],
     });
-
     await newCourse.save();
 
     return res
