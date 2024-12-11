@@ -25,7 +25,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/signinoptions" element={<SignInOptions />} />
-          <Route path="/" element={<Home></Home>} />
+          <Route path="/" element={<SignInOptions/>} />
           {/* <Route path="/admin/signin" element={<SignIn />} /> */}
           <Route path="/signin/:role" element={<SignIn />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
