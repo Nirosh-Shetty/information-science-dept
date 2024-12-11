@@ -1,5 +1,6 @@
 import classModel from "../../model/classModel.js";
 import Course from "../../model/courseModel.js";
+import { addDummyClasses } from "./addClass.js";
 
 export const addCourse = async (req, res) => {
   try {
@@ -19,6 +20,15 @@ export const addCourse = async (req, res) => {
 
     await newCourse.save();
 
+    const cls = await classModel.findOne({ name: className });
+
+    if (!cls) {
+      return res.status(404).json({ message: "Class not found." });
+    }
+
+    cls.courses.push(newCourse._id);
+    await cls.save();
+
     return res
       .status(201)
       .json({ message: "Course added successfully!", course: newCourse });
@@ -29,6 +39,7 @@ export const addCourse = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 export const getCourseByClass = async (req, res) => {
   try {
@@ -182,16 +193,32 @@ export const deleteCourseByClassName = async (req, res) => {
     if (course.className.length > 1) {
       course.className = course.className.filter((c) => c !== className);
       await course.save();
+      
+      // Remove course ID from the corresponding class document
+      const cls = await classModel.findOne({ name: className });
+      if (cls) {
+        cls.courses = cls.courses.filter((courseId) => !courseId.equals(course._id));
+        await cls.save();
+      }
+
       return res.status(200).json({
-        message: `Class name '${className}' removed from the course.`,
+        message: `Class name '${className}' removed from the course and updated in the class model.`,
         course,
       });
     }
 
     // If the course has only one class, delete the entire course
     await Course.findOneAndDelete({ _id: course._id });
+
+    // Remove course ID from the corresponding class document
+    const cls = await classModel.findOne({ name: className });
+    if (cls) {
+      cls.courses = cls.courses.filter((courseId) => !courseId.equals(course._id));
+      await cls.save();
+    }
+
     return res.status(200).json({
-      message: `Course '${name}' with subject code '${subCode}' deleted as it contained only one class.`,
+      message: `Course '${name}' with subject code '${subCode}' deleted as it contained only one class and removed from the class model.`,
       course,
     });
   } catch (error) {

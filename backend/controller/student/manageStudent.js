@@ -1,5 +1,10 @@
 import Student from "../../model/studentModel.js"; // Adjust the path accordingly
+import classModel from "../../model/classModel.js";
 import bcrypt from "bcrypt";
+
+import bcrypt from 'bcrypt';
+import Student from '../models/studentModel'; // Assuming you have a student model
+import Class from '../models/classModel'; // Assuming you have a class model
 
 export const addStudent = async (req, res) => {
     try {
@@ -8,7 +13,21 @@ export const addStudent = async (req, res) => {
         if (!fullName || !usn || !className || !password) {
             return res.status(400).json({ message: "fullName, usn, and className are required." });
         }
+
+        // Hash password before saving
         password = bcrypt.hashSync(password, 10);
+
+        // Check if the student already exists
+        let existingStudent = await Student.findOne({ usn });
+
+        if (existingStudent) {
+            // If the student exists, update their courses array
+            existingStudent.courses = [...new Set([...existingStudent.courses, ...courses])]; // Ensures no duplicates
+            await existingStudent.save();
+            return res.status(200).json({ message: "Courses updated successfully!", student: existingStudent });
+        }
+
+        // If student doesn't exist, create a new student
         const newStudent = new Student({
             fullName,
             usn,
@@ -22,12 +41,23 @@ export const addStudent = async (req, res) => {
 
         await newStudent.save();
 
+        // Find the class and add the student to the class
+        const cls = await Class.findOne({ name: className });
+
+        if (!cls) {
+            return res.status(404).json({ message: "Class not found." });
+        }
+
+        cls.students.push(newStudent._id);
+        await cls.save();
+
         return res.status(201).json({ message: "Student added successfully!", student: newStudent });
     } catch (error) {
         console.error("Error adding student:", error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
+
 
 export const getStudentsByClass = async (req, res) => {
     try {
@@ -91,13 +121,22 @@ export const deleteStudentByUsn = async (req, res) => {
             return res.status(404).json({ message: "Student not found with the provided USN." });
         }
 
+        // Remove the student's reference from the class
+        const cls = await Class.findOne({ name: deletedStudent.className });
+
+        if (cls) {
+            // Remove the student's ID from the class' students array
+            cls.students = cls.students.filter(studentId => studentId.toString() !== deletedStudent._id.toString());
+            await cls.save();
+        }
+
         // Return the deleted student data
         return res.status(200).json({ message: "Student deleted successfully", student: deletedStudent });
     } catch (error) {
         console.error("Error deleting student:", error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
-}
+};
 
 export const getAllStudents = async(req, res) =>{
     try {

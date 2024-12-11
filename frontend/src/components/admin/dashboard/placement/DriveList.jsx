@@ -23,9 +23,16 @@ import { format } from "date-fns";
 let upcomingDrives = [
   {
     id: 1,
-    role: "Associate Software Developer",
-    company: "Accenture",
-    ctc: "4.5LPA",
+    role: "Graduate Trainee",
+    company: "Tech Mahindra",
+    ctc: "3.5 - 5.5LPA",
+    date: "2024-11-05", // ISO format
+  },
+  {
+    id: 2,
+    role: "AI/ML Engineer",
+    company: "SAP Labs",
+    ctc: "6LPA",
     date: "2024-11-05", // ISO format
   },
 ];
@@ -35,6 +42,13 @@ const completedDrives = [
     id: 1,
     role: "Associate Software Developer",
     company: "Accenture",
+    ctc: "4.5LPA",
+    date: "2024-10-05", // ISO format
+  },
+  {
+    id: 2,
+    role: "Intern",
+    company: "Amazom",
     ctc: "4.5LPA",
     date: "2024-10-05", // ISO format
   },
@@ -156,9 +170,76 @@ const DriveList = () => {
                 ? "0 4px 8px rgba(255, 255, 255, 0.3)"
                 : theme.shadows[3],
             padding: "10px",
+            marginBottom: "2rem",
           }}
         >
           {upcomingDrives.map((drive) => (
+            <React.Fragment key={drive.id}>
+              <ListItem
+                alignItems="flex-start"
+                sx={{
+                  "&:hover": { backgroundColor: theme.palette.action.hover },
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar alt={drive.title} src={drive.avatar} />
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography variant="h6" style={{ fontWeight: 600 }}>
+                      {drive.company} - {drive.role}
+                    </Typography>
+                  }
+                  secondary={
+                    <>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.primary"
+                      >
+                        Expected CTC: {drive.ctc}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        display="block"
+                        style={{ marginTop: "0.5rem" }}
+                      >
+                        Drive Date: {safeFormatDate(drive.date)}
+                      </Typography>
+                    </>
+                  }
+                />
+                <IconButton
+                  edge="end"
+                  aria-label="details"
+                  onClick={() => handleEditOpen(drive)}
+                >
+                  <ArrowForwardIcon />
+                </IconButton>
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+        <Typography
+            variant="h5"
+            style={{ color: theme.palette.primary.main, fontWeight: 600 }}
+          >
+            Completed Drives
+          </Typography>
+        <List
+          sx={{
+            marginTop: "1rem",
+            bgcolor: "background.paper",
+            borderRadius: "8px",
+            boxShadow:
+              theme.palette.mode === "dark"
+                ? "0 4px 8px rgba(255, 255, 255, 0.3)"
+                : theme.shadows[3],
+            padding: "10px",
+          }}
+        >
+          {completedDrives.map((drive) => (
             <React.Fragment key={drive.id}>
               <ListItem
                 alignItems="flex-start"
@@ -258,6 +339,59 @@ const DriveList = () => {
           </Button>
           <Button onClick={handleAddDrive} variant="contained" color="primary">
             Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={edit} onClose={editCloseDialog}>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Role"
+            name="role"
+            fullWidth
+            variant="outlined"
+            value={editData.role}
+            onChange={handleEditInputChange}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Company"
+            name="company"
+            fullWidth
+            variant="outlined"
+            value={editData.company}
+            onChange={handleEditInputChange}
+          />
+          <TextField
+            margin="dense"
+            label="CTC"
+            name="ctc"
+            fullWidth
+            variant="outlined"
+            value={editData.ctc}
+            onChange={handleEditInputChange}
+          />
+          <TextField
+            margin="dense"
+            label="Date"
+            name="date"
+            type="date"
+            fullWidth
+            variant="outlined"
+            InputLabelProps={{ shrink: true }}
+            value={editData.date}
+            onChange={handleEditInputChange}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={editCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleEditDrive} variant="contained" color="primary">
+            Save
           </Button>
         </DialogActions>
       </Dialog>

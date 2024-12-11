@@ -136,7 +136,7 @@ const Result = ({ quiz, currentSelectedCourse }) => {
                       <TableCell>{result.student.name}</TableCell>
                       <TableCell>{result.student.usn}</TableCell>
                       <TableCell>
-                        {result.attempts[0]?.score || "N/A"} / {quiz.random}
+                        {result.attempts[0]?.score || 0} / {quiz.random}
                       </TableCell>
                     </TableRow>
                   ))}
