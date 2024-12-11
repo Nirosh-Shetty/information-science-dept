@@ -1,10 +1,6 @@
 import Student from "../../model/studentModel.js"; // Adjust the path accordingly
-import classModel from "../../model/classModel.js";
+import Class from "../../model/classModel.js";
 import bcrypt from "bcrypt";
-
-import bcrypt from 'bcrypt';
-import Student from '../models/studentModel'; // Assuming you have a student model
-import Class from '../models/classModel'; // Assuming you have a class model
 
 export const addStudent = async (req, res) => {
     try {
