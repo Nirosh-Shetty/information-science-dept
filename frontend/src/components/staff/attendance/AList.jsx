@@ -124,7 +124,7 @@ export default function Alist() {
   React.useEffect(() => {
     // if (currentSelectedCourse && currentSelectedCourse.length > 0)
     fecthAttendanceList();
-  }, [currentSelectedCourse]);
+  }, [currentSelectedCourse, isUpdateOrEditAttendanceState]);
 
   return (
     <>

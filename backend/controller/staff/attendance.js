@@ -118,6 +118,14 @@ export const saveOrUpdateAttendance = async (req, res) => {
         message: "Attendance updated successfully",
         updatedAttendance,
       });
+    } else if (type == "new") {
+      const originalFormat = req.body;
+      const newEntry = new attendanceModel(originalFormat);
+      await newEntry.save();
+      // console.log("done");
+      return res.status(201).json({ message: "Atttendance taken" });
+    } else {
+      return res.status(401).json({ message: "Unauthorized!" });
     }
   } catch (error) {
     console.error("Error updating attendance:", error);
@@ -133,7 +141,7 @@ export const studentListForNewAttendance = async (req, res) => {
     console.log(courseId, className);
     // Find the class by name and populate students array
     const selectedClass = await classModel
-      .findOne({ name: "3rd Year ISE" })
+      .findOne({ name: className })
       .populate("students", "_id fullName usn courses");
     if (!selectedClass) {
       return res.status(404).json({ message: "Class not found" });

@@ -35,128 +35,128 @@ import {
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import axios from "axios";
 import { BACKEND_URL } from "../../../../../globals";
-const sampleData = [
-  {
-    id: "S-101",
-    usn: "1IS20IS001",
-    name: "Arjun Reddy",
-    attendance: "Present",
-  },
-  {
-    id: "S-102",
-    usn: "1IS20IS002",
-    name: "Riya Sharma",
-    attendance: "Absent",
-  },
-  {
-    id: "S-103",
-    usn: "1IS20IS003",
-    name: "Kiran Patil",
-    attendance: "Excused",
-  },
-  {
-    id: "S-104",
-    usn: "1IS20IS004",
-    name: "Priya Nair",
-    attendance: "Present",
-  },
-  {
-    id: "S-105",
-    usn: "1IS20IS005",
-    name: "Vikram Rao",
-    attendance: "Absent",
-  },
-  {
-    id: "S-106",
-    usn: "1IS20IS006",
-    name: "Sneha Iyer",
-    attendance: "Present",
-  },
-  {
-    id: "S-107",
-    usn: "1IS20IS007",
-    name: "Aditya Menon",
-    attendance: "Absent",
-  },
-  {
-    id: "S-108",
-    usn: "1IS20IS008",
-    name: "Meera Kapoor",
-    attendance: "Present",
-  },
-  {
-    id: "S-109",
-    usn: "1IS20IS009",
-    name: "Rohan Desai",
-    attendance: "Excused",
-  },
-  {
-    id: "S-110",
-    usn: "1IS20IS010",
-    name: "Pooja Joshi",
-    attendance: "Absent",
-  },
-  {
-    id: "S-111",
-    usn: "1IS20IS011",
-    name: "Ankit Verma",
-    attendance: "Present",
-  },
-  {
-    id: "S-112",
-    usn: "1IS20IS012",
-    name: "Neha Gupta",
-    attendance: "Present",
-  },
-  {
-    id: "S-113",
-    usn: "1IS20IS013",
-    name: "Siddharth Rao",
-    attendance: "Absent",
-  },
-  {
-    id: "S-114",
-    usn: "1IS20IS014",
-    name: "Ishita Jain",
-    attendance: "Excused",
-  },
-  {
-    id: "S-115",
-    usn: "1IS20IS015",
-    name: "Rajiv Sharma",
-    attendance: "Present",
-  },
-  {
-    id: "S-116",
-    usn: "1IS20IS016",
-    name: "Tanvi Aggarwal",
-    attendance: "Present",
-  },
-  {
-    id: "S-117",
-    usn: "1IS20IS017",
-    name: "Aman Khan",
-    attendance: "Absent",
-  },
-  {
-    id: "S-118",
-    usn: "1IS20IS018",
-    name: "Deepa Pillai",
-    attendance: "Excused",
-  },
-  {
-    id: "S-119",
-    usn: "1IS20IS019",
-    name: "Mohit Gupta",
-    attendance: "Present",
-  },
-  {
-    id: "S-120",
-    usn: "1IS20IS020",
-    name: "Sanya Singh",
-    attendance: "Absent",
-  },
-];
+// const sampleData = [
+//   {
+//     id: "S-101",
+//     usn: "1IS20IS001",
+//     name: "Arjun Reddy",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-102",
+//     usn: "1IS20IS002",
+//     name: "Riya Sharma",
+//     attendance: "Absent",
+//   },
+//   {
+//     id: "S-103",
+//     usn: "1IS20IS003",
+//     name: "Kiran Patil",
+//     attendance: "Excused",
+//   },
+//   {
+//     id: "S-104",
+//     usn: "1IS20IS004",
+//     name: "Priya Nair",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-105",
+//     usn: "1IS20IS005",
+//     name: "Vikram Rao",
+//     attendance: "Absent",
+//   },
+//   {
+//     id: "S-106",
+//     usn: "1IS20IS006",
+//     name: "Sneha Iyer",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-107",
+//     usn: "1IS20IS007",
+//     name: "Aditya Menon",
+//     attendance: "Absent",
+//   },
+//   {
+//     id: "S-108",
+//     usn: "1IS20IS008",
+//     name: "Meera Kapoor",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-109",
+//     usn: "1IS20IS009",
+//     name: "Rohan Desai",
+//     attendance: "Excused",
+//   },
+//   {
+//     id: "S-110",
+//     usn: "1IS20IS010",
+//     name: "Pooja Joshi",
+//     attendance: "Absent",
+//   },
+//   {
+//     id: "S-111",
+//     usn: "1IS20IS011",
+//     name: "Ankit Verma",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-112",
+//     usn: "1IS20IS012",
+//     name: "Neha Gupta",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-113",
+//     usn: "1IS20IS013",
+//     name: "Siddharth Rao",
+//     attendance: "Absent",
+//   },
+//   {
+//     id: "S-114",
+//     usn: "1IS20IS014",
+//     name: "Ishita Jain",
+//     attendance: "Excused",
+//   },
+//   {
+//     id: "S-115",
+//     usn: "1IS20IS015",
+//     name: "Rajiv Sharma",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-116",
+//     usn: "1IS20IS016",
+//     name: "Tanvi Aggarwal",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-117",
+//     usn: "1IS20IS017",
+//     name: "Aman Khan",
+//     attendance: "Absent",
+//   },
+//   {
+//     id: "S-118",
+//     usn: "1IS20IS018",
+//     name: "Deepa Pillai",
+//     attendance: "Excused",
+//   },
+//   {
+//     id: "S-119",
+//     usn: "1IS20IS019",
+//     name: "Mohit Gupta",
+//     attendance: "Present",
+//   },
+//   {
+//     id: "S-120",
+//     usn: "1IS20IS020",
+//     name: "Sanya Singh",
+//     attendance: "Absent",
+//   },
+// ];
 
 export default function StudentListForAttendance() {
   const theme = useTheme();
@@ -203,8 +203,10 @@ export default function StudentListForAttendance() {
         `${BACKEND_URL}/staff/saveOrUpdateAttendance/${type}`,
         originalFormat
       );
+
       setIsUpdateOrEditAttendanceState(false);
       console.log(response.data);
+      console.log("hhhh");
     } catch (error) {
       console.log("error in save/update", error);
     }
