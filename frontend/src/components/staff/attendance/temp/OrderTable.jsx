@@ -170,7 +170,7 @@ export default function OrderTable({ theme }) {
             </tr>
           </thead>
           <tbody>
-            {filteredList.length > 0 ? (
+            {filteredList?.length > 0 ? (
               filteredList.map((row, index) => (
                 <tr
                   key={index}

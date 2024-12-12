@@ -129,7 +129,7 @@ export default function Alist() {
   return (
     <>
       {!isUpdateOrEditAttendanceState ? (
-        attendanceList.length > 0 ? (
+        attendanceList?.length > 0 ? (
           <>
             <Sheet
               variant="outlined"
