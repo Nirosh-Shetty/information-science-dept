@@ -12,14 +12,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography,
 } from "@mui/material";
 import { BACKEND_URL } from "../../../../../../globals";
 
 export const Attendance = () => {
-  const [courses, setCourse] = useRecoilState(studentClassAtom);
+  const [courses, setCourses] = useRecoilState(studentClassAtom);
   const [student, setStudent] = useRecoilState(studentAtom);
-  const [attendanceData, setAttendanceData] = useState([]);
   const [attendanceStats, setAttendanceStats] = useState([]);
 
   useEffect(() => {
@@ -36,7 +34,6 @@ export const Attendance = () => {
 
         if (response.data.success) {
           const data = response.data.data;
-          setAttendanceData(data);
 
           // Calculate statistics for each course
           const stats = courses.map((course) => {
@@ -48,18 +45,29 @@ export const Attendance = () => {
               return (
                 acc +
                 record.attendance.filter(
-                  (a) => a.attendance === "Present" && a.status !== "Excused"
+                  (a) =>
+                    a.student._id === student._id &&
+                    a.attendance === "Present" &&
+                    a.status !== "Excused"
                 ).length
               );
             }, 0);
+
             const excused = courseRecords.reduce((acc, record) => {
               return (
                 acc +
-                record.attendance.filter((a) => a.attendance === "Excused")
-                  .length
+                record.attendance.filter(
+                  (a) =>
+                    a.student._id === student._id &&
+                    a.attendance === "Excused"
+                ).length
               );
             }, 0);
-            const total = courseRecords.length;
+
+            const total = courseRecords.filter((record) =>
+              record.attendance.some((a) => a.student._id === student._id)
+            ).length;
+
             const percentage =
               total > 0 ? ((attended / (total - excused)) * 100).toFixed(2) : 0;
 
@@ -75,7 +83,7 @@ export const Attendance = () => {
       }
     };
 
-    if (courses.length > 0) {
+    if (courses.length > 0 && student._id) {
       fetchAttendanceData();
     }
   }, [courses, student]);
