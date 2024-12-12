@@ -316,7 +316,9 @@ export default function StudentListForAttendance() {
               marginY: "18px",
             }}
           >
-            <Button variant="outlined" color="neutral">
+            <Button variant="outlined" color="neutral" onClick={()=>{
+              setIsUpdateOrEditAttendanceState(false);
+            }}>
               Cancel
             </Button>
             <Button
