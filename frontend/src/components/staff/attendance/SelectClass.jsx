@@ -26,7 +26,7 @@ export default function SelectClass() {
   const handleValueChange = (value) => {
     console.log(value, "VVVVVVV");
     const selectedClass = classes.find((item) => item._id === value);
-    console.log(selectedClass, "DHSGDHGDSHG")
+    console.log(selectedClass, "DHSGDHGDSHG");
     setCurrentSelectedCourse(selectedClass);
   };
 
@@ -35,7 +35,13 @@ export default function SelectClass() {
     <div className="w-8/9 my-5">
       <Select className="w-full" onValueChange={handleValueChange}>
         <SelectTrigger className="text-xl p-5 text-gray-600 font-semibold dark:text-gray-100 dark:border-2">
-          <SelectValue placeholder="Select a Class" />
+          {currentSelectedCourse?.className ? (
+            <SelectValue
+              placeholder={`${currentSelectedCourse.name}  ${currentSelectedCourse.className}`}
+            />
+          ) : (
+            <SelectValue placeholder="Select a Class" />
+          )}
         </SelectTrigger>
         <SelectContent>
           <SelectGroup className="text-2xl">
