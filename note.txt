@@ -1,0 +1,14 @@
+remove the class array in the course model(let it be independent) as in the class model it has the array of course in that class
+
+remove the courses array in the student model and then add the class column 
+
+
+//frontend
+add a option to reset the passowrd with old passowrd
+
+admin should be able to reset passowrd of staff and student
+
+//you can create a new user for it dept.
+
+
+we need to create sapareate model to store the marks , refer the attendance model;';
