@@ -60,46 +60,49 @@ const Attendence = () => {
   return (
     <div>
       {/* <Button onClick={handleGoback}>sds</Button> */}
-      <SelectClass />
+      {!isUpdateOrEditAttendanceState && <SelectClass />}
+
       <CssVarsProvider disableTransitionOnChange>
         {currentSelectedCourse ? (
           <>
-            <Box
-              sx={{
-                display: "flex",
-                mb: 1,
-                gap: 2,
-                flexDirection: { xs: "column", sm: "row" },
-                alignItems: { xs: "start", sm: "center" },
-                flexWrap: "wrap",
-                justifyContent: "space-between",
-                marginBottom: "15px",
-              }}
-            >
-              <Input
-                size="sm"
-                placeholder="Search"
-                startDecorator={<SearchIcon />}
-                sx={{ flexGrow: 1, padding: "10px" }}
-              />
-              <Button
-                color="primary"
-                startDecorator={<PlaylistAddIcon />}
-                size="sm"
-                // className="p-auto"
-                sx={
-                  !isXs && {
-                    padding: "10px",
-                  }
-                }
-                onClick={handleTakeNewAttendance}
+            {!isUpdateOrEditAttendanceState && (
+              <Box
+                sx={{
+                  display: "flex",
+                  mb: 1,
+                  gap: 2,
+                  flexDirection: { xs: "column", sm: "row" },
+                  alignItems: { xs: "start", sm: "center" },
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                  marginBottom: "15px",
+                }}
               >
-                Take Attendance
-              </Button>
-              <Button aria-label="Download XLSheet">
-                <DownloadRoundedIcon />
-              </Button>
-            </Box>
+                <Input
+                  size="sm"
+                  placeholder="Search"
+                  startDecorator={<SearchIcon />}
+                  sx={{ flexGrow: 1, padding: "10px" }}
+                />
+                <Button
+                  color="primary"
+                  startDecorator={<PlaylistAddIcon />}
+                  size="sm"
+                  // className="p-auto"
+                  sx={
+                    !isXs && {
+                      padding: "10px",
+                    }
+                  }
+                  onClick={handleTakeNewAttendance}
+                >
+                  Take Attendance
+                </Button>
+                <Button aria-label="Download XLSheet">
+                  <DownloadRoundedIcon />
+                </Button>
+              </Box>
+            )}
             <div> {isXs ? <AListXs /> : <Alist />}</div>
           </>
         ) : (
