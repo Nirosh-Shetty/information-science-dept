@@ -35,6 +35,10 @@ import {
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import axios from "axios";
 import { BACKEND_URL } from "../../../../../globals";
+import {
+  classAtom,
+  currentSelectedCourse as currentSelectedCourseAtom,
+} from "../../../../../recoil/atoms/classAtom";
 // const sampleData = [
 //   {
 //     id: "S-101",
@@ -157,9 +161,12 @@ import { BACKEND_URL } from "../../../../../globals";
 //     attendance: "Absent",
 //   },
 // ];
-
+import { format } from "date-fns";
 export default function StudentListForAttendance() {
   const theme = useTheme();
+  const [currentSelectedCourse, setCurrentSelectedCourse] = useRecoilState(
+    currentSelectedCourseAtom
+  );
   // console.log("hhhht", theme.palette.mode);
   const [updatedlist, setUpdatedlist] = useRecoilState(updatedStudentListState);
   const [isUpdateOrEditAttendanceState, setIsUpdateOrEditAttendanceState] =
@@ -247,9 +254,11 @@ export default function StudentListForAttendance() {
           <Box className="flex items-center  justify-between mb-2">
             <div>
               {" "}
-              <h1 className="text-4xl font-extrabold pr-5">7 ISE B </h1>
+              <h1 className="text-4xl font-extrabold pr-5">
+                {currentSelectedCourse.className}
+              </h1>
               <h3 className="text-gray-600">
-                {studentList.date.toLocaleString()}
+                {format(new Date(studentList.date), "dd MMM yyyy hh:mm a")}
                 {/* 16<sup>th</sup> January '24 */}
               </h3>
             </div>
