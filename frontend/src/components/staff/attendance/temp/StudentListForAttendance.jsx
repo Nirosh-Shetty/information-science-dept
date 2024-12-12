@@ -258,7 +258,7 @@ export default function StudentListForAttendance() {
                 {currentSelectedCourse.className}
               </h1>
               <h3 className="text-gray-600">
-                {format(new Date(studentList.date), "dd MMM yyyy hh:mm a")}
+                {/* {format(new Date(studentList.date), "dd MMM yyyy hh:mm a")} */}
                 {/* 16<sup>th</sup> January '24 */}
               </h3>
             </div>
@@ -316,9 +316,13 @@ export default function StudentListForAttendance() {
               marginY: "18px",
             }}
           >
-            <Button variant="outlined" color="neutral" onClick={()=>{
-              setIsUpdateOrEditAttendanceState(false);
-            }}>
+            <Button
+              variant="outlined"
+              color="neutral"
+              onClick={() => {
+                setIsUpdateOrEditAttendanceState(false);
+              }}
+            >
               Cancel
             </Button>
             <Button

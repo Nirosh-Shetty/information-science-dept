@@ -47,6 +47,7 @@ const DashboardContent = () => {
         .get(`${BACKEND_URL}/courses/get/${student.className}`)
         .then((res) => {
           setCourses(res.data);
+          console.log(res.data);
           // setStudent({ ...student, courses: res.data });
           console.log(res.data);
         });
