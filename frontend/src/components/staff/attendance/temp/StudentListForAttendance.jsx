@@ -170,7 +170,9 @@ export default function StudentListForAttendance() {
 
   const [studentList, setStudentList] = useRecoilState(studentListState);
   const [searchQuery, setSearchQuery] = useRecoilState(studentSearchQueryState);
-  const handleGoBack = () => {};
+  const handleGoBack = () => {
+    setIsUpdateOrEditAttendanceState(false);
+  };
   // setStudentList(sampleData);
 
   const handleAttendanceSaveOrUpdate = async () => {
@@ -247,7 +249,8 @@ export default function StudentListForAttendance() {
               {" "}
               <h1 className="text-4xl font-extrabold pr-5">7 ISE B </h1>
               <h3 className="text-gray-600">
-                16<sup>th</sup> January '24
+                {studentList.date.toLocaleString()}
+                {/* 16<sup>th</sup> January '24 */}
               </h3>
             </div>
 
