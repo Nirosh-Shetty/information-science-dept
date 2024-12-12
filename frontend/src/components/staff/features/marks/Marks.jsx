@@ -88,9 +88,9 @@ const Marks = () => {
       const data = Object.keys(marks).map((studentId) => ({
         studentId,
         marks: {
-          IA1: marks[studentId]?.IA1 || 0,
-          IA2: marks[studentId]?.IA2 || 0,
-          IA3: marks[studentId]?.IA3 || 0,
+          IA1: marks[studentId]?.IA1 || null,
+          IA2: marks[studentId]?.IA2 || null,
+          IA3: marks[studentId]?.IA3 || null,
         },
         subjectId: currentSelectedCourse._id,
         uploadedBy: staff._id,

@@ -174,7 +174,7 @@ const DashboardContent = () => {
       <Divider sx={{ my: 3, backgroundColor: isDarkMode ? "#555" : "#ddd" }} />
 
       {/* Charts and Activities */}
-      <Grid container spacing={3} p={3}>
+      <Grid container spacing={3} pr={3}>
         {/* Upcoming Events */}
         <EventPage></EventPage>
       </Grid>

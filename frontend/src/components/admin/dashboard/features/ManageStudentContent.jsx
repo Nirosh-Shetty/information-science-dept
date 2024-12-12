@@ -28,6 +28,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
 import { BACKEND_URL } from "../../../../../globals";
+import { notify } from "../../../toastMessage/NotifyMessage";
+import { ToastContainer } from "react-toastify";
 
 const StyledTableContainer = styled(TableContainer)({
   boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
@@ -212,6 +214,7 @@ const handleDeleteCourse = async (course) => {
       setData([...data, response.data.student]);
       setDialogOpen(false);
     } catch (error) {
+      notify(error.message)
       console.error("Error adding student:", error);
     }
   };
@@ -404,6 +407,7 @@ const handleDeleteCourse = async (course) => {
 
         {/* Add Student Dialog */}
         <Dialog open={dialogOpen} onClose={handleDialogClose}>
+          <ToastContainer></ToastContainer>
           <DialogTitle>Add Student</DialogTitle>
           <DialogContent>
             <TextField

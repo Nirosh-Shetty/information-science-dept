@@ -102,7 +102,6 @@ export const AddQuiz = ({ currentSelectedCourse, setQuizzes }) => {
         resetFields();
       });
     } catch (error) {
-      notify(`Failed to create quiz: ${error.message}`);
       console.error("Failed to create quiz:", error);
     }
   };

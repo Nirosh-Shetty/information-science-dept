@@ -71,12 +71,18 @@ export const Marks = () => {
           <TableBody>
             {marks.map((mark, index) => (
               <TableRow key={index} className="hover:bg-gray-100">
-                <TableCell className="text-gray-700">{mark.subCode}</TableCell>
-                <TableCell className="text-gray-700">{mark.courseName}</TableCell>
-                <TableCell className="text-gray-700">{mark.data.length > 0 ? mark.data[0].marks.IA1 : '-'}</TableCell>
-                <TableCell className="text-gray-700">{mark.data.length > 0 ? mark.data[0].marks.IA2 : '-'}</TableCell>
-                <TableCell className="text-gray-700">{mark.data.length > 0 ? mark.data[0].marks.IA3 : '-'}</TableCell>
-              </TableRow>
+              <TableCell className="text-gray-700">{mark.subCode}</TableCell>
+              <TableCell className="text-gray-700">{mark.courseName}</TableCell>
+              <TableCell className="text-gray-700">
+                {mark.data?.[0]?.marks?.IA1 ?? '-'}
+              </TableCell>
+              <TableCell className="text-gray-700">
+                {mark.data?.[0]?.marks?.IA2 ?? '-'}
+              </TableCell>
+              <TableCell className="text-gray-700">
+                {mark.data?.[0]?.marks?.IA3 ?? '-'}
+              </TableCell>
+            </TableRow>            
             ))}
           </TableBody>
         </Table>

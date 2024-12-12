@@ -258,7 +258,8 @@ export default function StudentListForAttendance() {
                 {currentSelectedCourse.className}
               </h1>
               <h3 className="text-gray-600">
-                {format(new Date(studentList.date), "dd MMM yyyy hh:mm a")}
+                {/* {format(new Date(studentList.date), "dd MMM yyyy hh:mm a")} */}
+                {studentList.date}
                 {/* 16<sup>th</sup> January '24 */}
               </h3>
             </div>

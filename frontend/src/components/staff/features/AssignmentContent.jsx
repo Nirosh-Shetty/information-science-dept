@@ -256,8 +256,8 @@ const AssignmentContent = () => {
                 <TableCell>{assignment.title}</TableCell>
                 <TableCell>{assignment.description}</TableCell>
                 <TableCell>
-                  {assignmentDetails?.dueDate
-                    ? format(new Date(assignmentDetails.dueDate), "dd MMM yyyy")
+                  {assignment?.dueDate
+              ? format(new Date(assignment.dueDate), "dd MMM yyyy")
                     : "No Due Date"}
                 </TableCell>
                 <TableCell>
