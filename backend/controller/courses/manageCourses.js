@@ -19,7 +19,7 @@ export const addCourse = async (req, res) => {
       className: [className],
     });
     await newCourse.save();
-
+    console.log(className)
     const cls = await classModel.findOne({ name: className });
 
     if (!cls) {

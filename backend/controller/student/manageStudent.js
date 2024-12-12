@@ -15,31 +15,28 @@ export const addStudent = async (req, res) => {
       password,
     } = req.body;
 
+    // Validate required fields
     if (!fullName || !usn || !className || !password) {
       return res
         .status(400)
-        .json({ message: "fullName, usn, and className are required." });
+        .json({ message: "fullName, usn, className, and password are required." });
     }
 
     // Hash password before saving
     password = bcrypt.hashSync(password, 10);
 
-    // Check if the student already exists
-    let existingStudent = await Student.findOne({ usn });
+    // Check if the student already exists by USN or email
+    const existingStudent = await Student.findOne({
+      $or: [{ usn }, { email }],
+    });
 
     if (existingStudent) {
-      // If the student exists, update their courses array
-      existingStudent.courses = [
-        ...new Set([...existingStudent.courses, ...courses]),
-      ]; // Ensures no duplicates
-      await existingStudent.save();
-      return res.status(200).json({
-        message: "Courses updated successfully!",
-        student: existingStudent,
-      });
+      return res
+        .status(409) // Use 409 Conflict for resource conflicts
+        .json({ message: "Student with this USN or email already exists." });
     }
 
-    // If student doesn't exist, create a new student
+    // Create a new student if no existing record is found
     const newStudent = new Student({
       fullName,
       usn,
@@ -73,6 +70,7 @@ export const addStudent = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
 
 export const getStudentsByClass = async (req, res) => {
   try {
