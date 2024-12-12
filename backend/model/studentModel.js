@@ -9,7 +9,7 @@ const studentSchema = new mongoose.Schema({
   email: { type: String },
   className: { type: String },
   role: { type: String, default: "student" },
-  avatar : {type: String},
+  avatar: { type: String },
   courses: [
     {
       course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },

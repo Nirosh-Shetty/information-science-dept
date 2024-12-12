@@ -14,7 +14,7 @@ import { BACKEND_URL } from "../../../../globals";
 import { useRecoilState } from "recoil";
 import { studentAtom } from "../../../../recoil/atoms/studentAtom";
 import { QuizContent } from "./features/quiz/QuizContent";
-import BarChartIcon  from "@mui/icons-material/BarChart";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import axios from "axios";
 import { studentClassAtom } from "../../../../recoil/atoms/classAtom";
@@ -22,6 +22,7 @@ import { Classes } from "./features/class/Classes";
 import { Assignment } from "./features/assignment/Assignment";
 import { Marks } from "./features/marks/Marks";
 import ProfileContent from "./ProfileContent";
+import { Attendance } from "./features/attendance/Attendance";
 
 const NAVIGATION = [
   {
@@ -52,7 +53,6 @@ const NAVIGATION = [
     segment: "student/assignments",
     title: "Assignments",
     icon: <AssignmentIcon />,
-    
   },
   {
     kind: "divider",
@@ -181,13 +181,6 @@ export default function StudentDashboard(props) {
     }
   }, [student, navigate, loading]);
 
-  function GradesContent() {
-    return <h1>Grades</h1>;
-  }
-  function AttendanceContent() {
-    return <h1>Attendance</h1>;
-  }
-
   const renderPageContent = React.useCallback(() => {
     switch (router.pathname) {
       case "/student/dashboard":
@@ -195,13 +188,13 @@ export default function StudentDashboard(props) {
       case "/student/grades":
         return <Marks />;
       case "/student/attendance":
-        return <AttendanceContent />;
+        return <Attendance />;
       case "/student/assignments":
-        return  <Assignment/>;
+        return <Assignment />;
       case "/student/quiz":
         return <QuizContent />;
       case "/student/class":
-        return <Classes/>;
+        return <Classes />;
       case "/student/profile":
         return <ProfileContent />;
       case "/student/logout":
