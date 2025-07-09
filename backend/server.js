@@ -3,13 +3,10 @@ import express from "express";
 import router from "./routes/indexRoutes.js";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-
-
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -18,10 +15,9 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "role"],
   })
 );
-
 app.use(router);
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
